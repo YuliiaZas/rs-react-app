@@ -1,0 +1,41 @@
+.spinner-wrapper {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 10;
+  user-select: none;
+
+  &::before {
+    position: absolute;
+    content: '';
+    height: 100%;
+    width: 100%;
+    background-color: #ffffff;
+    opacity: 0.8;
+  }
+
+  .spinner-border {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 1.5rem;
+    width: 1.5rem;
+    border-radius: 50%;
+    border: 2px solid #a5a8b0;
+    border-bottom: 0;
+    border-right: 0;
+    animation: spin infinite 2s linear;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
