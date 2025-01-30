@@ -1,4 +1,10 @@
-import { ChangeEvent, Component, KeyboardEvent } from 'react';
+import {
+  ChangeEvent,
+  Component,
+  createRef,
+  KeyboardEvent,
+  RefObject,
+} from 'react';
 
 interface SearchProps {
   initialSearchValue: string;
@@ -11,28 +17,37 @@ interface SearchState {
 }
 
 class Search extends Component<SearchProps, SearchState> {
-  static defaultProps = { placeholder: 'Input Value' };
+  static defaultProps: Partial<SearchProps> = { placeholder: 'Input Value' };
 
-  state = {
+  state: SearchState = {
     currentValue: this.props.initialSearchValue,
+  };
+
+  searchButton: RefObject<HTMLButtonElement> = createRef();
+
+  updateCurrentValue = (e: ChangeEvent) => {
+    this.setState({
+      currentValue: (e.target as HTMLInputElement).value,
+    });
   };
 
   updateSearchValue = () => {
     this.props.updateSearchValue(this.state.currentValue);
   };
 
-  updateCurrentValue = (e: ChangeEvent) => {
-    if (e.target) {
-      this.setState({
-        currentValue: (e.target as HTMLInputElement).value,
-      });
-    }
+  handleButtonClick = () => {
+    this.updateSearchValue();
+    this.blurSearchButton();
   };
 
   handleInputKeyDown = (e: KeyboardEvent) => {
     if (e.key === 'Enter') {
       this.updateSearchValue();
     }
+  };
+
+  blurSearchButton = () => {
+    this.searchButton.current?.blur();
   };
 
   render() {
@@ -49,7 +64,8 @@ class Search extends Component<SearchProps, SearchState> {
         <button
           type="submit"
           className="search-button"
-          onClick={this.updateSearchValue}
+          ref={this.searchButton}
+          onClick={this.handleButtonClick}
         >
           Search
         </button>
