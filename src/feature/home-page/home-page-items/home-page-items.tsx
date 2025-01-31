@@ -9,8 +9,7 @@ interface HomePageItemsProps {
 }
 
 class HomePageItems extends Component<HomePageItemsProps> {
-  emptyResult =
-    'Sorry, we couldn&apos;t find anything. Please check your request.';
+  emptyResult = "Sorry, we couldn't find anything. Please check your request.";
 
   getItemslist(): JSX.Element[] {
     return this.props.items.map((item) => {
@@ -28,10 +27,10 @@ class HomePageItems extends Component<HomePageItemsProps> {
   getListOfDetails(item: People): KeyValuePair[] {
     const { gender, birth_year: year, height, mass } = item;
     return [
-      { key: 'gender', value: gender },
-      { key: 'year of birth', value: year },
-      { key: 'height', value: height },
-      { key: 'mass', value: mass },
+      { key: 'Gender', value: gender },
+      { key: 'Year of birth', value: year },
+      { key: 'Height', value: height },
+      { key: 'Mass', value: mass },
     ];
   }
 

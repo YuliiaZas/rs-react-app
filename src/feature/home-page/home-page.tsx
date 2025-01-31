@@ -7,6 +7,7 @@ import { SearchResult } from '../../utils/search-result.interface';
 import { People } from '../../utils/people.interface';
 import HomePageItems from './home-page-items/home-page-items';
 import ErrorComponent from '../../lib/error/error';
+import './home-page.css';
 
 interface HomePageState {
   searchValue: string;
@@ -47,19 +48,21 @@ class HomePage extends Component<object, HomePageState> {
 
   updateSearchValue = (searchValue: string) => {
     const trimmedSeachValue = searchValue.trim();
-    if (trimmedSeachValue === this.state.searchValue) return;
+    if (trimmedSeachValue === this.state.searchValue) {
+      this.startSearch();
+      return;
+    }
 
     this.updateSeachValueInStore(trimmedSeachValue);
     this.setState({ searchValue: trimmedSeachValue }, this.startSearch);
   };
 
-  startSearch = (value?: string) => {
+  startSearch = () => {
     this.setState({ loadingState: LOADING_STATE.LOADING });
-    console.log('startSearch', this.state.searchValue, value);
-    this.getItems(value || this.state.searchValue);
+    this.fetchItems(this.state.searchValue);
   };
 
-  getItems = (value: string) => {
+  fetchItems = (value: string) => {
     fetch(`${this.url}${value}`)
       .then((response) => response.json())
       .then((data: SearchResult<People>) => this.updateItems(data))
@@ -93,34 +96,38 @@ class HomePage extends Component<object, HomePageState> {
       this.throwError();
     }
     return (
-      <main>
-        <section>
-          <Search
-            initialSearchValue={this.state.searchValue}
-            updateSearchValue={this.updateSearchValue}
-            placeholder={this.searchPlaceholder}
-          />
-        </section>
-        <section>
-          <h1>{this.pageTitle}</h1>
-          <section>
-            {this.state.loadingState === LOADING_STATE.FAILURE ? (
-              <ErrorComponent errorMessageInfo={this.errorMessageInfo} />
-            ) : (
-              <HomePageItems
-                title={this.getResultTitle()}
-                items={this.state.items}
-              />
-            )}
+      <>
+        <main className="home-main">
+          <section className="home-seach">
+            <Search
+              initialSearchValue={this.state.searchValue}
+              updateSearchValue={this.updateSearchValue}
+              placeholder={this.searchPlaceholder}
+            />
           </section>
-        </section>
-        <section>
-          <button onClick={this.showPageError}>
-            {this.throwErrorButtonText}
-          </button>
-        </section>
+          <section className="home-content">
+            <h1 className="home-content-title">{this.pageTitle}</h1>
+            <section className="home-content-card">
+              {this.state.loadingState === LOADING_STATE.FAILURE ? (
+                <ErrorComponent errorMessageInfo={this.errorMessageInfo} />
+              ) : this.state.loadingState === LOADING_STATE.LOADING ? (
+                <div className="home-content-card-empty"></div>
+              ) : (
+                <HomePageItems
+                  title={this.getResultTitle()}
+                  items={this.state.items}
+                />
+              )}
+            </section>
+          </section>
+          <section className="home-error">
+            <button className="home-error-button" onClick={this.showPageError}>
+              {this.throwErrorButtonText}
+            </button>
+          </section>
+        </main>
         {this.state.loadingState === LOADING_STATE.LOADING && <Spinner />}
-      </main>
+      </>
     );
   }
 }

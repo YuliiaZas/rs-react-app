@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import { KeyValuePair } from '../../utils/key-value-pair.type';
+import './card-small.css';
 
 interface CardSmallProps {
   cardTitle: string;

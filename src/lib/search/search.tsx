@@ -5,6 +5,7 @@ import {
   KeyboardEvent,
   RefObject,
 } from 'react';
+import './search.css';
 
 interface SearchProps {
   initialSearchValue: string;
