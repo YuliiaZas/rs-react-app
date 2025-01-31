@@ -2,8 +2,9 @@ import { Component } from 'react';
 
 interface ErrorComponentProps {
   errorMessage: string;
+  errorMessageInfo?: string;
   showButton: boolean;
-  buttonMessage?: string;
+  buttonMessage: string;
   buttonClick?: () => void;
 }
 
@@ -18,6 +19,9 @@ class ErrorComponent extends Component<ErrorComponentProps> {
     return (
       <div className="error-wrapper">
         <p className="error-message">{this.props.errorMessage}</p>
+        {this.props.errorMessageInfo && (
+          <p className="error-message-info">{this.props.errorMessageInfo}</p>
+        )}
         {this.props.showButton && (
           <button className="error-button" onClick={this.props.buttonClick}>
             {this.props.buttonMessage}

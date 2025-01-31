@@ -23,6 +23,8 @@ class Search extends Component<SearchProps, SearchState> {
     currentValue: this.props.initialSearchValue,
   };
 
+  searchButtonText = 'Search';
+
   searchButton: RefObject<HTMLButtonElement> = createRef();
 
   updateCurrentValue = (e: ChangeEvent) => {
@@ -67,7 +69,7 @@ class Search extends Component<SearchProps, SearchState> {
           ref={this.searchButton}
           onClick={this.handleButtonClick}
         >
-          Search
+          {this.searchButtonText}
         </button>
       </div>
     );

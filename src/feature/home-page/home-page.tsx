@@ -5,6 +5,8 @@ import Spinner from '../../lib/spinner/spinner';
 import { ErrorContext, ErrorContextState } from '../../utils/error-context';
 import { SearchResult } from '../../utils/search-result.interface';
 import { People } from '../../utils/people.interface';
+import HomePageItems from './home-page-items/home-page-items';
+import ErrorComponent from '../../lib/error/error';
 
 interface HomePageState {
   searchValue: string;
@@ -23,6 +25,12 @@ class HomePage extends Component<object, HomePageState> {
     loadingState: LOADING_STATE.PRESTINE,
   };
 
+  pageTitle = 'People of Star Wars';
+  resultTitleFull = 'Full list (1 page)';
+  resultTitleSearch = 'Search result for';
+  errorMessageInfo = 'Please, try one more time';
+  searchPlaceholder = 'Input Name from Star Wars';
+  throwErrorButtonText = 'Trow Error';
   url = 'https://swapi.dev/api/people?search=';
 
   componentDidMount() {
@@ -63,6 +71,12 @@ class HomePage extends Component<object, HomePageState> {
     this.setState({ loadingState: LOADING_STATE.FAILURE, items: [] });
   }
 
+  getResultTitle(): string {
+    return this.state.searchValue
+      ? `${this.resultTitleSearch} "${this.state.searchValue}"`
+      : this.resultTitleFull;
+  }
+
   showPageError = () => {
     (this.context as ErrorContextState).updateShowError(true);
   };
@@ -81,11 +95,26 @@ class HomePage extends Component<object, HomePageState> {
           <Search
             initialSearchValue={this.state.searchValue}
             updateSearchValue={this.updateSearchValue}
-            placeholder="Input Name from Star Wars"
+            placeholder={this.searchPlaceholder}
           />
         </section>
         <section>
-          <button onClick={this.showPageError}>Throw Error</button>
+          <h1>{this.pageTitle}</h1>
+          <section>
+            {this.state.loadingState === LOADING_STATE.FAILURE ? (
+              <ErrorComponent errorMessageInfo={this.errorMessageInfo} />
+            ) : (
+              <HomePageItems
+                title={this.getResultTitle()}
+                items={this.state.items}
+              />
+            )}
+          </section>
+        </section>
+        <section>
+          <button onClick={this.showPageError}>
+            {this.throwErrorButtonText}
+          </button>
         </section>
         {this.state.loadingState === LOADING_STATE.LOADING && <Spinner />}
       </main>
