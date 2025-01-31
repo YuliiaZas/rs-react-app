@@ -46,8 +46,11 @@ class HomePage extends Component<object, HomePageState> {
   };
 
   updateSearchValue = (searchValue: string) => {
-    this.updateSeachValueInStore(searchValue);
-    this.setState({ searchValue }, this.startSearch);
+    const trimmedSeachValue = searchValue.trim();
+    if (trimmedSeachValue === this.state.searchValue) return;
+
+    this.updateSeachValueInStore(trimmedSeachValue);
+    this.setState({ searchValue: trimmedSeachValue }, this.startSearch);
   };
 
   startSearch = (value?: string) => {
