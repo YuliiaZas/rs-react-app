@@ -19,6 +19,7 @@ class HomePage extends Component<object, HomePageState> {
   static contextType: Context<ErrorContextState> = ErrorContext;
 
   private searchItemKey = 'searchItem';
+  private isPageAvailable = false;
 
   state: HomePageState = {
     searchValue: this.getSeachValueFromStore(),
@@ -35,7 +36,12 @@ class HomePage extends Component<object, HomePageState> {
   url = 'https://swapi.dev/api/people?search=';
 
   componentDidMount() {
+    this.isPageAvailable = true;
     this.startSearch();
+  }
+
+  componentWillUnmount(): void {
+    this.isPageAvailable = false;
   }
 
   getSeachValueFromStore(): string {
@@ -58,6 +64,7 @@ class HomePage extends Component<object, HomePageState> {
   };
 
   startSearch = () => {
+    if (!this.isPageAvailable) return;
     this.setState({ loadingState: LOADING_STATE.LOADING });
     this.fetchItems(this.state.searchValue);
   };
@@ -70,10 +77,12 @@ class HomePage extends Component<object, HomePageState> {
   };
 
   updateItems(data: SearchResult<People>) {
+    if (!this.isPageAvailable) return;
     this.setState({ loadingState: LOADING_STATE.LOADED, items: data.results });
   }
 
   showDataError() {
+    if (!this.isPageAvailable) return;
     this.setState({ loadingState: LOADING_STATE.FAILURE, items: [] });
   }
 
