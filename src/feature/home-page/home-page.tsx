@@ -21,6 +21,10 @@ class HomePage extends Component<object, HomePageState> {
   private searchItemKey = 'searchItem';
   private isPageAvailable = false;
 
+  getSeachValueFromStore = (): string => {
+    return window.localStorage.getItem(this.searchItemKey) ?? '';
+  };
+
   state: HomePageState = {
     searchValue: this.getSeachValueFromStore(),
     items: [],
@@ -35,18 +39,14 @@ class HomePage extends Component<object, HomePageState> {
   throwErrorButtonText = 'Trow Error';
   url = 'https://swapi.dev/api/people?search=';
 
-  componentDidMount() {
+  componentDidMount = () => {
     this.isPageAvailable = true;
     this.startSearch();
-  }
+  };
 
-  componentWillUnmount(): void {
+  componentWillUnmount = () => {
     this.isPageAvailable = false;
-  }
-
-  getSeachValueFromStore(): string {
-    return window.localStorage.getItem(this.searchItemKey) ?? '';
-  }
+  };
 
   updateSeachValueInStore = (value: string) => {
     window.localStorage.setItem(this.searchItemKey, value);
@@ -76,21 +76,21 @@ class HomePage extends Component<object, HomePageState> {
       .catch(() => this.showDataError());
   };
 
-  updateItems(data: SearchResult<People>) {
+  updateItems = (data: SearchResult<People>) => {
     if (!this.isPageAvailable) return;
     this.setState({ loadingState: LOADING_STATE.LOADED, items: data.results });
-  }
+  };
 
-  showDataError() {
+  showDataError = () => {
     if (!this.isPageAvailable) return;
     this.setState({ loadingState: LOADING_STATE.FAILURE, items: [] });
-  }
+  };
 
-  getResultTitle(): string {
+  getResultTitle = (): string => {
     return this.state.searchValue
       ? `${this.resultTitleSearch} "${this.state.searchValue}"`
       : this.resultTitleFull;
-  }
+  };
 
   showPageError = () => {
     (this.context as ErrorContextState).updateShowError(true);

@@ -41,13 +41,13 @@ class ErrorBoundary extends Component<PropsWithChildren, ErrorBoundaryState> {
     this.setState({ error: null });
   };
 
-  resetShowErrorInErrorContext() {
+  resetShowErrorInErrorContext = () => {
     (this.context as ErrorContextState).updateShowError(false);
-  }
+  };
 
-  redirectToHomePage() {
+  redirectToHomePage = () => {
     console.log('Redirect to Home Page');
-  }
+  };
 
   render() {
     if (this.state.error) {
