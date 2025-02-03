@@ -1,8 +1,7 @@
-import { Component, Context } from 'react';
+import { Component } from 'react';
 import Search from '../../lib/search/search';
 import { LOADING_STATE } from '../../utils/loading-state.enum';
 import Spinner from '../../lib/spinner/spinner';
-import { ErrorContext, ErrorContextState } from '../../utils/error-context';
 import { SearchResult } from '../../utils/search-result.interface';
 import { People } from '../../utils/people.interface';
 import HomePageItems from './home-page-items/home-page-items';
@@ -14,11 +13,10 @@ interface HomePageState {
   searchValue: string;
   items: People[];
   loadingState: LOADING_STATE;
+  showError: boolean;
 }
 
 class HomePage extends Component<object, HomePageState> {
-  static contextType: Context<ErrorContextState> = ErrorContext;
-
   private searchItemKey = 'searchItem';
   private isPageAvailable = false;
 
@@ -30,6 +28,7 @@ class HomePage extends Component<object, HomePageState> {
     searchValue: this.getSeachValueFromStore(),
     items: [],
     loadingState: LOADING_STATE.PRESTINE,
+    showError: false,
   };
 
   pageTitle = 'People of Star Wars';
@@ -94,7 +93,7 @@ class HomePage extends Component<object, HomePageState> {
   };
 
   showPageError = () => {
-    (this.context as ErrorContextState).updateShowError(true);
+    this.setState({ showError: true });
   };
 
   throwError = () => {
@@ -102,7 +101,7 @@ class HomePage extends Component<object, HomePageState> {
   };
 
   render() {
-    if ((this.context as ErrorContextState).showError) {
+    if (this.state.showError) {
       this.throwError();
     }
     return (

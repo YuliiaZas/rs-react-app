@@ -1,14 +1,11 @@
-import { Component, Context, ErrorInfo, PropsWithChildren } from 'react';
+import { Component, ErrorInfo, PropsWithChildren } from 'react';
 import ErrorComponent from '../../lib/error/error';
-import { ErrorContext, ErrorContextState } from '../../utils/error-context';
 
 interface ErrorBoundaryState {
   error: null | Error;
 }
 
 class ErrorBoundary extends Component<PropsWithChildren, ErrorBoundaryState> {
-  static contextType: Context<ErrorContextState> = ErrorContext;
-
   static getDerivedStateFromError(error: Error): ErrorBoundaryState {
     return { error };
   }
@@ -33,16 +30,11 @@ class ErrorBoundary extends Component<PropsWithChildren, ErrorBoundaryState> {
 
   handleButtonClick = () => {
     this.resetErrorBoundary();
-    this.resetShowErrorInErrorContext();
     this.redirectToHomePage();
   };
 
   resetErrorBoundary = () => {
     this.setState({ error: null });
-  };
-
-  resetShowErrorInErrorContext = () => {
-    (this.context as ErrorContextState).updateShowError(false);
   };
 
   redirectToHomePage = () => {
