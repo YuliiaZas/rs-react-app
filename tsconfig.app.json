@@ -6,6 +6,14 @@
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
+    "baseUrl": "./src",
+    "paths": {
+      "@lib": ["lib/index.ts"],
+      "@services": ["services/index.ts"],
+      "@utils": ["utils/index.ts"],
+      "@home-page": ["feature/home-page/index.ts"],
+      "@error-boundary": ["feature/error-boundary/error-boundary.tsx"]
+    },
 
     /* Bundler mode */
     "moduleResolution": "bundler",

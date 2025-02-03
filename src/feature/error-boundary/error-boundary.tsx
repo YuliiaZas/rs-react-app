@@ -1,11 +1,14 @@
 import { Component, ErrorInfo, PropsWithChildren } from 'react';
-import ErrorComponent from '../../lib/error/error';
+import { ErrorComponent } from '@lib';
 
 interface ErrorBoundaryState {
   error: null | Error;
 }
 
-class ErrorBoundary extends Component<PropsWithChildren, ErrorBoundaryState> {
+export class ErrorBoundary extends Component<
+  PropsWithChildren,
+  ErrorBoundaryState
+> {
   static getDerivedStateFromError(error: Error): ErrorBoundaryState {
     return { error };
   }
@@ -53,5 +56,3 @@ class ErrorBoundary extends Component<PropsWithChildren, ErrorBoundaryState> {
     return this.props.children;
   }
 }
-
-export default ErrorBoundary;

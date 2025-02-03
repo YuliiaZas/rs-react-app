@@ -1,7 +1,7 @@
 import { Component } from 'react';
+import { ErrorBoundary } from '@error-boundary';
+import { HomePage } from '@home-page';
 import './App.css';
-import HomePage from './feature/home-page/home-page';
-import ErrorBoundary from './feature/error-boundary/error-boundary';
 
 class App extends Component {
   render() {

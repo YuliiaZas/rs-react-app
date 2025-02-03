@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { KeyValuePair } from '../../utils/key-value-pair.type';
+import { KeyValuePair } from '@utils';
 import './card-small.css';
 
 interface CardSmallProps {
@@ -7,7 +7,7 @@ interface CardSmallProps {
   listOfDetails: KeyValuePair[];
 }
 
-class CardSmall extends Component<CardSmallProps> {
+export class CardSmall extends Component<CardSmallProps> {
   getDescriptionItems(): JSX.Element[] {
     return this.props.listOfDetails.map((item, i, arr) => {
       return (
@@ -29,5 +29,3 @@ class CardSmall extends Component<CardSmallProps> {
     );
   }
 }
-
-export default CardSmall;

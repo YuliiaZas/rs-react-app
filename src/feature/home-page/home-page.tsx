@@ -1,12 +1,8 @@
 import { Component } from 'react';
-import Search from '../../lib/search/search';
-import { LOADING_STATE } from '../../utils/loading-state.enum';
-import Spinner from '../../lib/spinner/spinner';
-import { SearchResult } from '../../utils/search-result.interface';
-import { People } from '../../utils/people.interface';
-import HomePageItems from './home-page-items/home-page-items';
-import ErrorComponent from '../../lib/error/error';
-import homePageService from './home-page.service';
+import { ErrorComponent, Search, Spinner } from '@lib';
+import { peopleService } from '@services';
+import { LOADING_STATE, People, SearchResult } from '@utils';
+import { HomePageItems } from './home-page-items/home-page-items';
 import './home-page.css';
 
 interface HomePageState {
@@ -16,7 +12,7 @@ interface HomePageState {
   showError: boolean;
 }
 
-class HomePage extends Component<object, HomePageState> {
+export class HomePage extends Component<object, HomePageState> {
   private searchItemKey = 'searchItem';
   private isPageAvailable = false;
 
@@ -70,7 +66,7 @@ class HomePage extends Component<object, HomePageState> {
   };
 
   getItems = (value: string) => {
-    homePageService
+    peopleService
       .getItems(value)
       .then((data: SearchResult<People>) => this.updateItems(data))
       .catch(() => this.showDataError());
@@ -140,5 +136,3 @@ class HomePage extends Component<object, HomePageState> {
     );
   }
 }
-
-export default HomePage;

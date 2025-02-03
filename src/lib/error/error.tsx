@@ -9,7 +9,7 @@ interface ErrorComponentProps {
   buttonClick?: () => void;
 }
 
-class ErrorComponent extends Component<ErrorComponentProps> {
+export class ErrorComponent extends Component<ErrorComponentProps> {
   static defaultProps: Partial<ErrorComponentProps> = {
     showButton: false,
     errorMessage: 'Ooops! Something went wrong...',
@@ -32,5 +32,3 @@ class ErrorComponent extends Component<ErrorComponentProps> {
     );
   }
 }
-
-export default ErrorComponent;

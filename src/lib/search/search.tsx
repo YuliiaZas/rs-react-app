@@ -17,7 +17,7 @@ interface SearchState {
   currentValue: string;
 }
 
-class Search extends Component<SearchProps, SearchState> {
+export class Search extends Component<SearchProps, SearchState> {
   static defaultProps: Partial<SearchProps> = { placeholder: 'Input Value' };
 
   state: SearchState = {
@@ -76,5 +76,3 @@ class Search extends Component<SearchProps, SearchState> {
     );
   }
 }
-
-export default Search;

@@ -1,14 +1,13 @@
 import { Component } from 'react';
-import { People } from '../../../utils/people.interface';
-import CardSmall from '../../../lib/card-small/card-small';
-import { KeyValuePair } from '../../../utils/key-value-pair.type';
+import { CardSmall } from '@lib';
+import { KeyValuePair, People } from '@utils';
 
 interface HomePageItemsProps {
   title: string;
   items: People[];
 }
 
-class HomePageItems extends Component<HomePageItemsProps> {
+export class HomePageItems extends Component<HomePageItemsProps> {
   emptyResult = "Sorry, we couldn't find anything. Please check your request.";
 
   getItemslist(): JSX.Element[] {
@@ -49,5 +48,3 @@ class HomePageItems extends Component<HomePageItemsProps> {
     );
   }
 }
-
-export default HomePageItems;
