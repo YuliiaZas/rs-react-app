@@ -7,6 +7,7 @@ import { SearchResult } from '../../utils/search-result.interface';
 import { People } from '../../utils/people.interface';
 import HomePageItems from './home-page-items/home-page-items';
 import ErrorComponent from '../../lib/error/error';
+import homePageService from './home-page.service';
 import './home-page.css';
 
 interface HomePageState {
@@ -37,7 +38,6 @@ class HomePage extends Component<object, HomePageState> {
   errorMessageInfo = 'Please, try one more time';
   searchPlaceholder = 'Input Name from Star Wars';
   throwErrorButtonText = 'Trow Error';
-  url = 'https://swapi.dev/api/people?search=';
 
   componentDidMount = () => {
     this.isPageAvailable = true;
@@ -65,13 +65,14 @@ class HomePage extends Component<object, HomePageState> {
 
   startSearch = () => {
     if (!this.isPageAvailable) return;
-    this.setState({ loadingState: LOADING_STATE.LOADING });
-    this.fetchItems(this.state.searchValue);
+    this.setState({ loadingState: LOADING_STATE.LOADING }, () =>
+      this.getItems(this.state.searchValue)
+    );
   };
 
-  fetchItems = (value: string) => {
-    fetch(`${this.url}${value}`)
-      .then((response) => response.json())
+  getItems = (value: string) => {
+    homePageService
+      .getItems(value)
       .then((data: SearchResult<People>) => this.updateItems(data))
       .catch(() => this.showDataError());
   };
