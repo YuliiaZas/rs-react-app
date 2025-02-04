@@ -35,11 +35,11 @@ export default tseslint.config(
       'react-compiler/react-compiler': 'error',
       ...react.configs.recommended.rules,
       ...react.configs['jsx-runtime'].rules,
-      "sort-imports": [
-        "error",
+      'sort-imports': [
+        'error',
         {
-          "ignoreCase": true,
-          "ignoreDeclarationSort": true,
+          ignoreCase: true,
+          ignoreDeclarationSort: true,
         },
       ],
     },

@@ -49,7 +49,7 @@ button {
 
   &:hover,
   &:focus,
-  &:focus-visible  {
+  &:focus-visible {
     outline: 2px auto #646cff;
   }
 }
@@ -67,7 +67,7 @@ button {
   }
 }
 
-input{
+input {
   height: 44px;
   width: 220px;
   padding: 0 10px;
