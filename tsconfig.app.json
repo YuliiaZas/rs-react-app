@@ -8,6 +8,7 @@
     "skipLibCheck": true,
     "baseUrl": "./src",
     "paths": {
+      "@hooks": ["hooks/index.ts"],
       "@lib": ["lib/index.ts"],
       "@services": ["services/index.ts"],
       "@utils": ["utils/index.ts"],

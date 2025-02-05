@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { FC, useCallback, useMemo } from 'react';
 import { CardSmall } from '@lib';
 import { KeyValuePair, People } from '@utils';
 
@@ -7,44 +7,45 @@ interface HomePageItemsProps {
   items: People[];
 }
 
-export class HomePageItems extends Component<HomePageItemsProps> {
-  emptyResult = "Sorry, we couldn't find anything. Please check your request.";
+function getListOfDetails(item: People): KeyValuePair[] {
+  const { gender, birth_year: year, height, mass } = item;
+  return [
+    { key: 'Gender', value: gender },
+    { key: 'Year of birth', value: year },
+    { key: 'Height', value: height },
+    { key: 'Mass', value: mass },
+  ];
+}
 
-  getItemslist(): JSX.Element[] {
-    return this.props.items.map((item) => {
+export const HomePageItems: FC<HomePageItemsProps> = ({ title, items }) => {
+  const emptyResult =
+    "Sorry, we couldn't find anything. Please check your request.";
+
+  const itemsFormatted: { name: string; details: KeyValuePair[] }[] = useMemo(
+    () =>
+      items.map((item: People) => ({
+        name: item.name,
+        details: getListOfDetails(item),
+      })),
+    [items]
+  );
+
+  const getItemslist = useCallback<() => JSX.Element[]>(() => {
+    return itemsFormatted.map(({ name, details }) => {
       return (
-        <li key={item.name}>
-          <CardSmall
-            cardTitle={item.name}
-            listOfDetails={this.getListOfDetails(item)}
-          />
+        <li key={name}>
+          <CardSmall cardTitle={name} listOfDetails={details} />
         </li>
       );
     });
-  }
+  }, [itemsFormatted]);
 
-  getListOfDetails(item: People): KeyValuePair[] {
-    const { gender, birth_year: year, height, mass } = item;
-    return [
-      { key: 'Gender', value: gender },
-      { key: 'Year of birth', value: year },
-      { key: 'Height', value: height },
-      { key: 'Mass', value: mass },
-    ];
-  }
-
-  render() {
-    return (
+  return (
+    <div>
+      <h2>{title}</h2>
       <div>
-        <h2>{this.props.title}</h2>
-        <div>
-          {this.props.items.length ? (
-            <ul>{this.getItemslist()}</ul>
-          ) : (
-            <p>{this.emptyResult}</p>
-          )}
-        </div>
+        {items.length ? <ul>{getItemslist()}</ul> : <p>{emptyResult}</p>}
       </div>
-    );
-  }
-}
+    </div>
+  );
+};

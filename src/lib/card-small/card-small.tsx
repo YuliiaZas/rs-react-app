@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { FC, useMemo } from 'react';
 import { KeyValuePair } from '@utils';
 import './card-small.css';
 
@@ -7,9 +7,9 @@ interface CardSmallProps {
   listOfDetails: KeyValuePair[];
 }
 
-export class CardSmall extends Component<CardSmallProps> {
-  getDescriptionItems(): JSX.Element[] {
-    return this.props.listOfDetails.map((item, i, arr) => {
+export const CardSmall: FC<CardSmallProps> = ({ cardTitle, listOfDetails }) => {
+  const details = useMemo<JSX.Element[]>(() => {
+    return listOfDetails.map((item, i, arr) => {
       return (
         <span className="small-card-detail" key={item.key}>
           <span className="small-card-detail-key">{item.key}: </span>
@@ -18,14 +18,12 @@ export class CardSmall extends Component<CardSmallProps> {
         </span>
       );
     });
-  }
+  }, [listOfDetails]);
 
-  render() {
-    return (
-      <div>
-        <h3>{this.props.cardTitle}</h3>
-        <p className="small-card-detail">{this.getDescriptionItems()}.</p>
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      <h3>{cardTitle}</h3>
+      <p className="small-card-detail">{details}.</p>
+    </div>
+  );
+};

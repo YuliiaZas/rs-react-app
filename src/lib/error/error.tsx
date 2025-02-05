@@ -1,34 +1,32 @@
-import { Component } from 'react';
+import { FC } from 'react';
 import './error.css';
 
 interface ErrorComponentProps {
-  errorMessage: string;
+  errorMessage?: string;
   errorMessageInfo?: string;
-  showButton: boolean;
-  buttonMessage: string;
+  showButton?: boolean;
+  buttonMessage?: string;
   buttonClick?: () => void;
 }
 
-export class ErrorComponent extends Component<ErrorComponentProps> {
-  static defaultProps: Partial<ErrorComponentProps> = {
-    showButton: false,
-    errorMessage: 'Ooops! Something went wrong...',
-    buttonMessage: 'Home Page',
-  };
-
-  render() {
-    return (
-      <div className="error-wrapper">
-        <p className="error-message">{this.props.errorMessage}</p>
-        {this.props.errorMessageInfo && (
-          <p className="error-message-info">{this.props.errorMessageInfo}</p>
-        )}
-        {this.props.showButton && (
-          <button className="error-button" onClick={this.props.buttonClick}>
-            {this.props.buttonMessage}
-          </button>
-        )}
-      </div>
-    );
-  }
-}
+export const ErrorComponent: FC<ErrorComponentProps> = ({
+  errorMessage = 'Ooops! Something went wrong...',
+  errorMessageInfo,
+  showButton = false,
+  buttonMessage = 'Home Page',
+  buttonClick = () => {},
+}) => {
+  return (
+    <div className="error-wrapper">
+      <p className="error-message">{errorMessage}</p>
+      {errorMessageInfo && (
+        <p className="error-message-info">{errorMessageInfo}</p>
+      )}
+      {showButton && (
+        <button className="error-button" onClick={buttonClick}>
+          {buttonMessage}
+        </button>
+      )}
+    </div>
+  );
+};

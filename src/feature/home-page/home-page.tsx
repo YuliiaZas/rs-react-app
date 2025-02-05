@@ -1,138 +1,109 @@
-import { Component } from 'react';
+import { FC, useEffect, useState } from 'react';
+import { useLocalStorage } from '@hooks';
 import { ErrorComponent, Search, Spinner } from '@lib';
 import { peopleService } from '@services';
 import { LOADING_STATE, People, SearchResult } from '@utils';
 import { HomePageItems } from './home-page-items/home-page-items';
 import './home-page.css';
 
-interface HomePageState {
-  searchValue: string;
-  items: People[];
-  loadingState: LOADING_STATE;
-  showError: boolean;
-}
+export const HomePage: FC = () => {
+  const pageTitle = 'People of Star Wars';
+  const resultTitleFull = 'Full list (1 page)';
+  const resultTitleSearch = 'Search result for';
+  const errorMessageInfo = 'Please, try one more time';
+  const searchPlaceholder = 'Input Name from Star Wars';
+  const throwErrorButtonText = 'Trow Error';
 
-export class HomePage extends Component<object, HomePageState> {
-  private searchItemKey = 'searchItem';
-  private isPageAvailable = false;
+  const [searchValue, setSearchValue] = useLocalStorage({ defaultValue: '' });
+  const [title, setTitle] = useState('');
+  const [loadingState, setLoadingState] = useState(LOADING_STATE.PRESTINE);
+  const [items, setItems] = useState<People[]>([]);
+  const [showError, setShowError] = useState(false);
+  const [repeatRequestTimestamp, setRepeatRequestTimestamp] = useState(0);
 
-  getSeachValueFromStore = (): string => {
-    return window.localStorage.getItem(this.searchItemKey) ?? '';
-  };
-
-  state: HomePageState = {
-    searchValue: this.getSeachValueFromStore(),
-    items: [],
-    loadingState: LOADING_STATE.PRESTINE,
-    showError: false,
-  };
-
-  pageTitle = 'People of Star Wars';
-  resultTitleFull = 'Full list (1 page)';
-  resultTitleSearch = 'Search result for';
-  errorMessageInfo = 'Please, try one more time';
-  searchPlaceholder = 'Input Name from Star Wars';
-  throwErrorButtonText = 'Trow Error';
-
-  componentDidMount = () => {
-    this.isPageAvailable = true;
-    this.startSearch();
-  };
-
-  componentWillUnmount = () => {
-    this.isPageAvailable = false;
-  };
-
-  updateSeachValueInStore = (value: string) => {
-    window.localStorage.setItem(this.searchItemKey, value);
-  };
-
-  updateSearchValue = (searchValue: string) => {
-    const trimmedSeachValue = searchValue.trim();
-    if (trimmedSeachValue === this.state.searchValue) {
-      this.startSearch();
-      return;
-    }
-
-    this.updateSeachValueInStore(trimmedSeachValue);
-    this.setState({ searchValue: trimmedSeachValue }, this.startSearch);
-  };
-
-  startSearch = () => {
-    if (!this.isPageAvailable) return;
-    this.setState({ loadingState: LOADING_STATE.LOADING }, () =>
-      this.getItems(this.state.searchValue)
+  useEffect(() => {
+    setTitle(
+      searchValue ? `${resultTitleSearch} "${searchValue}"` : resultTitleFull
     );
-  };
+  }, [searchValue]);
 
-  getItems = (value: string) => {
+  useEffect(() => {
+    let subscribed = true;
+    console.log(repeatRequestTimestamp);
+
+    setLoadingState(LOADING_STATE.LOADING);
+
     peopleService
-      .getItems(value)
-      .then((data: SearchResult<People>) => this.updateItems(data))
-      .catch(() => this.showDataError());
+      .getItems(searchValue)
+      .then((data: SearchResult<People>) => subscribed && updateItems(data))
+      .catch(() => subscribed && showDataError());
+
+    return () => {
+      subscribed = false;
+    };
+  }, [searchValue, repeatRequestTimestamp]);
+
+  useEffect(() => {
+    if (showError) throwError();
+  }, [showError]);
+
+  const updateSearchValue = (currentSearchValue: string) => {
+    const trimmedSeachValue = currentSearchValue.trim();
+
+    if (trimmedSeachValue !== searchValue) {
+      setSearchValue(trimmedSeachValue);
+    } else {
+      setRepeatRequestTimestamp(Date.now());
+    }
   };
 
-  updateItems = (data: SearchResult<People>) => {
-    if (!this.isPageAvailable) return;
-    this.setState({ loadingState: LOADING_STATE.LOADED, items: data.results });
+  const updateItems = (data: SearchResult<People>) => {
+    setLoadingState(LOADING_STATE.LOADED);
+    setItems(data?.results || []);
   };
 
-  showDataError = () => {
-    if (!this.isPageAvailable) return;
-    this.setState({ loadingState: LOADING_STATE.FAILURE, items: [] });
+  const showDataError = () => {
+    setLoadingState(LOADING_STATE.FAILURE);
+    setItems([]);
   };
 
-  getResultTitle = (): string => {
-    return this.state.searchValue
-      ? `${this.resultTitleSearch} "${this.state.searchValue}"`
-      : this.resultTitleFull;
+  const showPageError = () => {
+    setShowError(true);
   };
 
-  showPageError = () => {
-    this.setState({ showError: true });
-  };
-
-  throwError = () => {
+  const throwError = () => {
     throw new Error('Error, thrown by clicking the "Throw Error" button');
   };
 
-  render() {
-    if (this.state.showError) {
-      this.throwError();
-    }
-    return (
-      <>
-        <main className="home-main">
-          <section className="home-seach">
-            <Search
-              initialSearchValue={this.state.searchValue}
-              updateSearchValue={this.updateSearchValue}
-              placeholder={this.searchPlaceholder}
-            />
+  return (
+    <>
+      <main className="home-main">
+        <section className="home-seach">
+          <Search
+            initialSearchValue={searchValue}
+            updateSearchValue={updateSearchValue}
+            placeholder={searchPlaceholder}
+          />
+        </section>
+        <section className="home-content">
+          <h1 className="home-content-title">{pageTitle}</h1>
+          <section className="home-content-card">
+            {loadingState === LOADING_STATE.FAILURE ? (
+              <ErrorComponent errorMessageInfo={errorMessageInfo} />
+            ) : loadingState === LOADING_STATE.LOADING ? (
+              <div className="home-content-card-empty"></div>
+            ) : (
+              <HomePageItems title={title} items={items} />
+            )}
           </section>
-          <section className="home-content">
-            <h1 className="home-content-title">{this.pageTitle}</h1>
-            <section className="home-content-card">
-              {this.state.loadingState === LOADING_STATE.FAILURE ? (
-                <ErrorComponent errorMessageInfo={this.errorMessageInfo} />
-              ) : this.state.loadingState === LOADING_STATE.LOADING ? (
-                <div className="home-content-card-empty"></div>
-              ) : (
-                <HomePageItems
-                  title={this.getResultTitle()}
-                  items={this.state.items}
-                />
-              )}
-            </section>
-          </section>
-          <section className="home-error">
-            <button className="home-error-button" onClick={this.showPageError}>
-              {this.throwErrorButtonText}
-            </button>
-          </section>
-        </main>
-        {this.state.loadingState === LOADING_STATE.LOADING && <Spinner />}
-      </>
-    );
-  }
-}
+        </section>
+        <section className="home-error">
+          <button className="home-error-button" onClick={showPageError}>
+            {throwErrorButtonText}
+          </button>
+        </section>
+      </main>
+      {loadingState === LOADING_STATE.LOADING && <Spinner />}
+    </>
+  );
+};
