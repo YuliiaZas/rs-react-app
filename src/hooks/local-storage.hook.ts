@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 
+export type UseLocalStorageArgs<T> = {
+  key?: string;
+  defaultValue: T;
+};
+
 export function useLocalStorage<T>({
   key = 'searchItem',
   defaultValue,
-}: {
-  key?: string;
-  defaultValue: T;
-}): [T, React.Dispatch<T>] {
+}: UseLocalStorageArgs<T>): [T, React.Dispatch<T>] {
   const [value, setValue] = useState<T>(() => getValueFromLocalStorage());
 
   useEffect(() => {
