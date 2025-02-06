@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { useNavigate } from 'react-router';
 import './error.css';
 
 interface ErrorComponentProps {
@@ -14,8 +15,18 @@ export const ErrorComponent: FC<ErrorComponentProps> = ({
   errorMessageInfo,
   showButton = false,
   buttonMessage = 'Home Page',
-  buttonClick = () => {},
+  buttonClick,
 }) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    if (buttonClick) {
+      buttonClick();
+    } else {
+      navigate('/');
+    }
+  };
+
   return (
     <div className="error-wrapper">
       <p className="error-message">{errorMessage}</p>
@@ -23,7 +34,7 @@ export const ErrorComponent: FC<ErrorComponentProps> = ({
         <p className="error-message-info">{errorMessageInfo}</p>
       )}
       {showButton && (
-        <button className="error-button" onClick={buttonClick}>
+        <button className="error-button" onClick={handleClick}>
           {buttonMessage}
         </button>
       )}

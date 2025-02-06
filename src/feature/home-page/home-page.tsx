@@ -1,4 +1,5 @@
 import { FC, useEffect, useState } from 'react';
+import { Outlet } from 'react-router';
 import { useLocalStorage } from '@hooks';
 import { ErrorComponent, Search, Spinner } from '@lib';
 import { peopleService } from '@services';
@@ -77,31 +78,36 @@ export const HomePage: FC = () => {
 
   return (
     <>
-      <main className="home-main">
-        <section className="home-seach">
-          <Search
-            initialSearchValue={searchValue}
-            updateSearchValue={updateSearchValue}
-            placeholder={searchPlaceholder}
-          />
-        </section>
-        <section className="home-content">
-          <h1 className="home-content-title">{pageTitle}</h1>
-          <section className="home-content-card">
-            {loadingState === LOADING_STATE.FAILURE ? (
-              <ErrorComponent errorMessageInfo={errorMessageInfo} />
-            ) : loadingState === LOADING_STATE.LOADING ? (
-              <div className="home-content-card-empty"></div>
-            ) : (
-              <HomePageItems title={title} items={items} />
-            )}
+      <main className="home-wrapper">
+        <div className="home-main">
+          <section className="home-seach">
+            <Search
+              initialSearchValue={searchValue}
+              updateSearchValue={updateSearchValue}
+              placeholder={searchPlaceholder}
+            />
           </section>
-        </section>
-        <section className="home-error">
-          <button className="home-error-button" onClick={showPageError}>
-            {throwErrorButtonText}
-          </button>
-        </section>
+          <section className="home-content">
+            <h1 className="home-content-title">{pageTitle}</h1>
+            <section className="home-content-card">
+              {loadingState === LOADING_STATE.FAILURE ? (
+                <ErrorComponent errorMessageInfo={errorMessageInfo} />
+              ) : loadingState === LOADING_STATE.LOADING ? (
+                <div className="home-content-card-empty"></div>
+              ) : (
+                <HomePageItems title={title} items={items} />
+              )}
+            </section>
+          </section>
+          <section className="home-error">
+            <button className="home-error-button" onClick={showPageError}>
+              {throwErrorButtonText}
+            </button>
+          </section>
+        </div>
+        <div className="home-details">
+          <Outlet />
+        </div>
       </main>
       {loadingState === LOADING_STATE.LOADING && <Spinner />}
     </>

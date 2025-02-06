@@ -1,4 +1,5 @@
 import { FC, useCallback, useMemo } from 'react';
+import { NavLink } from 'react-router';
 import { CardSmall } from '@lib';
 import { KeyValuePair, People } from '@utils';
 
@@ -34,7 +35,9 @@ export const HomePageItems: FC<HomePageItemsProps> = ({ title, items }) => {
     return itemsFormatted.map(({ name, details }) => {
       return (
         <li key={name}>
-          <CardSmall cardTitle={name} listOfDetails={details} />
+          <NavLink to={`${name}`}>
+            <CardSmall cardTitle={name} listOfDetails={details} />
+          </NavLink>
         </li>
       );
     });
