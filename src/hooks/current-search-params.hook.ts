@@ -8,10 +8,22 @@ export type CurrentSearchParams = {
   page?: string;
 };
 
-function getFilteredParam(params: CurrentSearchParams): CurrentSearchParams {
+function getFilteredParams(params: CurrentSearchParams): CurrentSearchParams {
   const filteredParam: CurrentSearchParams = { search: params.search ?? '' };
   if (params.page) {
     filteredParam.page = params.page;
+  }
+  return filteredParam;
+}
+
+function getFilteredParamsFromQuery(
+  query: URLSearchParams
+): CurrentSearchParams {
+  const filteredParam: CurrentSearchParams = {
+    search: query.get('search') ?? '',
+  };
+  if (typeof query.get('page') === 'string') {
+    filteredParam.page = query.get('page') as string;
   }
   return filteredParam;
 }
@@ -28,18 +40,23 @@ export function useCurrentSearchParams(): [
       defaultValue: { search: '' },
     });
 
-  useRunOnce({ fn: () => setQuery(homePageSearchLS) });
+  useRunOnce({
+    fn: () => {
+      if (query.size === 0) {
+        setQuery(homePageSearchLS);
+      } else {
+        setHomePageSearchLS(getFilteredParamsFromQuery(query));
+      }
+    },
+  });
 
   useEffect(
-    () =>
-      setHomePageSearchLS(
-        Object.fromEntries(query.entries()) as CurrentSearchParams
-      ),
+    () => setHomePageSearchLS(getFilteredParamsFromQuery(query)),
     [query, setHomePageSearchLS]
   );
 
   const setCurrentSearchParams = useCallback(
-    (params: CurrentSearchParams) => setQuery(getFilteredParam(params)),
+    (params: CurrentSearchParams) => setQuery(getFilteredParams(params)),
     [setQuery]
   );
 

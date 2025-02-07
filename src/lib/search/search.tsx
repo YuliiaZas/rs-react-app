@@ -1,4 +1,4 @@
-import { FC, KeyboardEvent, useState } from 'react';
+import { FC, KeyboardEvent, useEffect, useState } from 'react';
 import './search.css';
 
 interface SearchProps {
@@ -7,6 +7,8 @@ interface SearchProps {
   updateSearchValue: (value: string) => void;
 }
 
+const searchButtonText = 'Search';
+
 export const Search: FC<SearchProps> = ({
   initialSearchValue,
   placeholder = 'Input Value',
@@ -14,7 +16,9 @@ export const Search: FC<SearchProps> = ({
 }) => {
   const [currentValue, setCurrentValue] = useState<string>(initialSearchValue);
 
-  const searchButtonText = 'Search';
+  useEffect(() => {
+    setCurrentValue(initialSearchValue);
+  }, [initialSearchValue]);
 
   const handleButtonClick = (e: React.MouseEvent) => {
     if (e.target instanceof HTMLButtonElement) {
