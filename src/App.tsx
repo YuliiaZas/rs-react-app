@@ -2,20 +2,24 @@ import { createBrowserRouter, Navigate, RouterProvider } from 'react-router';
 import { HomePage, HomePageDetails } from '@home-page';
 import { ErrorComponent } from '@lib';
 import './App.css';
+import { PATH_VALUE } from '@utils';
+import { peopleService } from '@services';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Navigate to={'/search'} />,
+    element: <Navigate to={PATH_VALUE.HOME} />,
   },
   {
-    path: '/search',
+    path: PATH_VALUE.HOME,
     element: <HomePage />,
     errorElement: <ErrorComponent showButton={true} />,
     children: [
       {
-        path: '/search/:searchId',
+        path: `${PATH_VALUE.HOME}/:searchId`,
         element: <HomePageDetails />,
+        loader: ({ params }) => peopleService.getItem(params.searchId),
+        // hydrateFallbackElement: <Spinner />,
       },
     ],
   },

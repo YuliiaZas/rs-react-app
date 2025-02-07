@@ -1,53 +1,43 @@
-import { FC, useCallback, useMemo } from 'react';
+import { FC, useMemo } from 'react';
 import { NavLink } from 'react-router';
 import { CardSmall } from '@lib';
-import { KeyValuePair, People } from '@utils';
+import { getPeopleFormatted, People, PeopleFormatted } from '@utils';
 
 interface HomePageItemsProps {
   title: string;
   items: People[];
+  locationSearch: string;
 }
 
-function getListOfDetails(item: People): KeyValuePair[] {
-  const { gender, birth_year: year, height, mass } = item;
-  return [
-    { key: 'Gender', value: gender },
-    { key: 'Year of birth', value: year },
-    { key: 'Height', value: height },
-    { key: 'Mass', value: mass },
-  ];
-}
-
-export const HomePageItems: FC<HomePageItemsProps> = ({ title, items }) => {
+export const HomePageItems: FC<HomePageItemsProps> = ({
+  title,
+  items,
+  locationSearch,
+}) => {
   const emptyResult =
     "Sorry, we couldn't find anything. Please check your request.";
 
-  const itemsFormatted: { name: string; details: KeyValuePair[] }[] = useMemo(
-    () =>
-      items.map((item: People) => ({
-        name: item.name,
-        details: getListOfDetails(item),
-      })),
-    [items]
-  );
-
-  const getItemslist = useCallback<() => JSX.Element[]>(() => {
-    return itemsFormatted.map(({ name, details }) => {
-      return (
-        <li key={name}>
-          <NavLink to={`${name}`}>
-            <CardSmall cardTitle={name} listOfDetails={details} />
-          </NavLink>
-        </li>
-      );
-    });
-  }, [itemsFormatted]);
+  const itemsFormatted: PeopleFormatted[] = useMemo(() => {
+    return items.map((item: People) => getPeopleFormatted(item, false));
+  }, [items]);
 
   return (
     <div>
       <h2>{title}</h2>
       <div>
-        {items.length ? <ul>{getItemslist()}</ul> : <p>{emptyResult}</p>}
+        {!items.length ? (
+          <p>{emptyResult}</p>
+        ) : (
+          <ul>
+            {itemsFormatted.map(({ id, name, details }) => (
+              <li key={name}>
+                <NavLink to={`${id}${locationSearch}`}>
+                  <CardSmall cardTitle={name} listOfDetails={details} />
+                </NavLink>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );

@@ -1,25 +1,34 @@
 import { useEffect, useState } from 'react';
 
 export type UseLocalStorageArgs<T> = {
-  key?: string;
+  key: string;
   defaultValue: T;
 };
 
 export function useLocalStorage<T>({
-  key = 'searchItem',
+  key,
   defaultValue,
 }: UseLocalStorageArgs<T>): [T, React.Dispatch<T>] {
   const [value, setValue] = useState<T>(() => getValueFromLocalStorage());
 
   useEffect(() => {
-    window.localStorage.setItem(key, JSON.stringify(value));
+    try {
+      window.localStorage.setItem(key, JSON.stringify(value));
+    } catch (_e) {
+      console.error('useLocalStorage.setItem', _e);
+    }
   }, [key, value]);
 
-  function getValueFromLocalStorage(): T {
+  function getValueFromLocalStorage() {
     try {
-      return JSON.parse(window.localStorage.getItem(key) ?? '');
-    } catch (_e) {
-      if (_e) window.localStorage.removeItem(key);
+      const value = window.localStorage.getItem(key);
+      if (!value) {
+        window.localStorage.setItem(key, JSON.stringify(defaultValue));
+      }
+      return value ? JSON.parse(value) : defaultValue;
+    } catch (e) {
+      console.log('Error while getValueFromLocalStorage()', e);
+      window.localStorage.removeItem(key);
       return defaultValue;
     }
   }

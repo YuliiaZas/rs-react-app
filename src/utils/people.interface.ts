@@ -1,4 +1,5 @@
 export interface People {
+  url: string;
   name: string;
   gender: string;
   birth_year: string;
