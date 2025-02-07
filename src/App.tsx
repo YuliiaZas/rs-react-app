@@ -1,6 +1,11 @@
-import { createBrowserRouter, Navigate, RouterProvider } from 'react-router';
+import {
+  createBrowserRouter,
+  LoaderFunctionArgs,
+  Navigate,
+  RouterProvider,
+} from 'react-router';
 import { HomePage, HomePageDetails } from '@home-page';
-import { ErrorComponent } from '@lib';
+import { ErrorComponent, Spinner } from '@lib';
 import { peopleService } from '@services';
 import { PATH_VALUE } from '@utils';
 import './App.css';
@@ -17,9 +22,10 @@ const router = createBrowserRouter([
     children: [
       {
         path: `${PATH_VALUE.HOME}/:searchId`,
+        loader: ({ params }: LoaderFunctionArgs) =>
+          peopleService.getItem(params.searchId),
         element: <HomePageDetails />,
-        loader: ({ params }) => peopleService.getItem(params.searchId),
-        // hydrateFallbackElement: <Spinner />,
+        hydrateFallbackElement: <Spinner />,
       },
     ],
   },

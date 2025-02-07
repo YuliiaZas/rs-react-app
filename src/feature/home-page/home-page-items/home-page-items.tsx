@@ -10,14 +10,14 @@ interface HomePageItemsProps {
   locationSearch: string;
 }
 
+const emptyResult =
+  "Sorry, we couldn't find anything. Please check your request.";
+
 export const HomePageItems: FC<HomePageItemsProps> = ({
   title,
   items,
   locationSearch,
 }) => {
-  const emptyResult =
-    "Sorry, we couldn't find anything. Please check your request.";
-
   const itemsFormatted: PeopleFormatted[] = useMemo(() => {
     return items.map((item: People) => getPeopleFormatted(item, false));
   }, [items]);
@@ -29,7 +29,7 @@ export const HomePageItems: FC<HomePageItemsProps> = ({
         {!items.length ? (
           <p>{emptyResult}</p>
         ) : (
-          <ul>
+          <ul className="list">
             {itemsFormatted.map(({ id, name, details }) => (
               <li key={id}>
                 <NavLink to={`${id}${locationSearch}`} className={'list-item'}>

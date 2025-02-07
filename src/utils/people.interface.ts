@@ -9,3 +9,7 @@ export interface People {
   hair_color: string;
   skin_color: string;
 }
+
+export interface PeopleUnknown {
+  detail: string;
+}
