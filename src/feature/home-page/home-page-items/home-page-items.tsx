@@ -2,6 +2,7 @@ import { FC, useMemo } from 'react';
 import { NavLink } from 'react-router';
 import { CardSmall } from '@lib';
 import { getPeopleFormatted, People, PeopleFormatted } from '@utils';
+import './home-page-items.css';
 
 interface HomePageItemsProps {
   title: string;
@@ -30,8 +31,8 @@ export const HomePageItems: FC<HomePageItemsProps> = ({
         ) : (
           <ul>
             {itemsFormatted.map(({ id, name, details }) => (
-              <li key={name}>
-                <NavLink to={`${id}${locationSearch}`}>
+              <li key={id}>
+                <NavLink to={`${id}${locationSearch}`} className={'list-item'}>
                   <CardSmall cardTitle={name} listOfDetails={details} />
                 </NavLink>
               </li>

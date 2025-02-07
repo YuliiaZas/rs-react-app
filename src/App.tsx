@@ -1,9 +1,9 @@
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router';
 import { HomePage, HomePageDetails } from '@home-page';
 import { ErrorComponent } from '@lib';
-import './App.css';
-import { PATH_VALUE } from '@utils';
 import { peopleService } from '@services';
+import { PATH_VALUE } from '@utils';
+import './App.css';
 
 const router = createBrowserRouter([
   {

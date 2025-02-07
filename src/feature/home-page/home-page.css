@@ -43,10 +43,17 @@
   }
 }
 
-.home-details {
-  position: absolute;
+.home-details:not(:empty) {
+  position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
   min-width: 320px;
+  width: 50%;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+.home-wrapper:has(.home-details:not(:empty)) .home-content {
+  pointer-events: none;
 }
