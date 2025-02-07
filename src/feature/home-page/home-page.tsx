@@ -1,7 +1,7 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 import { useCurrentSearchParams } from '@hooks';
-import { ErrorComponent, Search, Spinner } from '@lib';
+import { ErrorComponent, Pagination, Search, Spinner } from '@lib';
 import { peopleService } from '@services';
 import { LOADING_STATE, PATH_VALUE, People, SearchResult } from '@utils';
 import { HomePageItems } from './home-page-items/home-page-items';
@@ -9,7 +9,7 @@ import { HomePageDetailsProps } from './home-page-details/home-page-details';
 import './home-page.css';
 
 const pageTitle = 'People of Star Wars';
-const resultTitleFull = 'Full list (1 page)';
+const resultTitleFull = 'Full list of Star Wars characters';
 const resultTitleSearch = 'Search result for';
 const errorMessageInfo = 'Please, try one more time';
 const searchPlaceholder = 'Input Name from Star Wars';
@@ -19,6 +19,7 @@ export const HomePage: FC = () => {
   const [title, setTitle] = useState('');
   const [loadingState, setLoadingState] = useState(LOADING_STATE.PRESTINE);
   const [items, setItems] = useState<People[]>([]);
+  const [pagesNumber, setPagesNumber] = useState(1);
   const [showError, setShowError] = useState(false);
   const [repeatRequestTimestamp, setRepeatRequestTimestamp] = useState(0);
 
@@ -35,6 +36,19 @@ export const HomePage: FC = () => {
     );
   }, [searchParams.search]);
 
+  const updateItems = useCallback(
+    (data: SearchResult<People>) => {
+      setLoadingState(LOADING_STATE.LOADED);
+      setItems(data?.results || []);
+      if (data.next) {
+        setPagesNumber(Math.ceil(data?.count / data?.results.length));
+      } else {
+        setPagesNumber(Number(searchParams.page) || 1);
+      }
+    },
+    [searchParams.page]
+  );
+
   useEffect(() => {
     let subscribed = true;
 
@@ -48,7 +62,7 @@ export const HomePage: FC = () => {
     return () => {
       subscribed = false;
     };
-  }, [searchParams, repeatRequestTimestamp]);
+  }, [searchParams, repeatRequestTimestamp, updateItems]);
 
   useEffect(() => {
     if (showError) throwError();
@@ -64,18 +78,18 @@ export const HomePage: FC = () => {
     }
   };
 
-  const updateItems = (data: SearchResult<People>) => {
-    setLoadingState(LOADING_STATE.LOADED);
-    setItems(data?.results || []);
-  };
-
   const showDataError = (e: Error) => {
     console.log(e);
     setLoadingState(LOADING_STATE.FAILURE);
     setItems([]);
+    setPagesNumber(1);
   };
 
-  const handlePageClick = () => {
+  const handlePageNumberClick = (page: string) => {
+    setSearchParams({ ...searchParams, page });
+  };
+
+  const handleGlobalPageClick = () => {
     if (location.pathname !== PATH_VALUE.HOME) {
       closeDetails();
     }
@@ -96,7 +110,7 @@ export const HomePage: FC = () => {
   return (
     <>
       <main className="home-wrapper">
-        <div className="home-main" onClick={handlePageClick}>
+        <div className="home-main" onClick={handleGlobalPageClick}>
           <section className="home-seach">
             <Search
               initialSearchValue={searchParams.search}
@@ -106,17 +120,24 @@ export const HomePage: FC = () => {
           </section>
           <section className="home-content">
             <h1 className="home-content-title">{pageTitle}</h1>
-            <section className="home-content-card">
+            <section className="home-content-wrapper">
               {loadingState === LOADING_STATE.FAILURE ? (
                 <ErrorComponent errorMessageInfo={errorMessageInfo} />
               ) : loadingState === LOADING_STATE.LOADING ? (
-                <div className="home-content-card-empty"></div>
+                <div className="home-content-empty"></div>
               ) : (
-                <HomePageItems
-                  title={title}
-                  items={items}
-                  locationSearch={location.search}
-                />
+                <div className="home-content-card">
+                  <HomePageItems
+                    title={title}
+                    items={items}
+                    locationSearch={location.search}
+                  />
+                  <Pagination
+                    pagesNumber={pagesNumber}
+                    currentPage={searchParams.page}
+                    onClick={handlePageNumberClick}
+                  />
+                </div>
               )}
             </section>
           </section>
