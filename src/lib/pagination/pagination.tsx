@@ -21,7 +21,6 @@ export const Pagination: FC<PaginationProps> = ({
   if (!currentPage) {
     currentPage = pagesArray[0];
   }
-  console.log(currentPage);
 
   return (
     <div className="pagination">
