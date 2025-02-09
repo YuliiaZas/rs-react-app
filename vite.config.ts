@@ -52,7 +52,7 @@ export default defineConfig({
       scopeBehaviour: 'local',
     },
     preprocessorOptions: {
-      css: {
+      scss: {
         charset: false,
       },
     },
