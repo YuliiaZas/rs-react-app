@@ -1,9 +1,9 @@
 [[redirects]]
-  from = "/api/people*"
+  from = "/api/people/*"
   to = "https://swapi.dev/api/people"
   force = true
 
 [[redirects]]
-  from = "/api/people/*"
+  from = "/api/people/:id"
   to = "https://swapi.dev/api/people/:id"
   force = true
