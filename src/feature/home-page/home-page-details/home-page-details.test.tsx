@@ -1,5 +1,5 @@
 import { fireEvent, render } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, Mock, vi } from 'vitest';
 import {
   MemoryRouter,
   Route,
@@ -22,7 +22,7 @@ vi.mock('react-router-dom', async (importOriginal) => {
 
 describe('HomePageDetails', () => {
   const mockCloseFn = vi.fn();
-  (useOutletContext as vi.Mock).mockReturnValue({ closeFn: mockCloseFn });
+  (useOutletContext as Mock).mockReturnValue({ closeFn: mockCloseFn });
 
   it('should render formatted details when item is valid', () => {
     const mockItem: People = {
@@ -36,7 +36,7 @@ describe('HomePageDetails', () => {
       gender: 'male',
       url: 'https://swapi.dev/api/people/1/',
     };
-    (useLoaderData as vi.Mock).mockReturnValue(mockItem);
+    (useLoaderData as Mock).mockReturnValue(mockItem);
 
     const { getByText } = render(
       <MemoryRouter>
@@ -72,7 +72,7 @@ describe('HomePageDetails', () => {
       gender: 'male',
       url: 'https://swapi.dev/api/people/1/',
     };
-    (useLoaderData as vi.Mock).mockReturnValue(mockItem);
+    (useLoaderData as Mock).mockReturnValue(mockItem);
 
     const { getByText } = render(
       <MemoryRouter>

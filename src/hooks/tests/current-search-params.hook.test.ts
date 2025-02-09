@@ -1,6 +1,6 @@
 import { MemoryRouter, useSearchParams } from 'react-router';
 import { act, renderHook } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 import { useCurrentSearchParams } from '../current-search-params.hook';
 
 vi.mock('react-router', async (importOriginal) => {
@@ -13,7 +13,7 @@ vi.mock('react-router', async (importOriginal) => {
 
 describe('useCurrentSearchParams', () => {
   const setSearchParamsMock = vi.fn();
-  const useSearchParamsMock = useSearchParams as vi.Mock;
+  const useSearchParamsMock = useSearchParams as Mock;
 
   beforeEach(() => {
     useSearchParamsMock.mockReturnValue([
