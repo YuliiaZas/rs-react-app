@@ -4,6 +4,6 @@
   force = true
 
 [[redirects]]
-  from = "/api/people/*"
-  to = "https://swapi.dev/api/people/:splat"
+  from = "/api/people/:id"
+  to = "https://swapi.dev/api/people/:id"
   force = true
