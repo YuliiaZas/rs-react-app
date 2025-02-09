@@ -1,5 +1,6 @@
 import { FC, useCallback, useEffect, useState } from 'react';
-import { Outlet, useLocation, useNavigate } from 'react-router';
+import { Outlet } from 'react-router';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useCurrentSearchParams } from '@hooks';
 import { ErrorComponent, Pagination, Search, Spinner } from '@lib';
 import { peopleService } from '@services';

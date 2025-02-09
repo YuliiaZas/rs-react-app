@@ -1,5 +1,5 @@
 import { FC, useMemo } from 'react';
-import { useLoaderData, useOutletContext } from 'react-router';
+import { useLoaderData, useOutletContext } from 'react-router-dom';
 import { ErrorComponent } from '@lib';
 import {
   getPeopleFormatted,
