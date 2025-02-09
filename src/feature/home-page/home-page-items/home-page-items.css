@@ -1,0 +1,22 @@
+.list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.list-item {
+  border: 1px solid;
+  display: block;
+  color: inherit;
+  padding-inline: 2rem;
+  border-radius: 0.5rem;
+  margin: 0.5rem 0;
+}
+
+.list-item:hover {
+  border-color: bisque;
+  color: inherit;
+}
+
+.list-item.active {
+  border-color: aqua;
+}
