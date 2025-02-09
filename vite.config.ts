@@ -1,8 +1,7 @@
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
   resolve: {
@@ -24,6 +23,37 @@ export default defineConfig({
         target: 'https://swapi.dev/api/',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+    },
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './src/setupTests.ts',
+    css: true,
+    coverage: {
+      reporter: ['text', 'json', 'html'],
+      include: ['**/*.tsx', '**/*.ts'],
+      exclude: [
+        '**/node_modules/**',
+        '**/*.test.tsx',
+        '**/*.spec.tsx',
+        'src/__tests__/setup.ts',
+        '**/index.ts',
+        '**/*.enum.ts',
+        '**/*.type.ts',
+        '**/*.interface.ts',
+        '**/vite*.ts',
+      ],
+    },
+  },
+  css: {
+    modules: {
+      scopeBehaviour: 'local',
+    },
+    preprocessorOptions: {
+      css: {
+        charset: false,
       },
     },
   },
