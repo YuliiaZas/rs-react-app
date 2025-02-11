@@ -3,7 +3,7 @@ import {
   LoaderFunctionArgs,
   Navigate,
   RouterProvider,
-} from 'react-router';
+} from 'react-router-dom';
 import { HomePage, HomePageDetails } from '@home-page';
 import { ErrorComponent, Spinner } from '@lib';
 import { peopleService } from '@services';

@@ -13,6 +13,14 @@ describe('Pagination', () => {
     expect(buttons).toHaveLength(5);
   });
 
+  it('should render one number of page button in case of uncorrect number', () => {
+    const { getAllByRole } = render(
+      <Pagination pagesNumber={NaN} onClick={onClickMock} />
+    );
+    const buttons = getAllByRole('button');
+    expect(buttons).toHaveLength(1);
+  });
+
   it('should call onClick with the correct page number', () => {
     const { getByText } = render(
       <Pagination pagesNumber={5} onClick={onClickMock} />

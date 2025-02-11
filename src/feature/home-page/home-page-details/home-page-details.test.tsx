@@ -1,5 +1,4 @@
 import { fireEvent, render } from '@testing-library/react';
-import { describe, expect, it, Mock, vi } from 'vitest';
 import {
   MemoryRouter,
   Route,
@@ -7,8 +6,13 @@ import {
   useLoaderData,
   useOutletContext,
 } from 'react-router-dom';
-import { People } from '@utils';
+import { describe, expect, it, Mock, vi } from 'vitest';
+import { People, PeopleUnknown } from '@utils';
 import { HomePageDetails } from './home-page-details';
+
+vi.mock('@lib', () => ({
+  ErrorComponent: vi.fn(() => <div>Error Component</div>),
+}));
 
 vi.mock('react-router-dom', async (importOriginal) => {
   const actual = (await importOriginal()) as Record<string, unknown>;
@@ -20,22 +24,23 @@ vi.mock('react-router-dom', async (importOriginal) => {
   };
 });
 
+const mockItem: People = {
+  name: 'Luke Skywalker',
+  height: '172',
+  mass: '77',
+  hair_color: 'blond',
+  skin_color: 'fair',
+  eye_color: 'blue',
+  birth_year: '19BBY',
+  gender: 'male',
+  url: 'https://swapi.dev/api/people/1/',
+};
+
 describe('HomePageDetails', () => {
   const mockCloseFn = vi.fn();
   (useOutletContext as Mock).mockReturnValue({ closeFn: mockCloseFn });
 
   it('should render formatted details when item is valid', () => {
-    const mockItem: People = {
-      name: 'Luke Skywalker',
-      height: '172',
-      mass: '77',
-      hair_color: 'blond',
-      skin_color: 'fair',
-      eye_color: 'blue',
-      birth_year: '19BBY',
-      gender: 'male',
-      url: 'https://swapi.dev/api/people/1/',
-    };
     (useLoaderData as Mock).mockReturnValue(mockItem);
 
     const { getByText } = render(
@@ -60,18 +65,24 @@ describe('HomePageDetails', () => {
     ).toBeInTheDocument();
   });
 
-  it('should call closeFn when close button is clicked', () => {
-    const mockItem: People = {
-      name: 'Luke Skywalker',
-      height: '172',
-      mass: '77',
-      hair_color: 'blond',
-      skin_color: 'fair',
-      eye_color: 'blue',
-      birth_year: '19BBY',
-      gender: 'male',
-      url: 'https://swapi.dev/api/people/1/',
+  it('should render error component when item has type PeopleUnknown', () => {
+    const mockUnknown: PeopleUnknown = {
+      detail: 'n/a',
     };
+    (useLoaderData as Mock).mockReturnValue(mockUnknown);
+
+    const { getByText } = render(
+      <MemoryRouter>
+        <Routes>
+          <Route path="/" element={<HomePageDetails />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    expect(getByText('Error Component')).toBeInTheDocument();
+  });
+
+  it('should call closeFn when close button is clicked', () => {
     (useLoaderData as Mock).mockReturnValue(mockItem);
 
     const { getByText } = render(
@@ -83,6 +94,7 @@ describe('HomePageDetails', () => {
     );
 
     fireEvent.click(getByText('x'));
+
     expect(mockCloseFn).toHaveBeenCalled();
   });
 });

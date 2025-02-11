@@ -3,8 +3,8 @@ import { act, renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 import { useCurrentSearchParams } from '../current-search-params.hook';
 
-vi.mock('react-router', async (importOriginal) => {
-  const actual = (await importOriginal()) as Record<string, unknown>;
+vi.mock('react-router', async () => {
+  const actual = await import('react-router');
   return {
     ...actual,
     useSearchParams: vi.fn(),

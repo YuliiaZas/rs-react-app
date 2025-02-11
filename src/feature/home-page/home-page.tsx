@@ -1,6 +1,5 @@
 import { FC, useCallback, useEffect, useState } from 'react';
-import { Outlet } from 'react-router';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useCurrentSearchParams } from '@hooks';
 import { ErrorComponent, Pagination, Search, Spinner } from '@lib';
 import { peopleService } from '@services';
@@ -14,7 +13,7 @@ const resultTitleFull = 'Full list of Star Wars characters';
 const resultTitleSearch = 'Search result for';
 const errorMessageInfo = 'Please, try one more time';
 const searchPlaceholder = 'Input Name from Star Wars';
-const throwErrorButtonText = 'Trow Error';
+const throwErrorButtonText = 'Throw Error';
 
 export const HomePage: FC = () => {
   const [title, setTitle] = useState('');
@@ -42,7 +41,7 @@ export const HomePage: FC = () => {
       setLoadingState(LOADING_STATE.LOADED);
       setItems(data?.results || []);
       if (data.next) {
-        setPagesNumber(Math.ceil(data?.count / data?.results.length));
+        setPagesNumber(Math.ceil(data?.count / data?.results.length) || 1);
       } else {
         setPagesNumber(Number(searchParams.page) || 1);
       }

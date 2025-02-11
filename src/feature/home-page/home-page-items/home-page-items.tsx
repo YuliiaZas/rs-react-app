@@ -1,5 +1,5 @@
 import { FC, useMemo } from 'react';
-import { NavLink } from 'react-router';
+import { NavLink } from 'react-router-dom';
 import { CardSmall } from '@lib';
 import { getPeopleFormatted, People, PeopleFormatted } from '@utils';
 import './home-page-items.css';

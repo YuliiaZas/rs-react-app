@@ -5,7 +5,7 @@ import { ErrorBoundary } from './error-boundary';
 vi.mock('@lib', () => ({
   ErrorComponent: vi.fn(({ showButton, buttonClick }) => (
     <div>
-      ErrorComponent
+      Error Component
       {showButton && <button onClick={buttonClick}>Home Page</button>}
     </div>
   )),
@@ -13,13 +13,16 @@ vi.mock('@lib', () => ({
 
 describe('ErrorBoundary', () => {
   const originalConsoleLog = console.log;
+  const originalConsoleError = console.error;
 
   beforeAll(() => {
-    console.log = vi.fn();
+    console.log = vi.fn(() => {});
+    console.error = vi.fn(() => {});
   });
 
   afterAll(() => {
     console.log = originalConsoleLog;
+    console.error = originalConsoleError;
   });
 
   it('should render children when there is no error', () => {
@@ -28,6 +31,7 @@ describe('ErrorBoundary', () => {
         <div>Child Component</div>
       </ErrorBoundary>
     );
+
     expect(getByText('Child Component')).toBeInTheDocument();
   });
 
@@ -42,7 +46,7 @@ describe('ErrorBoundary', () => {
       </ErrorBoundary>
     );
 
-    expect(getByText('ErrorComponent')).toBeInTheDocument();
+    expect(getByText('Error Component')).toBeInTheDocument();
   });
 
   it('should redirect to home page on button click', () => {

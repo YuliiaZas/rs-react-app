@@ -33,17 +33,12 @@ export default defineConfig({
     css: true,
     coverage: {
       reporter: ['text', 'json', 'html'],
-      include: ['**/*.tsx', '**/*.ts'],
+      include: ['**/*.tsx'],
       exclude: [
         '**/node_modules/**',
         '**/*.test.tsx',
         '**/*.spec.tsx',
         'src/__tests__/setup.ts',
-        '**/index.ts',
-        '**/*.enum.ts',
-        '**/*.type.ts',
-        '**/*.interface.ts',
-        '**/vite*.ts',
       ],
     },
   },
