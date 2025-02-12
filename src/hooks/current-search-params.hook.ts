@@ -52,10 +52,12 @@ export function useCurrentSearchParams(): [
     },
   });
 
-  useEffect(
-    () => setHomePageSearchLS(getFilteredParamsFromQuery(query)),
-    [query, setHomePageSearchLS]
-  );
+  useEffect(() => {
+    const filteredParams = getFilteredParamsFromQuery(query);
+    if (JSON.stringify(filteredParams) !== JSON.stringify(homePageSearchLS)) {
+      setHomePageSearchLS(filteredParams);
+    }
+  }, [query, homePageSearchLS, setHomePageSearchLS]);
 
   const setCurrentSearchParams = useCallback(
     (params: CurrentSearchParams) => setQuery(getFilteredParams(params)),
