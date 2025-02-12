@@ -1,6 +1,6 @@
 import { act, fireEvent, render, waitFor } from '@testing-library/react';
 import { HomePage } from './home-page';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { People, SearchResult, text } from '@utils';
 import { CurrentSearchParams } from '@hooks';
 import { peopleService } from '@services';
@@ -38,13 +38,16 @@ const fetchResult: SearchResult<People> = {
 const fetchResultLastPage: SearchResult<People> = {
   ...fetchResult,
   next: '',
+  count: 2,
 };
 
-let mockRouterData = {
+const mockRouterDataInitial = {
   path: '/',
   location: { pathname: '/', search: '' },
   searchParams: {},
 };
+
+let mockRouterData = { ...mockRouterDataInitial };
 
 const mockErrorComponentText = 'Mocked Error Component';
 const mockHomePageItemsComponentText = 'Mocked Home Page Items';
@@ -89,6 +92,10 @@ vi.mock('react-router-dom', async () => {
 });
 
 describe('HomePage', async () => {
+  beforeEach(() => {
+    mockRouterData = { ...mockRouterDataInitial };
+  });
+
   it('should render default title for HomePageItems when search value is empty', async () => {
     const { getByText } = await act(async () => render(<HomePage />));
 
@@ -138,8 +145,6 @@ describe('HomePage', async () => {
     vi.spyOn(peopleService, 'getItems');
     const { getByText } = await act(async () => render(<HomePage />));
 
-    expect(mockRouterData.searchParams).toStrictEqual({ search: searchValue });
-
     act(() => {
       fireEvent.click(getByText(text.search.button));
     });
@@ -163,10 +168,7 @@ describe('HomePage', async () => {
       fireEvent.click(result.getByText(pageButtonText));
     });
 
-    expect(mockRouterData.searchParams).toStrictEqual({
-      search: searchValue,
-      page: pageButtonText,
-    });
+    expect(mockRouterData.searchParams).toStrictEqual({ page: pageButtonText });
   });
 
   it('should render correct number of pagination buttons when it the last page', async () => {
@@ -178,7 +180,7 @@ describe('HomePage', async () => {
     const buttons =
       result.container.getElementsByClassName('pagination-button');
 
-    expect(buttons.length).toBe(2);
+    expect(buttons.length).toBe(1);
   });
 
   it('should render error component on fetch error', async () => {
