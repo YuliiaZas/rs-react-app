@@ -14,7 +14,6 @@ export const HomePage: FC = () => {
   const [items, setItems] = useState<People[]>([]);
   const [pagesNumber, setPagesNumber] = useState(1);
   const [showError, setShowError] = useState(false);
-  const [repeatRequestTimestamp, setRepeatRequestTimestamp] = useState(0);
 
   const [searchParams, setSearchParams] = useCurrentSearchParams();
 
@@ -42,7 +41,7 @@ export const HomePage: FC = () => {
     [searchParams.page]
   );
 
-  useEffect(() => {
+  const fetchData = useCallback(() => {
     let subscribed = true;
 
     setLoadingState(LOADING_STATE.LOADING);
@@ -55,7 +54,11 @@ export const HomePage: FC = () => {
     return () => {
       subscribed = false;
     };
-  }, [searchParams, repeatRequestTimestamp, updateItems]);
+  }, [searchParams, updateItems]);
+
+  useEffect(() => {
+    fetchData();
+  }, [searchParams, updateItems, fetchData]);
 
   useEffect(() => {
     if (showError) throwError();
@@ -67,7 +70,7 @@ export const HomePage: FC = () => {
     if (trimmedSeachValue !== searchParams.search) {
       setSearchParams({ search: trimmedSeachValue });
     } else {
-      setRepeatRequestTimestamp(Date.now());
+      fetchData();
     }
   };
 
@@ -106,7 +109,7 @@ export const HomePage: FC = () => {
         <div className="home-main" onClick={handleGlobalPageClick}>
           <section className="home-seach">
             <Search
-              initialSearchValue={searchParams.search}
+              initialSearchValue={searchParams.search ?? ''}
               updateSearchValue={updateSearchValue}
               placeholder={text.homePage.searchPlaceholder}
             />

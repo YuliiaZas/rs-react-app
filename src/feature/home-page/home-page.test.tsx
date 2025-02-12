@@ -35,10 +35,15 @@ const fetchResult: SearchResult<People> = {
   count: 5,
 };
 
+const fetchResultLastPage: SearchResult<People> = {
+  ...fetchResult,
+  next: '',
+};
+
 let mockRouterData = {
   path: '/',
   location: { pathname: '/', search: '' },
-  searchParams: { search: '' },
+  searchParams: {},
 };
 
 const mockErrorComponentText = 'Mocked Error Component';
@@ -129,6 +134,19 @@ describe('HomePage', async () => {
     });
   });
 
+  it('should fetch data on search button click if search value have not been changed', async () => {
+    vi.spyOn(peopleService, 'getItems');
+    const { getByText } = await act(async () => render(<HomePage />));
+
+    expect(mockRouterData.searchParams).toStrictEqual({ search: searchValue });
+
+    act(() => {
+      fireEvent.click(getByText(text.search.button));
+    });
+
+    expect(peopleService.getItems).toHaveBeenCalled();
+  });
+
   it('should render correct number of pagination buttons', async () => {
     const result = await act(async () => render(<HomePage />));
     const buttons =
@@ -149,6 +167,18 @@ describe('HomePage', async () => {
       search: searchValue,
       page: pageButtonText,
     });
+  });
+
+  it('should render correct number of pagination buttons when it the last page', async () => {
+    vi.spyOn(peopleService, 'getItems').mockReturnValue(
+      Promise.resolve(fetchResultLastPage)
+    );
+
+    const result = await act(async () => render(<HomePage />));
+    const buttons =
+      result.container.getElementsByClassName('pagination-button');
+
+    expect(buttons.length).toBe(2);
   });
 
   it('should render error component on fetch error', async () => {

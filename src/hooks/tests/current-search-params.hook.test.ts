@@ -23,12 +23,12 @@ describe('useCurrentSearchParams', () => {
     window.localStorage.clear();
   });
 
-  it('should initialize with default search params if query is empty', () => {
+  it('should initialize empty search params if query is empty', () => {
     const { result } = renderHook(() => useCurrentSearchParams(), {
       wrapper: MemoryRouter,
     });
 
-    expect(result.current[0]).toEqual({ search: '' });
+    expect(result.current[0]).toEqual({});
   });
 
   it('should update search params in localStorage when query changes', () => {

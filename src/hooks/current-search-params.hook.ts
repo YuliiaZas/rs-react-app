@@ -4,12 +4,14 @@ import { useLocalStorage } from './local-storage.hook';
 import { useRunOnce } from './run-once.hook';
 
 export type CurrentSearchParams = {
-  search: string;
+  search?: string;
   page?: string;
 };
 
 function getFilteredParams(params: CurrentSearchParams): CurrentSearchParams {
-  const filteredParam: CurrentSearchParams = { search: params.search ?? '' };
+  const filteredParam: CurrentSearchParams = params.search
+    ? { search: params.search }
+    : {};
   if (params.page) {
     filteredParam.page = params.page;
   }
@@ -19,10 +21,10 @@ function getFilteredParams(params: CurrentSearchParams): CurrentSearchParams {
 function getFilteredParamsFromQuery(
   query: URLSearchParams
 ): CurrentSearchParams {
-  const filteredParam: CurrentSearchParams = {
-    search: query.get('search') ?? '',
-  };
-  if (typeof query.get('page') === 'string') {
+  const filteredParam: CurrentSearchParams = query.get('search')
+    ? { search: query.get('search') as string }
+    : {};
+  if (query.get('page')) {
     filteredParam.page = query.get('page') as string;
   }
   return filteredParam;
@@ -37,7 +39,7 @@ export function useCurrentSearchParams(): [
   const [homePageSearchLS, setHomePageSearchLS] =
     useLocalStorage<CurrentSearchParams>({
       key: 'homePageSearch',
-      defaultValue: { search: '' },
+      defaultValue: {},
     });
 
   useRunOnce({
