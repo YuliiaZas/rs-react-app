@@ -4,6 +4,7 @@ import {
   Route,
   Routes,
   useLoaderData,
+  useNavigation,
   useOutletContext,
 } from 'react-router-dom';
 import { describe, expect, it, Mock, vi } from 'vitest';
@@ -12,13 +13,14 @@ import { HomePageDetails } from './home-page-details';
 
 vi.mock('@lib', () => ({
   ErrorComponent: vi.fn(() => <div>Error Component</div>),
+  Spinner: vi.fn(() => <div>Spinner</div>),
 }));
 
 vi.mock('react-router-dom', async (importOriginal) => {
   const actual = (await importOriginal()) as Record<string, unknown>;
   return {
     ...actual,
-    useNavigate: vi.fn(),
+    useNavigation: vi.fn(() => ({ state: 'idle' })),
     useLoaderData: vi.fn(),
     useOutletContext: vi.fn(),
   };
@@ -96,5 +98,19 @@ describe('HomePageDetails', () => {
     fireEvent.click(getByText('x'));
 
     expect(mockCloseFn).toHaveBeenCalled();
+  });
+
+  it('should render spinner', () => {
+    (useNavigation as Mock).mockReturnValue({ state: 'loading' });
+
+    const { getByText } = render(
+      <MemoryRouter>
+        <Routes>
+          <Route path="/" element={<HomePageDetails />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    expect(getByText('Spinner')).toBeInTheDocument();
   });
 });

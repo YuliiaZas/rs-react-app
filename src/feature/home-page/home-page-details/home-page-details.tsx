@@ -1,6 +1,10 @@
-import { FC, useMemo } from 'react';
-import { useLoaderData, useOutletContext } from 'react-router-dom';
-import { ErrorComponent } from '@lib';
+import { FC, useEffect, useMemo, useState } from 'react';
+import {
+  useLoaderData,
+  useNavigation,
+  useOutletContext,
+} from 'react-router-dom';
+import { ErrorComponent, Spinner } from '@lib';
 import {
   getPeopleFormatted,
   People,
@@ -19,9 +23,23 @@ export const HomePageDetails: FC = () => {
 
   const item = useLoaderData<People | PeopleUnknown>();
 
+  const [isLoading, setIsLoading] = useState(false);
+
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    setIsLoading(navigation.state === 'loading');
+  }, [navigation]);
+
   const itemFormatted: PeopleFormatted | null = useMemo(() => {
-    return 'url' in item === false ? null : getPeopleFormatted(item, true);
+    return !item || 'url' in item === false
+      ? null
+      : getPeopleFormatted(item, true);
   }, [item]);
+
+  if (isLoading) {
+    return <Spinner />;
+  }
 
   return (
     <div>
