@@ -1,5 +1,6 @@
 import { Component, ErrorInfo, PropsWithChildren } from 'react';
 import { ErrorComponent } from '@lib';
+import { text } from '@utils';
 
 interface ErrorBoundaryState {
   error: null | Error;
@@ -41,7 +42,7 @@ export class ErrorBoundary extends Component<
   };
 
   redirectToHomePage = () => {
-    console.log('Redirect to Home Page');
+    console.log(text.errorBoundary.redirectMessage);
   };
 
   render() {

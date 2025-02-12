@@ -1,12 +1,18 @@
 import { fireEvent, render } from '@testing-library/react';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
+import { text } from '@utils';
 import { ErrorBoundary } from './error-boundary';
+
+const mockErrorText = 'Mock Error Component';
+const mockChildText = 'Mock Child Component';
 
 vi.mock('@lib', () => ({
   ErrorComponent: vi.fn(({ showButton, buttonClick }) => (
     <div>
-      Error Component
-      {showButton && <button onClick={buttonClick}>Home Page</button>}
+      {mockErrorText}
+      {showButton && (
+        <button onClick={buttonClick}>{text.errorComponent.button}</button>
+      )}
     </div>
   )),
 }));
@@ -28,11 +34,11 @@ describe('ErrorBoundary', () => {
   it('should render children when there is no error', () => {
     const { getByText } = render(
       <ErrorBoundary>
-        <div>Child Component</div>
+        <div>{mockChildText}</div>
       </ErrorBoundary>
     );
 
-    expect(getByText('Child Component')).toBeInTheDocument();
+    expect(getByText(mockChildText)).toBeInTheDocument();
   });
 
   it('should render ErrorComponent when there is an error', () => {
@@ -46,7 +52,7 @@ describe('ErrorBoundary', () => {
       </ErrorBoundary>
     );
 
-    expect(getByText('Error Component')).toBeInTheDocument();
+    expect(getByText(mockErrorText)).toBeInTheDocument();
   });
 
   it('should redirect to home page on button click', () => {
@@ -60,8 +66,10 @@ describe('ErrorBoundary', () => {
       </ErrorBoundary>
     );
 
-    fireEvent.click(getByText('Home Page'));
+    fireEvent.click(getByText(text.errorComponent.button));
 
-    expect(console.log).toHaveBeenCalledWith('Redirect to Home Page');
+    expect(console.log).toHaveBeenCalledWith(
+      text.errorBoundary.redirectMessage
+    );
   });
 });

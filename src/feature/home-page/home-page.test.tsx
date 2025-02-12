@@ -1,7 +1,7 @@
-import { act, fireEvent, render } from '@testing-library/react';
+import { act, fireEvent, render, waitFor } from '@testing-library/react';
 import { HomePage } from './home-page';
 import { describe, expect, it, vi } from 'vitest';
-import { People, SearchResult } from '@utils';
+import { People, SearchResult, text } from '@utils';
 import { CurrentSearchParams } from '@hooks';
 import { peopleService } from '@services';
 
@@ -35,18 +35,28 @@ const fetchResult: SearchResult<People> = {
   count: 5,
 };
 
-const mockRouterData = {
+let mockRouterData = {
   path: '/',
   location: { pathname: '/', search: '' },
   searchParams: { search: '' },
 };
 
+const mockErrorComponentText = 'Mocked Error Component';
+const mockHomePageItemsComponentText = 'Mocked Home Page Items';
+const mockHomePageDetailsComponentText = 'Mocked Home Page Details';
+
+const searchValue = 'Luke';
+
 vi.mock('@lib/error/error', () => ({
-  ErrorComponent: vi.fn(() => <div>Error Component</div>),
+  ErrorComponent: vi.fn(() => <div>{mockErrorComponentText}</div>),
 }));
 
 vi.mock('./home-page-items/home-page-items', () => ({
-  HomePageItems: () => <div>Mocked HomePageItems</div>,
+  HomePageItems: ({ title }: { title: string }) => (
+    <div>
+      {title}. {mockHomePageItemsComponentText}
+    </div>
+  ),
 }));
 
 vi.mock('@services/home-page.service.ts', () => ({
@@ -58,7 +68,8 @@ vi.mock('@services/home-page.service.ts', () => ({
 vi.mock('@hooks/current-search-params.hook.ts', () => ({
   useCurrentSearchParams: () => [
     mockRouterData.searchParams,
-    (x: CurrentSearchParams) => (mockRouterData.searchParams = x),
+    (x: CurrentSearchParams) =>
+      (mockRouterData = { ...mockRouterData, searchParams: x }),
   ],
 }));
 
@@ -68,53 +79,92 @@ vi.mock('react-router-dom', async () => {
     ...actual,
     useNavigate: () => (path: string) => (mockRouterData.path = path),
     useLocation: () => mockRouterData.location,
-    Outlet: () => <div>Home Page Details</div>,
+    Outlet: () => <div>{mockHomePageDetailsComponentText}</div>,
   };
 });
 
 describe('HomePage', async () => {
+  it('should render default title for HomePageItems when search value is empty', async () => {
+    const { getByText } = await act(async () => render(<HomePage />));
+
+    expect(
+      getByText(
+        `${text.homePage.resultTitleFull}. ${mockHomePageItemsComponentText}`
+      )
+    ).toBeInTheDocument();
+  });
+
   it('should render Outlet', async () => {
-    const result = await act(async () => render(<HomePage />));
-    const searchInput = result.getByText('Home Page Details');
-    expect(searchInput).toBeInTheDocument();
+    const { getByText } = await act(async () => render(<HomePage />));
+
+    expect(getByText(mockHomePageDetailsComponentText)).toBeInTheDocument();
   });
 
   it('should update search value', async () => {
-    const result = await act(async () => render(<HomePage />));
-    const searchInput = result.getByPlaceholderText(
-      'Input Name from Star Wars'
+    const { getByPlaceholderText, getByText, rerender } = await act(async () =>
+      render(<HomePage />)
+    );
+    const searchInput = getByPlaceholderText(
+      text.homePage.searchPlaceholder
     ) as HTMLInputElement;
     act(() => {
-      fireEvent.change(searchInput, { target: { value: 'Luke' } });
+      fireEvent.change(searchInput, { target: { value: searchValue } });
     });
-    expect(searchInput.value).toBe('Luke');
+
+    expect(searchInput.value).toBe(searchValue);
+
     act(() => {
-      fireEvent.click(result.getByText('Search'));
+      fireEvent.click(getByText(text.search.button));
     });
-    expect(mockRouterData.searchParams).toStrictEqual({ search: 'Luke' });
+
+    expect(mockRouterData.searchParams).toStrictEqual({ search: searchValue });
+    rerender(<HomePage />);
+
+    await waitFor(() => {
+      expect(
+        getByText(
+          `${text.homePage.resultTitleSearch} "${searchValue}". ${mockHomePageItemsComponentText}`
+        )
+      ).toBeInTheDocument();
+    });
   });
 
   it('should render correct number of pagination buttons', async () => {
     const result = await act(async () => render(<HomePage />));
     const buttons =
       result.container.getElementsByClassName('pagination-button');
+
     expect(buttons.length).toBe(3);
   });
 
   it('should update page param on page button click', async () => {
+    const pageButtonText = '2';
     const result = await act(async () => render(<HomePage />));
+
     act(() => {
-      fireEvent.click(result.getByText('2'));
+      fireEvent.click(result.getByText(pageButtonText));
     });
+
     expect(mockRouterData.searchParams).toStrictEqual({
-      search: 'Luke',
-      page: '2',
+      search: searchValue,
+      page: pageButtonText,
     });
   });
 
   it('should render error component on fetch error', async () => {
     vi.spyOn(peopleService, 'getItems').mockReturnValue(Promise.reject());
-    const result = await act(async () => render(<HomePage />));
-    expect(result.getByText('Error Component')).toBeInTheDocument();
+    const { getByText } = await act(async () => render(<HomePage />));
+
+    expect(getByText(mockErrorComponentText)).toBeInTheDocument();
+  });
+
+  it('should render spinner while fetching data', async () => {
+    const result = render(<HomePage />);
+
+    await waitFor(() => {
+      expect(
+        result.container.querySelector('.spinner-wrapper')
+      ).toBeInTheDocument();
+    });
   });
 });

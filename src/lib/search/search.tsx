@@ -1,4 +1,5 @@
 import { FC, KeyboardEvent, useEffect, useState } from 'react';
+import { text } from '@utils';
 import './search.css';
 
 interface SearchProps {
@@ -7,11 +8,9 @@ interface SearchProps {
   updateSearchValue: (value: string) => void;
 }
 
-const searchButtonText = 'Search';
-
 export const Search: FC<SearchProps> = ({
   initialSearchValue,
-  placeholder = 'Input Value',
+  placeholder = text.search.placeholder,
   updateSearchValue,
 }) => {
   const [currentValue, setCurrentValue] = useState<string>(initialSearchValue);
@@ -48,7 +47,7 @@ export const Search: FC<SearchProps> = ({
         className="search-button"
         onClick={handleButtonClick}
       >
-        {searchButtonText}
+        {text.search.button}
       </button>
     </div>
   );

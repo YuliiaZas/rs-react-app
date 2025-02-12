@@ -7,7 +7,7 @@ import {
 import { HomePage, HomePageDetails } from '@home-page';
 import { ErrorComponent, Spinner } from '@lib';
 import { peopleService } from '@services';
-import { PATH_VALUE } from '@utils';
+import { PATH_VALUE, text } from '@utils';
 import './App.css';
 
 const router = createBrowserRouter([
@@ -33,10 +33,8 @@ const router = createBrowserRouter([
     path: '*',
     element: (
       <ErrorComponent
-        errorMessage={'404'}
-        errorMessageInfo={
-          "We haven't created such a page yet. Let's try something else"
-        }
+        errorMessage={text.notFoundPage.errorMessage}
+        errorMessageInfo={text.notFoundPage.errorMessageInfo}
         showButton={true}
       />
     ),

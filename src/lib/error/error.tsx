@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import { useNavigate } from 'react-router';
+import { text } from '@utils';
 import './error.css';
 
 interface ErrorComponentProps {
@@ -11,10 +12,10 @@ interface ErrorComponentProps {
 }
 
 export const ErrorComponent: FC<ErrorComponentProps> = ({
-  errorMessage = 'Ooops! Something went wrong...',
+  errorMessage = text.errorComponent.errorMessage,
   errorMessageInfo,
   showButton = false,
-  buttonMessage = 'Home Page',
+  buttonMessage = text.errorComponent.button,
   buttonClick,
 }) => {
   const navigate = useNavigate();

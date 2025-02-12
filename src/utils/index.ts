@@ -8,3 +8,4 @@ export * from './get-people-formatted';
 export * from './people-formatted.interface';
 export * from './get-people-formatted';
 export * from './get-id-from-url';
+export * from './text.const';

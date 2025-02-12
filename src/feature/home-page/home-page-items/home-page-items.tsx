@@ -1,7 +1,7 @@
 import { FC, useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
 import { CardSmall } from '@lib';
-import { getPeopleFormatted, People, PeopleFormatted } from '@utils';
+import { getPeopleFormatted, People, PeopleFormatted, text } from '@utils';
 import './home-page-items.css';
 
 interface HomePageItemsProps {
@@ -9,9 +9,6 @@ interface HomePageItemsProps {
   items: People[];
   locationSearch: string;
 }
-
-const emptyResult =
-  "Sorry, we couldn't find anything. Please check your request.";
 
 export const HomePageItems: FC<HomePageItemsProps> = ({
   title,
@@ -27,7 +24,7 @@ export const HomePageItems: FC<HomePageItemsProps> = ({
       <h2>{title}</h2>
       <div>
         {!items.length ? (
-          <p>{emptyResult}</p>
+          <p>{text.homePage.emptyList}</p>
         ) : (
           <ul className="list">
             {itemsFormatted.map(({ id, name, details }) => (

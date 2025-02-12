@@ -6,14 +6,13 @@ import {
   People,
   PeopleFormatted,
   PeopleUnknown,
+  text,
 } from '@utils';
 import './home-page-details.css';
 
 export type HomePageDetailsProps = {
   closeFn: () => void;
 };
-
-const errorMessage = "It seems we don't know this person";
 
 export const HomePageDetails: FC = () => {
   const { closeFn } = useOutletContext<HomePageDetailsProps>();
@@ -30,7 +29,7 @@ export const HomePageDetails: FC = () => {
         x
       </button>
       {!itemFormatted ? (
-        <ErrorComponent errorMessageInfo={errorMessage} />
+        <ErrorComponent errorMessageInfo={text.homePage.emptyDetails} />
       ) : (
         <div className="card">
           <h2>{itemFormatted.name}</h2>

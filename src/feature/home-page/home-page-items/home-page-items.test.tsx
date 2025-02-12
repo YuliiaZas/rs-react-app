@@ -1,44 +1,48 @@
 import { MemoryRouter, Route, Routes, useParams } from 'react-router-dom';
-import { render, waitFor } from '@testing-library/react';
+import { act, render, waitFor } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import { PATH_VALUE, People } from '@utils';
+import { PATH_VALUE, People, text } from '@utils';
 import { HomePageItems } from './home-page-items';
-import { act } from 'react';
 
-const DetailsComponent = () => {
+const title = 'Test Title';
+const locationSearch = '?search=test';
+const itemsIds = ['1', '2'];
+const items: People[] = [
+  {
+    name: 'Luke Skywalker',
+    height: '172',
+    mass: '77',
+    hair_color: 'blond',
+    skin_color: 'fair',
+    eye_color: 'blue',
+    birth_year: '19BBY',
+    url: `url/${itemsIds[0]}`,
+    gender: 'male',
+  },
+  {
+    name: 'C-3PO',
+    height: '167',
+    mass: '75',
+    hair_color: 'n/a',
+    skin_color: 'gold',
+    eye_color: 'yellow',
+    birth_year: '112BBY',
+    url: `url/${itemsIds[1]}`,
+    gender: 'n/a',
+  },
+];
+const mockDetailsComponentText = 'Details Page for';
+
+const MockDetailsComponent = () => {
   const { id } = useParams<{ id: string }>();
-  return <div>Details Page for {id}</div>;
+  return (
+    <div>
+      {mockDetailsComponentText} {id}
+    </div>
+  );
 };
 
 describe('HomePageItems', () => {
-  const title = 'Test Title';
-  const locationSearch = '?search=test';
-
-  const items: People[] = [
-    {
-      name: 'Luke Skywalker',
-      height: '172',
-      mass: '77',
-      hair_color: 'blond',
-      skin_color: 'fair',
-      eye_color: 'blue',
-      birth_year: '19BBY',
-      url: 'url/1',
-      gender: 'male',
-    },
-    {
-      name: 'C-3PO',
-      height: '167',
-      mass: '75',
-      hair_color: 'n/a',
-      skin_color: 'gold',
-      eye_color: 'yellow',
-      birth_year: '112BBY',
-      url: 'url/2',
-      gender: 'n/a',
-    },
-  ];
-
   it('should render title', () => {
     const { getByText } = render(
       <MemoryRouter initialEntries={['/']}>
@@ -76,9 +80,7 @@ describe('HomePageItems', () => {
         </Routes>
       </MemoryRouter>
     );
-    expect(
-      getByText("Sorry, we couldn't find anything. Please check your request.")
-    ).toBeInTheDocument();
+    expect(getByText(text.homePage.emptyList)).toBeInTheDocument();
   });
 
   it('should render items', async () => {
@@ -99,8 +101,8 @@ describe('HomePageItems', () => {
       </MemoryRouter>
     );
     await waitFor(() => {
-      expect(result.getByText('Luke Skywalker')).toBeInTheDocument();
-      expect(result.getByText('C-3PO')).toBeInTheDocument();
+      expect(result.getByText(items[0].name)).toBeInTheDocument();
+      expect(result.getByText(items[1].name)).toBeInTheDocument();
     });
   });
 
@@ -120,12 +122,14 @@ describe('HomePageItems', () => {
           />
           <Route
             path={`${PATH_VALUE.HOME}/:id`}
-            element={<DetailsComponent />}
+            element={<MockDetailsComponent />}
           />
         </Routes>
       </MemoryRouter>
     );
-    act(() => result.getByText('Luke Skywalker').click());
-    expect(result.getByText('Details Page for 1')).toBeInTheDocument();
+    act(() => result.getByText(items[0].name).click());
+    expect(
+      result.getByText(`${mockDetailsComponentText} ${itemsIds[0]}`)
+    ).toBeInTheDocument();
   });
 });

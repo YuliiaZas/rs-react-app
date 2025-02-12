@@ -1,5 +1,6 @@
 import { fireEvent, render } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import { text } from '@utils';
 import { Search } from './search';
 
 describe('Search', () => {
@@ -37,7 +38,7 @@ describe('Search', () => {
         updateSearchValue={updateSearchValue}
       />
     );
-    fireEvent.click(getByText('Search'));
+    fireEvent.click(getByText(text.search.button));
     expect(updateSearchValue).toHaveBeenCalledWith(initialSearchValue);
   });
 

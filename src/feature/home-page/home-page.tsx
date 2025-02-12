@@ -3,17 +3,10 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useCurrentSearchParams } from '@hooks';
 import { ErrorComponent, Pagination, Search, Spinner } from '@lib';
 import { peopleService } from '@services';
-import { LOADING_STATE, PATH_VALUE, People, SearchResult } from '@utils';
+import { LOADING_STATE, PATH_VALUE, People, SearchResult, text } from '@utils';
 import { HomePageItems } from './home-page-items/home-page-items';
 import { HomePageDetailsProps } from './home-page-details/home-page-details';
 import './home-page.css';
-
-const pageTitle = 'People of Star Wars';
-const resultTitleFull = 'Full list of Star Wars characters';
-const resultTitleSearch = 'Search result for';
-const errorMessageInfo = 'Please, try one more time';
-const searchPlaceholder = 'Input Name from Star Wars';
-const throwErrorButtonText = 'Throw Error';
 
 export const HomePage: FC = () => {
   const [title, setTitle] = useState('');
@@ -31,8 +24,8 @@ export const HomePage: FC = () => {
   useEffect(() => {
     setTitle(
       searchParams.search
-        ? `${resultTitleSearch} "${searchParams.search}"`
-        : resultTitleFull
+        ? `${text.homePage.resultTitleSearch} "${searchParams.search}"`
+        : text.homePage.resultTitleFull
     );
   }, [searchParams.search]);
 
@@ -115,14 +108,16 @@ export const HomePage: FC = () => {
             <Search
               initialSearchValue={searchParams.search}
               updateSearchValue={updateSearchValue}
-              placeholder={searchPlaceholder}
+              placeholder={text.homePage.searchPlaceholder}
             />
           </section>
           <section className="home-content">
-            <h1 className="home-content-title">{pageTitle}</h1>
+            <h1 className="home-content-title">{text.homePage.title}</h1>
             <section className="home-content-wrapper">
               {loadingState === LOADING_STATE.FAILURE ? (
-                <ErrorComponent errorMessageInfo={errorMessageInfo} />
+                <ErrorComponent
+                  errorMessageInfo={text.homePage.loadingErrorMessageInfo}
+                />
               ) : loadingState === LOADING_STATE.LOADING ? (
                 <div className="home-content-empty"></div>
               ) : (
@@ -143,7 +138,7 @@ export const HomePage: FC = () => {
           </section>
           <section className="home-error">
             <button className="home-error-button" onClick={showPageError}>
-              {throwErrorButtonText}
+              {text.homePage.throwErrorButton}
             </button>
           </section>
         </div>

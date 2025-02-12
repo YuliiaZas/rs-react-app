@@ -1,7 +1,8 @@
+import { MemoryRouter } from 'react-router-dom';
 import { fireEvent, render } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import { text } from '@utils';
 import { ErrorComponent } from './error';
-import { MemoryRouter } from 'react-router-dom';
 
 const mockNavigate = vi.fn();
 
@@ -17,7 +18,7 @@ describe('ErrorComponent', () => {
         <ErrorComponent />
       </MemoryRouter>
     );
-    expect(getByText('Ooops! Something went wrong...')).toBeInTheDocument();
+    expect(getByText(text.errorComponent.errorMessage)).toBeInTheDocument();
   });
 
   it('should render custom error message', () => {
@@ -46,7 +47,7 @@ describe('ErrorComponent', () => {
         <ErrorComponent showButton />
       </MemoryRouter>
     );
-    expect(getByText('Home Page')).toBeInTheDocument();
+    expect(getByText(text.errorComponent.button)).toBeInTheDocument();
   });
 
   it('should call buttonClick function if provided', () => {
@@ -56,7 +57,7 @@ describe('ErrorComponent', () => {
         <ErrorComponent showButton buttonClick={buttonClick} />
       </MemoryRouter>
     );
-    fireEvent.click(getByText('Home Page'));
+    fireEvent.click(getByText(text.errorComponent.button));
     expect(buttonClick).toHaveBeenCalled();
   });
 
@@ -66,7 +67,7 @@ describe('ErrorComponent', () => {
         <ErrorComponent showButton />
       </MemoryRouter>
     );
-    fireEvent.click(getByText('Home Page'));
+    fireEvent.click(getByText(text.errorComponent.button));
     expect(mockNavigate).toHaveBeenCalledWith('/');
   });
 });
