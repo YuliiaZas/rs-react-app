@@ -53,7 +53,3 @@
   padding: 2rem;
   box-sizing: border-box;
 }
-
-.home-wrapper:has(.home-details:not(:empty)) .home-content {
-  pointer-events: none;
-}

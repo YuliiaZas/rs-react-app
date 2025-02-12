@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react';
+import { FC, MouseEvent, useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
 import { CardSmall } from '@lib';
 import { getPeopleFormatted, People, PeopleFormatted, text } from '@utils';
@@ -19,6 +19,10 @@ export const HomePageItems: FC<HomePageItemsProps> = ({
     return items.map((item: People) => getPeopleFormatted(item, false));
   }, [items]);
 
+  const handleItemClick = (e: MouseEvent<HTMLAnchorElement>) => {
+    e.stopPropagation();
+  };
+
   return (
     <div>
       <h2>{title}</h2>
@@ -29,7 +33,11 @@ export const HomePageItems: FC<HomePageItemsProps> = ({
           <ul className="list">
             {itemsFormatted.map(({ id, name, details }) => (
               <li key={id}>
-                <NavLink to={`${id}${locationSearch}`} className={'list-item'}>
+                <NavLink
+                  to={`${id}${locationSearch}`}
+                  className={'list-item'}
+                  onClick={handleItemClick}
+                >
                   <CardSmall cardTitle={name} listOfDetails={details} />
                 </NavLink>
               </li>
