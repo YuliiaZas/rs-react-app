@@ -4,7 +4,8 @@ import { Spinner } from './spinner';
 
 describe('Spinner', () => {
   it('should render spinner', () => {
-    const { container } = render(<Spinner />);
+    const { container, getByRole } = render(<Spinner />);
+    expect(getByRole('status')).toBeInTheDocument();
     expect(container.querySelector('.spinner-wrapper')).toBeInTheDocument();
     expect(container.querySelector('.spinner-border')).toBeInTheDocument();
   });

@@ -1,5 +1,5 @@
 import { CurrentSearchParams } from '@hooks';
-import { People, PeopleUnknown, SearchResult } from '@utils';
+import { People, peopleUnknown, PeopleUnknown, SearchResult } from '@utils';
 
 class PeopleService {
   baseUrl = '/api/people';
@@ -13,7 +13,7 @@ class PeopleService {
   }
 
   async getItem(value?: string): Promise<People | PeopleUnknown> {
-    if (!value) return { detail: 'Not found' };
+    if (!value) return peopleUnknown;
     const response = await fetch(`${this.baseUrl}/${value}`);
     return await response.json();
   }
