@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getIdFromUrl } from '../get-id-from-url';
+import { getIdFromUrl } from './get-id-from-url';
 
 describe('getIdFromUrl', () => {
   it('should return the correct id from a valid URL', () => {

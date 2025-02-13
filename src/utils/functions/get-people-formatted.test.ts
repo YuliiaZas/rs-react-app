@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { mockItems } from '@mock';
-import { getPeopleFormatted } from '../get-people-formatted';
+import { getPeopleFormatted } from './get-people-formatted';
 
 describe('getPeopleFormatted', () => {
   it('should format people data correctly for a short list', () => {

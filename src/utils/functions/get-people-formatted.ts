@@ -1,6 +1,6 @@
 import { getIdFromUrl } from './get-id-from-url';
-import { PeopleFormatted } from './people-formatted.interface';
-import { People } from './people.interface';
+import { PeopleFormatted } from '../interfaces-types-enums/people-formatted.interface';
+import { People } from '../interfaces-types-enums/people.interface';
 
 export function getPeopleFormatted(
   item: People,
