@@ -9,25 +9,19 @@ export type CurrentSearchParams = {
 };
 
 function getFilteredParams(params: CurrentSearchParams): CurrentSearchParams {
-  const filteredParam: CurrentSearchParams = params.search
-    ? { search: params.search }
-    : {};
-  if (params.page) {
-    filteredParam.page = params.page;
-  }
-  return filteredParam;
+  return {
+    ...(params.search && { search: params.search }),
+    ...(params.page && { page: params.page }),
+  };
 }
 
 function getFilteredParamsFromQuery(
   query: URLSearchParams
 ): CurrentSearchParams {
-  const filteredParam: CurrentSearchParams = query.get('search')
-    ? { search: query.get('search') as string }
-    : {};
-  if (query.get('page')) {
-    filteredParam.page = query.get('page') as string;
-  }
-  return filteredParam;
+  return {
+    ...(query.get('search') && { search: query.get('search') as string }),
+    ...(query.get('page') && { page: query.get('page') as string }),
+  };
 }
 
 export function useCurrentSearchParams(): [
