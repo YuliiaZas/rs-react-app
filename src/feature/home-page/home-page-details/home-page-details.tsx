@@ -1,17 +1,8 @@
-import { FC, useEffect, useMemo, useState } from 'react';
-import {
-  useLoaderData,
-  useNavigation,
-  useOutletContext,
-} from 'react-router-dom';
+import { FC, Suspense } from 'react';
+import { Await, useLoaderData, useOutletContext } from 'react-router-dom';
 import { ErrorComponent, Spinner } from '@lib';
-import {
-  getPeopleFormatted,
-  People,
-  PeopleFormatted,
-  PeopleUnknown,
-  text,
-} from '@utils';
+import { detailsLoader } from '@loaders';
+import { getPeopleFormatted, text } from '@utils';
 import './home-page-details.css';
 
 export type HomePageDetailsProps = {
@@ -21,48 +12,45 @@ export type HomePageDetailsProps = {
 export const HomePageDetails: FC = () => {
   const { closeFn } = useOutletContext<HomePageDetailsProps>();
 
-  const item = useLoaderData<People | PeopleUnknown>();
-
-  const [isLoading, setIsLoading] = useState(false);
-
-  const navigation = useNavigation();
-
-  useEffect(() => {
-    setIsLoading(navigation.state === 'loading');
-  }, [navigation]);
-
-  const itemFormatted: PeopleFormatted | null = useMemo(() => {
-    return !item || 'url' in item === false
-      ? null
-      : getPeopleFormatted(item, true);
-  }, [item]);
-
-  if (isLoading) {
-    return <Spinner />;
-  }
+  const { item } = useLoaderData<typeof detailsLoader>();
 
   return (
     <div>
-      <button type="button" onClick={() => closeFn()}>
-        x
-      </button>
-      {!itemFormatted ? (
-        <ErrorComponent errorMessageInfo={text.homePage.emptyDetails} />
-      ) : (
-        <div className="card">
-          <h2>{itemFormatted.name}</h2>
-          <div className="card-detail">
-            {itemFormatted.details.map((item) => {
-              return (
-                <p className="small-card-detail" key={item.key}>
-                  <span className="small-card-detail-key">{item.key}: </span>
-                  <span className="small-card-detail-value">{item.value}</span>
-                </p>
-              );
-            })}
-          </div>
-        </div>
-      )}
+      <Suspense fallback={<Spinner />}>
+        <button type="button" onClick={() => closeFn()}>
+          x
+        </button>
+        <Await resolve={item} errorElement={<ErrorComponent />}>
+          {(loadedItem) => {
+            const itemFormatted =
+              !loadedItem || 'url' in loadedItem === false
+                ? null
+                : getPeopleFormatted(loadedItem, true);
+
+            return !itemFormatted ? (
+              <ErrorComponent errorMessageInfo={text.homePage.emptyDetails} />
+            ) : (
+              <div className="card">
+                <h2>{itemFormatted.name}</h2>
+                <div className="card-detail">
+                  {itemFormatted.details.map((detail) => {
+                    return (
+                      <p className="small-card-detail" key={detail.key}>
+                        <span className="small-card-detail-key">
+                          {detail.key}:{' '}
+                        </span>
+                        <span className="small-card-detail-value">
+                          {detail.value}
+                        </span>
+                      </p>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          }}
+        </Await>
+      </Suspense>
     </div>
   );
 };

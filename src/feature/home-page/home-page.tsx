@@ -147,6 +147,7 @@ export const HomePage: FC = () => {
         </div>
         <div className="home-details">
           <Outlet
+            key={location.pathname}
             context={{ closeFn: closeDetails } satisfies HomePageDetailsProps}
           />
         </div>

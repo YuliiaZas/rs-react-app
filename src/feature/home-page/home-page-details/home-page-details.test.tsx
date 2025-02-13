@@ -1,51 +1,56 @@
-import { fireEvent, render } from '@testing-library/react';
+import { act, fireEvent, render, waitFor } from '@testing-library/react';
 import {
   MemoryRouter,
   Route,
   Routes,
   useLoaderData,
-  useNavigation,
   useOutletContext,
 } from 'react-router-dom';
 import { describe, expect, it, Mock, vi } from 'vitest';
-import { People, PeopleUnknown } from '@utils';
+import { peopleUnknown, text } from '@utils';
 import { HomePageDetails } from './home-page-details';
+import { mockErrorComponentText, mockItems } from '@mock';
 
-vi.mock('@lib', () => ({
-  ErrorComponent: vi.fn(() => <div>Error Component</div>),
-  Spinner: vi.fn(() => <div>Spinner</div>),
-}));
+vi.mock(
+  '@lib',
+  async (importOriginal: () => Promise<Record<string, unknown>>) => {
+    const actual = await importOriginal();
+    return {
+      ...actual,
+      ErrorComponent: vi.fn(({ errorMessageInfo }) => (
+        <div>
+          {mockErrorComponentText} {errorMessageInfo}
+        </div>
+      )),
+    };
+  }
+);
 
 vi.mock('react-router-dom', async (importOriginal) => {
   const actual = (await importOriginal()) as Record<string, unknown>;
   return {
     ...actual,
-    useNavigation: vi.fn(() => ({ state: 'idle' })),
     useLoaderData: vi.fn(),
     useOutletContext: vi.fn(),
   };
 });
 
-const mockItem: People = {
-  name: 'Luke Skywalker',
-  height: '172',
-  mass: '77',
-  hair_color: 'blond',
-  skin_color: 'fair',
-  eye_color: 'blue',
-  birth_year: '19BBY',
-  gender: 'male',
-  url: 'https://swapi.dev/api/people/1/',
+const mockItem = mockItems[0];
+const mockData = {
+  item: Promise.resolve(mockItem),
+};
+const mockUnknownData = {
+  item: Promise.resolve(peopleUnknown),
 };
 
 describe('HomePageDetails', () => {
   const mockCloseFn = vi.fn();
   (useOutletContext as Mock).mockReturnValue({ closeFn: mockCloseFn });
 
-  it('should render formatted details when item is valid', () => {
-    (useLoaderData as Mock).mockReturnValue(mockItem);
+  it('should render spinner while data loading', async () => {
+    (useLoaderData as Mock).mockReturnValue(mockData);
 
-    const { getByText } = render(
+    const { getByRole } = render(
       <MemoryRouter>
         <Routes>
           <Route path="/" element={<HomePageDetails />} />
@@ -53,64 +58,93 @@ describe('HomePageDetails', () => {
       </MemoryRouter>
     );
 
-    expect(getByText('Luke Skywalker')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(getByRole('status')).toBeInTheDocument();
+    });
+  });
+
+  it('should render formatted details when item is valid', async () => {
+    (useLoaderData as Mock).mockReturnValue(mockData);
+
+    const { getByText } = await act(async () =>
+      render(
+        <MemoryRouter>
+          <Routes>
+            <Route path="/" element={<HomePageDetails />} />
+          </Routes>
+        </MemoryRouter>
+      )
+    );
+
+    expect(getByText(mockItem.name)).toBeInTheDocument();
     expect(
-      getByText((_content, element) => element?.textContent === 'Height: 172')
-    ).toBeInTheDocument();
-    expect(
-      getByText((_content, element) => element?.textContent === 'Mass: 77')
+      getByText(
+        (_content, element) =>
+          element?.textContent === `Height: ${mockItem.height}`
+      )
     ).toBeInTheDocument();
     expect(
       getByText(
-        (_content, element) => element?.textContent === 'Eye color: blue'
+        (_content, element) => element?.textContent === `Mass: ${mockItem.mass}`
+      )
+    ).toBeInTheDocument();
+    expect(
+      getByText(
+        (_content, element) =>
+          element?.textContent === `Eye color: ${mockItem.eye_color}`
       )
     ).toBeInTheDocument();
   });
 
-  it('should render error component when item has type PeopleUnknown', () => {
-    const mockUnknown: PeopleUnknown = {
-      detail: 'n/a',
-    };
-    (useLoaderData as Mock).mockReturnValue(mockUnknown);
+  it('should render error component when item has type PeopleUnknown', async () => {
+    (useLoaderData as Mock).mockReturnValue(mockUnknownData);
 
-    const { getByText } = render(
-      <MemoryRouter>
-        <Routes>
-          <Route path="/" element={<HomePageDetails />} />
-        </Routes>
-      </MemoryRouter>
+    const { getByText } = await act(async () =>
+      render(
+        <MemoryRouter>
+          <Routes>
+            <Route path="/" element={<HomePageDetails />} />
+          </Routes>
+        </MemoryRouter>
+      )
     );
 
-    expect(getByText('Error Component')).toBeInTheDocument();
+    expect(
+      getByText(`${mockErrorComponentText} ${text.homePage.emptyDetails}`)
+    ).toBeInTheDocument();
   });
 
-  it('should call closeFn when close button is clicked', () => {
-    (useLoaderData as Mock).mockReturnValue(mockItem);
+  it('should render error component when data loading fails', async () => {
+    (useLoaderData as Mock).mockReturnValue({ item: Promise.reject() });
 
-    const { getByText } = render(
-      <MemoryRouter>
-        <Routes>
-          <Route path="/" element={<HomePageDetails />} />
-        </Routes>
-      </MemoryRouter>
+    const { getByText } = await act(async () =>
+      render(
+        <MemoryRouter>
+          <Routes>
+            <Route path="/" element={<HomePageDetails />} />
+          </Routes>
+        </MemoryRouter>
+      )
+    );
+
+    expect(getByText(mockErrorComponentText)).toBeInTheDocument();
+  });
+
+  it('should call closeFn when close button is clicked', async () => {
+    (useLoaderData as Mock).mockReturnValue(mockData);
+
+    const { getByText } = await act(async () =>
+      render(
+        <MemoryRouter>
+          <Routes>
+            <Route path="/" element={<HomePageDetails />} />
+          </Routes>
+        </MemoryRouter>
+      )
     );
 
     fireEvent.click(getByText('x'));
 
     expect(mockCloseFn).toHaveBeenCalled();
-  });
-
-  it('should render spinner', () => {
-    (useNavigation as Mock).mockReturnValue({ state: 'loading' });
-
-    const { getByText } = render(
-      <MemoryRouter>
-        <Routes>
-          <Route path="/" element={<HomePageDetails />} />
-        </Routes>
-      </MemoryRouter>
-    );
-
-    expect(getByText('Spinner')).toBeInTheDocument();
   });
 });

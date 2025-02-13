@@ -11,6 +11,7 @@
       "@hooks": ["hooks/index.ts"],
       "@lib": ["lib/index.ts"],
       "@loaders": ["loaders/index.ts"],
+      "@mock": ["mock/index.ts"],
       "@services": ["services/index.ts"],
       "@utils": ["utils/index.ts"],
       "@home-page": ["feature/home-page/index.ts"],

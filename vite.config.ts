@@ -9,6 +9,7 @@ export default defineConfig({
       '@hooks': path.resolve(__dirname, 'src/hooks'),
       '@lib': path.resolve(__dirname, 'src/lib'),
       '@loaders': path.resolve(__dirname, 'src/loaders'),
+      '@mock': path.resolve(__dirname, 'src/mock'),
       '@services': path.resolve(__dirname, 'src/services'),
       '@utils': path.resolve(__dirname, 'src/utils'),
       '@home-page': path.resolve(__dirname, 'src/feature/home-page'),

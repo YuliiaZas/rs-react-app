@@ -4,32 +4,10 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { People, SearchResult, text } from '@utils';
 import { CurrentSearchParams } from '@hooks';
 import { peopleService } from '@services';
+import { mockErrorComponentText, mockItems } from '@mock';
 
 const fetchResult: SearchResult<People> = {
-  results: [
-    {
-      name: 'Luke Skywalker',
-      height: '172',
-      mass: '77',
-      hair_color: 'blond',
-      skin_color: 'fair',
-      eye_color: 'blue',
-      birth_year: '19BBY',
-      url: 'url/1',
-      gender: 'male',
-    },
-    {
-      name: 'C-3PO',
-      height: '167',
-      mass: '75',
-      hair_color: 'n/a',
-      skin_color: 'gold',
-      eye_color: 'yellow',
-      birth_year: '112BBY',
-      url: 'url/2',
-      gender: 'n/a',
-    },
-  ],
+  results: mockItems,
   next: '2',
   previous: '',
   count: 5,
@@ -49,7 +27,6 @@ const mockRouterDataInitial = {
 
 let mockRouterData = { ...mockRouterDataInitial };
 
-const mockErrorComponentText = 'Mocked Error Component';
 const mockHomePageItemsComponentText = 'Mocked Home Page Items';
 const mockHomePageDetailsComponentText = 'Mocked Home Page Details';
 
@@ -191,12 +168,10 @@ describe('HomePage', async () => {
   });
 
   it('should render spinner while fetching data', async () => {
-    const result = render(<HomePage />);
+    const { getByRole } = render(<HomePage />);
 
     await waitFor(() => {
-      expect(
-        result.container.querySelector('.spinner-wrapper')
-      ).toBeInTheDocument();
+      expect(getByRole('status')).toBeInTheDocument();
     });
   });
 });

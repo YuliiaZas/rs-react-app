@@ -9,3 +9,4 @@ export * from './people-formatted.interface';
 export * from './get-people-formatted';
 export * from './get-id-from-url';
 export * from './text.const';
+export * from './people-unknown.const';
