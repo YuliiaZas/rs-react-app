@@ -19,10 +19,8 @@ export const Search: FC<SearchProps> = ({
     setCurrentValue(initialSearchValue);
   }, [initialSearchValue]);
 
-  const handleButtonClick = (e: React.MouseEvent) => {
-    if (e.target instanceof HTMLButtonElement) {
-      e.target.blur();
-    }
+  const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.currentTarget.blur();
     updateSearchValue(currentValue);
   };
 

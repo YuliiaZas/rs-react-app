@@ -117,26 +117,33 @@ export const HomePage: FC = () => {
           <section className="home-content">
             <h1 className="home-content-title">{text.homePage.title}</h1>
             <section className="home-content-wrapper">
-              {loadingState === LOADING_STATE.FAILURE ? (
-                <ErrorComponent
-                  errorMessageInfo={text.homePage.loadingErrorMessageInfo}
-                />
-              ) : loadingState === LOADING_STATE.LOADING ? (
-                <div className="home-content-empty"></div>
-              ) : (
-                <div className="home-content-card">
-                  <HomePageItems
-                    title={title}
-                    items={items}
-                    locationSearch={location.search}
-                  />
-                  <Pagination
-                    pagesNumber={pagesNumber}
-                    currentPage={searchParams.page}
-                    onClick={handlePageNumberClick}
-                  />
-                </div>
-              )}
+              {(() => {
+                switch (loadingState) {
+                  case LOADING_STATE.FAILURE:
+                    return (
+                      <ErrorComponent
+                        errorMessageInfo={text.homePage.loadingErrorMessageInfo}
+                      />
+                    );
+                  case LOADING_STATE.LOADING:
+                    return <div className="home-content-empty"></div>;
+                  default:
+                    return (
+                      <div className="home-content-card">
+                        <HomePageItems
+                          title={title}
+                          items={items}
+                          locationSearch={location.search}
+                        />
+                        <Pagination
+                          pagesNumber={pagesNumber}
+                          currentPage={searchParams.page}
+                          onClick={handlePageNumberClick}
+                        />
+                      </div>
+                    );
+                }
+              })()}
             </section>
           </section>
           <section className="home-error">

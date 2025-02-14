@@ -17,15 +17,14 @@ export const HomePageDetails: FC = () => {
   return (
     <div>
       <Suspense fallback={<Spinner />}>
-        <button type="button" onClick={() => closeFn()}>
+        <button type="button" onClick={closeFn}>
           x
         </button>
         <Await resolve={item} errorElement={<ErrorComponent />}>
           {(loadedItem) => {
-            const itemFormatted =
-              !loadedItem || 'url' in loadedItem === false
-                ? null
-                : getPeopleFormatted(loadedItem, true);
+            const itemFormatted = !(loadedItem && 'url' in loadedItem)
+              ? null
+              : getPeopleFormatted(loadedItem, true);
 
             return !itemFormatted ? (
               <ErrorComponent errorMessageInfo={text.homePage.emptyDetails} />
