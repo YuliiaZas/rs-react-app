@@ -29,7 +29,10 @@ export const ThemeSwitcher: FunctionComponent = () => {
             checked={themeValue === value}
             onChange={handleThemeValueChange}
           />
-          <label htmlFor={value} className="theme-switcher-label">
+          <label
+            htmlFor={value}
+            className={`theme-switcher-label theme-color-${value}`}
+          >
             <span className={`theme-switcher-icon ${themeIcon[value]}`}></span>
             <span className="theme-switcher-value">{value} side</span>
           </label>

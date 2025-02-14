@@ -45,6 +45,8 @@
 
 .home-details {
   background-color: var(--secondary-bg);
+  width: 0;
+  transition: width 0.1s linear;
 }
 
 .home-details:not(:empty) {

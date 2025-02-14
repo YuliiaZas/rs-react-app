@@ -6,9 +6,31 @@
 }
 
 .theme-switcher-label {
+  position: relative;
   display: flex;
   align-items: center;
   cursor: pointer;
+  gap: 0.25rem;
+
+  &::before {
+    position: absolute;
+    content: "";
+    inset: 0; 
+    opacity: 0;
+    transition: opacity 0.25s linear;
+  }
+
+  &.theme-color-dark::before {
+    background: linear-gradient(0deg, var(--theme-color-dark) -15%, rgba(255,255,255,0) 50%);
+  }
+  
+  &.theme-color-light::before {
+    background: linear-gradient(0deg, var(--theme-color-light) -15%, rgba(255,255,255,0) 50%);
+  }
+  
+  &:hover::before {
+    opacity: 1;
+  }
 }
 
 .theme-switcher-icon {
@@ -16,5 +38,5 @@
 }
 
 .theme-switcher-input:checked + .theme-switcher-label {
-  border-bottom: 1px solid;
+  border-bottom: 2px solid var(--theme-color);
 }
