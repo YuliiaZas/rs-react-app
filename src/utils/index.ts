@@ -6,6 +6,7 @@ export * from './interfaces-types-enums/path-value.enum';
 export * from './functions/get-id-from-url';
 export * from './functions/get-people-formatted';
 export * from './interfaces-types-enums/people-formatted.interface';
+export * from './interfaces-types-enums/theme.enum';
 export * from './functions/get-people-formatted';
 export * from './functions/get-id-from-url';
 export * from './constants/text.const';

@@ -3,8 +3,9 @@ import {
   Navigate,
   RouterProvider,
 } from 'react-router-dom';
+import { ThemeProvider } from '@context';
 import { HomePage, HomePageDetails } from '@home-page';
-import { ErrorComponent } from '@lib';
+import { ErrorComponent, ThemeSwitcher } from '@lib';
 import { detailsLoader } from '@loaders';
 import { PATH_VALUE, text } from '@utils';
 import './App.css';
@@ -39,5 +40,12 @@ const router = createBrowserRouter([
 ]);
 
 export const App = () => {
-  return <RouterProvider router={router} />;
+  return (
+    <ThemeProvider>
+      <header>
+        <ThemeSwitcher></ThemeSwitcher>
+      </header>
+      <RouterProvider router={router} />
+    </ThemeProvider>
+  );
 };
