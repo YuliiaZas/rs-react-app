@@ -1,0 +1,6 @@
+export enum LOADING_STATE {
+  LOADING,
+  LOADED,
+  FAILURE,
+  PRESTINE,
+}
