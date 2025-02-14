@@ -1,6 +1,7 @@
 import { FormEvent, FunctionComponent } from 'react';
 import { useTheme } from '@hooks';
 import { THEME } from '@utils';
+import './theme-switche.css';
 
 const themeIcon = {
   [THEME.DARK]: 'icon-darth-vader',
@@ -15,7 +16,7 @@ export const ThemeSwitcher: FunctionComponent = () => {
   };
 
   return (
-    <div className="theme-switcher">
+    <div className="theme-switcher d-flex">
       <span className="theme-switcher-title">Choose:</span>
       {Object.values(THEME).map((value) => (
         <div key={value}>
@@ -24,7 +25,7 @@ export const ThemeSwitcher: FunctionComponent = () => {
             name="theme"
             id={value}
             value={value}
-            className="theme-switcher-input"
+            className="theme-switcher-input d-none"
             checked={themeValue === value}
             onChange={handleThemeValueChange}
           />

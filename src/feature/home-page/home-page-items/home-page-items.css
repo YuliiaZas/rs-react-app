@@ -4,23 +4,9 @@
 }
 
 .list-item {
-  border: 1px solid;
   display: block;
   color: inherit;
   padding-inline: 2rem;
   border-radius: 0.5rem;
   margin: 0.5rem 0;
-
-  &:hover {
-    border-color: bisque;
-    color: inherit;
-  }
-
-  &.active {
-    border-color: aqua;
-  }
-
-  &.pending {
-    border-color: darkseagreen;
-  }
 }

@@ -35,7 +35,7 @@ export const HomePageItems: FC<HomePageItemsProps> = ({
               <li key={id}>
                 <NavLink
                   to={`${id}${locationSearch}`}
-                  className={'list-item'}
+                  className={'list-item state-border'}
                   onClick={handleItemClick}
                 >
                   <CardSmall cardTitle={name} listOfDetails={details} />

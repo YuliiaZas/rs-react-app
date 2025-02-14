@@ -43,6 +43,10 @@
   }
 }
 
+.home-details {
+  background-color: var(--secondary-bg);
+}
+
 .home-details:not(:empty) {
   position: fixed;
   top: 0;

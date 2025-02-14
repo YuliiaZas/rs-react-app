@@ -28,7 +28,7 @@ export const Pagination: FC<PaginationProps> = ({
         <button
           key={page}
           onClick={() => onClick(page)}
-          className={`pagination-button ${currentPage === page ? 'active' : ''}`}
+          className={`pagination-button state ${currentPage === page ? 'active' : ''}`}
         >
           {page}
         </button>

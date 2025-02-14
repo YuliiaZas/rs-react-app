@@ -1,0 +1,20 @@
+.theme-switcher {
+  gap: 1.5rem;
+  font-size: larger;
+  justify-content: center;
+  padding-top: 2rem;
+}
+
+.theme-switcher-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.theme-switcher-icon {
+  font-size: x-large;
+}
+
+.theme-switcher-input:checked + .theme-switcher-label {
+  border-bottom: 1px solid;
+}

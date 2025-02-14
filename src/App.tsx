@@ -8,7 +8,6 @@ import { HomePage, HomePageDetails } from '@home-page';
 import { ErrorComponent, ThemeSwitcher } from '@lib';
 import { detailsLoader } from '@loaders';
 import { PATH_VALUE, text } from '@utils';
-import './App.css';
 
 const router = createBrowserRouter([
   {
@@ -42,10 +41,12 @@ const router = createBrowserRouter([
 export const App = () => {
   return (
     <ThemeProvider>
-      <header>
-        <ThemeSwitcher></ThemeSwitcher>
-      </header>
-      <RouterProvider router={router} />
+      <div className="app-wrapper">
+        <header>
+          <ThemeSwitcher></ThemeSwitcher>
+        </header>
+        <RouterProvider router={router} />
+      </div>
     </ThemeProvider>
   );
 };
