@@ -1,7 +1,7 @@
 import { FormEvent, FunctionComponent } from 'react';
 import { useTheme } from '@hooks';
 import { THEME } from '@utils';
-import './theme-switche.css';
+import './theme-switcher.css';
 
 const themeIcon = {
   [THEME.DARK]: 'icon-darth-vader',
