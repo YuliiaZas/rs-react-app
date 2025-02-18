@@ -1,4 +1,4 @@
-export function getIdFromUrl(url: string): number | null {
+export function getIdFromUrl(url: string): string {
   const match = url.match(/\/(\d+)(?=\D*$)/);
-  return match ? parseInt(match[1], 10) : null;
+  return match ? match[1] : url;
 }

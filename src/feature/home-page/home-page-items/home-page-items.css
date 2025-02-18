@@ -3,10 +3,21 @@
   padding: 0;
 }
 
+.list-item-wrapper {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-block: 0.5rem;
+}
+
 .list-item {
   display: block;
   color: inherit;
   padding-inline: 2rem;
   border-radius: 0.5rem;
-  margin: 0.5rem 0;
+  width: 100%;
+}
+
+.list-item-checkbox {
+  font-size: 1.5rem;
 }

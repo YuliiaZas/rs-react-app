@@ -1,12 +1,7 @@
 import { useCallback, useEffect } from 'react';
 import { useSearchParams } from 'react-router';
-import { useLocalStorage } from './local-storage.hook';
-import { useRunOnce } from './run-once.hook';
-
-export type CurrentSearchParams = {
-  search?: string;
-  page?: string;
-};
+import { CurrentSearchParams } from '@utils';
+import { useLocalStorage, useRunOnce } from '@hooks';
 
 function getFilteredParams(params: CurrentSearchParams): CurrentSearchParams {
   return {
@@ -40,14 +35,18 @@ export function useCurrentSearchParams(): [
     fn: () => {
       if (query.size === 0) {
         setQuery(homePageSearchLS);
-      } else {
-        setHomePageSearchLS(getFilteredParamsFromQuery(query));
       }
     },
   });
 
   useEffect(() => {
     const filteredParams = getFilteredParamsFromQuery(query);
+    console.log(
+      'effect - ',
+      JSON.stringify(filteredParams) !== JSON.stringify(homePageSearchLS),
+      JSON.stringify(filteredParams),
+      JSON.stringify(homePageSearchLS)
+    );
     if (JSON.stringify(filteredParams) !== JSON.stringify(homePageSearchLS)) {
       setHomePageSearchLS(filteredParams);
     }

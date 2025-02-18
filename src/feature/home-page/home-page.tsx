@@ -1,85 +1,39 @@
-import { FC, useCallback, useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { useCurrentSearchParams } from '@hooks';
-import { ErrorComponent, Pagination, Search, Spinner } from '@lib';
-import { peopleService } from '@services';
-import { LOADING_STATE, PATH_VALUE, People, SearchResult, text } from '@utils';
+import { useHomeSearch } from '@context';
+import { useAppDispatch, useAppSelector } from '@hooks';
+import { Pagination, Spinner } from '@lib';
+import { PATH_VALUE, text } from '@utils';
 import { HomePageItems } from './home-page-items/home-page-items';
 import { HomePageDetailsProps } from './home-page-details/home-page-details';
+import HomePageSearch from './home-page-search/home-page-search';
+import {
+  getIsItemsLoading,
+  getPagesNumber,
+  setSearch,
+} from './home-page.slice';
 import './home-page.css';
 
 export const HomePage: FC = () => {
-  const [title, setTitle] = useState('');
-  const [loadingState, setLoadingState] = useState(LOADING_STATE.PRESTINE);
-  const [items, setItems] = useState<People[]>([]);
-  const [pagesNumber, setPagesNumber] = useState(1);
+  const dispatch = useAppDispatch();
+
   const [showError, setShowError] = useState(false);
 
-  const [searchParams, setSearchParams] = useCurrentSearchParams();
+  const [searchParams, setSearchParams] = useHomeSearch();
 
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    setTitle(
-      searchParams.search
-        ? `${text.homePage.resultTitleSearch} "${searchParams.search}"`
-        : text.homePage.resultTitleFull
-    );
-  }, [searchParams.search]);
+    dispatch(setSearch(searchParams));
+  }, [dispatch, searchParams]);
 
-  const updateItems = useCallback(
-    (data: SearchResult<People>) => {
-      setLoadingState(LOADING_STATE.LOADED);
-      setItems(data?.results || []);
-      if (data.next) {
-        setPagesNumber(Math.ceil(data?.count / data?.results.length) || 1);
-      } else {
-        setPagesNumber(Number(searchParams.page) || 1);
-      }
-    },
-    [searchParams.page]
-  );
-
-  const fetchData = useCallback(() => {
-    let subscribed = true;
-
-    setLoadingState(LOADING_STATE.LOADING);
-
-    peopleService
-      .getItems(searchParams)
-      .then((data: SearchResult<People>) => subscribed && updateItems(data))
-      .catch((e) => subscribed && showDataError(e));
-
-    return () => {
-      subscribed = false;
-    };
-  }, [searchParams, updateItems]);
-
-  useEffect(() => {
-    fetchData();
-  }, [searchParams, updateItems, fetchData]);
+  const pagesNumber = useAppSelector((state) => getPagesNumber(state));
+  const isItemsLoading = useAppSelector((state) => getIsItemsLoading(state));
 
   useEffect(() => {
     if (showError) throwError();
   }, [showError]);
-
-  const updateSearchValue = (currentSearchValue: string) => {
-    const trimmedSeachValue = currentSearchValue.trim();
-
-    if (trimmedSeachValue !== searchParams.search) {
-      setSearchParams({ search: trimmedSeachValue });
-    } else {
-      fetchData();
-    }
-  };
-
-  const showDataError = (e: Error) => {
-    console.log(e);
-    setLoadingState(LOADING_STATE.FAILURE);
-    setItems([]);
-    setPagesNumber(1);
-  };
 
   const handlePageNumberClick = (page: string) => {
     setSearchParams({ ...searchParams, page });
@@ -108,42 +62,21 @@ export const HomePage: FC = () => {
       <main className="home-wrapper">
         <div className="home-main" onClick={handleGlobalPageClick}>
           <section className="home-seach">
-            <Search
-              initialSearchValue={searchParams.search ?? ''}
-              updateSearchValue={updateSearchValue}
-              placeholder={text.homePage.searchPlaceholder}
-            />
+            <HomePageSearch />
           </section>
           <section className="home-content">
             <h1 className="home-content-title">{text.homePage.title}</h1>
             <section className="home-content-wrapper">
-              {(() => {
-                switch (loadingState) {
-                  case LOADING_STATE.FAILURE:
-                    return (
-                      <ErrorComponent
-                        errorMessageInfo={text.homePage.loadingErrorMessageInfo}
-                      />
-                    );
-                  case LOADING_STATE.LOADING:
-                    return <div className="home-content-empty"></div>;
-                  default:
-                    return (
-                      <div className="home-content-card">
-                        <HomePageItems
-                          title={title}
-                          items={items}
-                          locationSearch={location.search}
-                        />
-                        <Pagination
-                          pagesNumber={pagesNumber}
-                          currentPage={searchParams.page}
-                          onClick={handlePageNumberClick}
-                        />
-                      </div>
-                    );
-                }
-              })()}
+              <div className="home-content-card">
+                <HomePageItems locationSearch={location.search} />
+                {!isItemsLoading && (
+                  <Pagination
+                    pagesNumber={pagesNumber}
+                    currentPage={searchParams.page}
+                    onClick={handlePageNumberClick}
+                  />
+                )}
+              </div>
             </section>
           </section>
           <section className="home-error">
@@ -159,7 +92,13 @@ export const HomePage: FC = () => {
           />
         </div>
       </main>
-      {loadingState === LOADING_STATE.LOADING && <Spinner />}
+      <footer>
+        Icons by
+        <a target="_blank" href="https://icons8.com" rel="noreferrer">
+          Icons8
+        </a>
+      </footer>
+      {isItemsLoading && <Spinner />}
     </>
   );
 };

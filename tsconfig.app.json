@@ -14,6 +14,7 @@
       "@loaders": ["loaders/index.ts"],
       "@mock": ["mock/index.ts"],
       "@services": ["services/index.ts"],
+      "@store": ["store/index.ts"],
       "@utils": ["utils/index.ts"],
       "@home-page": ["feature/home-page/index.ts"],
       "@error-boundary": ["feature/error-boundary/error-boundary.tsx"]

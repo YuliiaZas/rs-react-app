@@ -1,12 +1,14 @@
+import { Provider } from 'react-redux';
 import {
   createBrowserRouter,
   Navigate,
   RouterProvider,
 } from 'react-router-dom';
-import { ThemeProvider } from '@context';
+import { HomeSearchProvider, ThemeProvider } from '@context';
 import { HomePage, HomePageDetails } from '@home-page';
 import { ErrorComponent, ThemeSwitcher } from '@lib';
 import { detailsLoader } from '@loaders';
+import { store } from '@store';
 import { PATH_VALUE, text } from '@utils';
 
 const router = createBrowserRouter([
@@ -16,7 +18,11 @@ const router = createBrowserRouter([
   },
   {
     path: PATH_VALUE.HOME,
-    element: <HomePage />,
+    element: (
+      <HomeSearchProvider>
+        <HomePage />
+      </HomeSearchProvider>
+    ),
     errorElement: <ErrorComponent showButton={true} />,
     children: [
       {
@@ -40,13 +46,15 @@ const router = createBrowserRouter([
 
 export const App = () => {
   return (
-    <ThemeProvider>
-      <div className="app-wrapper">
-        <header>
-          <ThemeSwitcher></ThemeSwitcher>
-        </header>
-        <RouterProvider router={router} />
-      </div>
-    </ThemeProvider>
+    <Provider store={store}>
+      <ThemeProvider>
+        <div className="app-wrapper">
+          <header>
+            <ThemeSwitcher></ThemeSwitcher>
+          </header>
+          <RouterProvider router={router} />
+        </div>
+      </ThemeProvider>
+    </Provider>
   );
 };
