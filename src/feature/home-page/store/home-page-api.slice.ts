@@ -17,17 +17,22 @@ export const apiSlice = createApi({
       CurrentSearchParams
     >({
       query: (paramsValue) => `?${new URLSearchParams(paramsValue)}`,
-      transformResponse: (response: SearchResult<People>) => {
+      transformResponse: (searchResult: SearchResult<People>) => {
         return {
-          ...response,
-          itemsFormatted: response.results.map((item: People) =>
+          ...searchResult,
+          itemsFormatted: searchResult.results.map((item: People) =>
             getPeopleFormatted(item, false)
           ),
         };
       },
     }),
-    fetchItem: builder.query<People | PeopleUnknown, string>({
+    fetchItem: builder.query<PeopleFormatted | null, string>({
       query: (id) => `/${id}`,
+      transformResponse: (loadedItem: People | PeopleUnknown) => {
+        return !(loadedItem && 'url' in loadedItem)
+          ? null
+          : getPeopleFormatted(loadedItem, true);
+      },
     }),
   }),
 });

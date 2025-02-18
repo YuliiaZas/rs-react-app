@@ -7,7 +7,6 @@ import {
 import { HomeSearchProvider, ThemeProvider } from '@context';
 import { HomePage, HomePageDetails } from '@home-page';
 import { ErrorComponent, ThemeSwitcher } from '@lib';
-import { detailsLoader } from '@loaders';
 import { store } from '@store';
 import { PATH_VALUE, text } from '@utils';
 
@@ -27,7 +26,6 @@ const router = createBrowserRouter([
     children: [
       {
         path: `${PATH_VALUE.HOME}/:searchId`,
-        loader: detailsLoader,
         element: <HomePageDetails />,
       },
     ],
