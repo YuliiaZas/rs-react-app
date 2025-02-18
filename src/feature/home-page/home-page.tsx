@@ -11,7 +11,7 @@ import {
   getIsItemsLoading,
   getPagesNumber,
   setSearch,
-} from './home-page.slice';
+} from './store/home-page.slice';
 import './home-page.css';
 
 export const HomePage: FC = () => {

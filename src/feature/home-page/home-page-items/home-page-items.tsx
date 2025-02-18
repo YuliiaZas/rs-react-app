@@ -3,14 +3,14 @@ import { NavLink } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '@hooks';
 import { CardSmall, ErrorComponent } from '@lib';
 import { People, text } from '@utils';
-import { useFetchItemsQuery } from '../home-page-api.slice';
+import { useFetchItemsQuery } from '../store/home-page-api.slice';
 import {
   getIsSearchSyncronizedWithLS,
   getSearch,
   getSelectedItems,
   selectItem,
   unselectItem,
-} from '../home-page.slice';
+} from '../store/home-page.slice';
 import './home-page-items.css';
 
 interface HomePageItemsProps {
