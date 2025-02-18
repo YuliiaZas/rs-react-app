@@ -36,16 +36,21 @@ export const HomePage: FC = () => {
   }, [showError]);
 
   const handlePageNumberClick = (page: string) => {
-    setSearchParams({ ...searchParams, page });
+    if (location.pathname === PATH_VALUE.HOME) {
+      setSearchParams({ ...searchParams, page });
+    } else {
+      closeOutlet();
+      setTimeout(() => setSearchParams({ ...searchParams, page }));
+    }
   };
 
   const handleGlobalPageClick = () => {
     if (location.pathname !== PATH_VALUE.HOME) {
-      closeDetails();
+      closeOutlet();
     }
   };
 
-  const closeDetails = () => {
+  const closeOutlet = () => {
     navigate(`${PATH_VALUE.HOME}${location.search}`);
   };
 
@@ -88,12 +93,12 @@ export const HomePage: FC = () => {
         <div className="home-details">
           <Outlet
             key={location.pathname}
-            context={{ closeFn: closeDetails } satisfies HomePageDetailsProps}
+            context={{ closeFn: closeOutlet } satisfies HomePageDetailsProps}
           />
         </div>
       </main>
       <footer>
-        Icons by
+        Icons by&nbsp;
         <a target="_blank" href="https://icons8.com" rel="noreferrer">
           Icons8
         </a>
