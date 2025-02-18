@@ -9,6 +9,7 @@ import { HomePage, HomePageDetails } from '@home-page';
 import { ErrorComponent, ThemeSwitcher } from '@lib';
 import { store } from '@store';
 import { PATH_VALUE, text } from '@utils';
+import './app.css';
 
 const router = createBrowserRouter([
   {
@@ -47,11 +48,13 @@ export const App = () => {
     <Provider store={store}>
       <ThemeProvider>
         <div className="app-wrapper">
-          <header>
+          <header className="app-header">
             <ThemeSwitcher></ThemeSwitcher>
           </header>
-          <RouterProvider router={router} />
-          <footer>
+          <div className="app-content">
+            <RouterProvider router={router} />
+          </div>
+          <footer className="app-footer">
             Icons by&nbsp;
             <a target="_blank" href="https://icons8.com" rel="noreferrer">
               Icons8

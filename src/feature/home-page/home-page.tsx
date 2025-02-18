@@ -67,8 +67,8 @@ export const HomePage: FC = () => {
 
   return (
     <>
-      <main className="home-wrapper">
-        <div className="home-main" onClick={handleGlobalPageClick}>
+      <div className="home-wrapper">
+        <main className="home-main" onClick={handleGlobalPageClick}>
           <section className="home-seach">
             <HomePageSearch />
           </section>
@@ -92,14 +92,14 @@ export const HomePage: FC = () => {
               {text.homePage.throwErrorButton}
             </button>
           </section>
-        </div>
-        <div className="home-details">
+        </main>
+        <aside className="home-details">
           <Outlet
             key={location.pathname}
             context={{ closeFn: closeOutlet } satisfies HomePageDetailsProps}
           />
-        </div>
-      </main>
+        </aside>
+      </div>
       {isItemsLoading && <Spinner />}
     </>
   );

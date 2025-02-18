@@ -1,8 +1,6 @@
 .theme-switcher {
   gap: 1.5rem;
   font-size: larger;
-  justify-content: center;
-  padding-top: 2rem;
 }
 
 .theme-switcher-label {
