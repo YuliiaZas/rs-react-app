@@ -6,7 +6,7 @@ describe('getPeopleFormatted', () => {
   it('should format people data correctly for a short list', () => {
     const result = getPeopleFormatted(mockItems[0]);
     expect(result).toEqual({
-      id: 1,
+      id: '1',
       name: 'Luke Skywalker',
       details: [
         { key: 'Gender', value: 'male' },
@@ -20,7 +20,7 @@ describe('getPeopleFormatted', () => {
   it('should format people data correctly for a full list', () => {
     const result = getPeopleFormatted(mockItems[0], true);
     expect(result).toEqual({
-      id: 1,
+      id: '1',
       name: 'Luke Skywalker',
       details: [
         { key: 'Gender', value: 'male' },

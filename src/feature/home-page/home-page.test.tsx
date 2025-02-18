@@ -1,8 +1,7 @@
 import { act, fireEvent, render, waitFor } from '@testing-library/react';
 import { HomePage } from './home-page';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { People, SearchResult, text } from '@utils';
-import { CurrentSearchParams } from '@hooks';
+import { CurrentSearchParams, People, SearchResult, text } from '@utils';
 import { peopleService } from '@services';
 import { mockErrorComponentText, mockItems } from '@mock';
 
