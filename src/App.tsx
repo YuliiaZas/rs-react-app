@@ -51,6 +51,12 @@ export const App = () => {
             <ThemeSwitcher></ThemeSwitcher>
           </header>
           <RouterProvider router={router} />
+          <footer>
+            Icons by&nbsp;
+            <a target="_blank" href="https://icons8.com" rel="noreferrer">
+              Icons8
+            </a>
+          </footer>
         </div>
       </ThemeProvider>
     </Provider>

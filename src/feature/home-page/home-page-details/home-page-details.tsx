@@ -23,8 +23,13 @@ export const HomePageDetails: FC = () => {
 
   return (
     <div>
-      <button type="button" onClick={closeFn}>
-        x
+      <button
+        type="button"
+        onClick={closeFn}
+        aria-label="Close"
+        className="button-icon"
+      >
+        <i className="icon-close" />
       </button>
       {(() => {
         if (isError) {

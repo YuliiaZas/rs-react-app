@@ -53,20 +53,27 @@ a {
 
 input,
 button {
-  height: 44px;
-  border-radius: 8px;
+  height: var(--min-tap-size);
+  border-radius: var(--border-radius);
   border: var(--border-transparent);
   outline: none;
 }
 
 button {
-  padding-inline: 1.2em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
   background-color: var(--button-bg);
   color: var(--default-color);
   cursor: pointer;
+
+  &.button-icon {
+    width: var(--min-tap-size);
+  }
+
+  &:not(.button-icon) {
+    padding-inline: 1.2em;
+  }
 
   &:hover,
   &:focus,
