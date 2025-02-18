@@ -1,0 +1,38 @@
+.input-with-icons {
+  --input-icon-padding: 0.5rem;
+  --input-placeholder-padding: 1.75rem;
+  --input-width: calc(var(--input-width-default) + var(--input-placeholder-padding));
+  
+  &:has(.icon-left):has(.icon-right) {
+    --input-width: calc(var(--input-width-default) + 2 * var(--input-placeholder-padding));
+  }
+
+  position: relative;
+
+  input {
+    width: var(--input-width);
+  }
+
+  .icon-right,
+  .icon-left {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .icon-left {
+    left: var(--input-icon-padding);
+  }
+  
+  .icon-right {
+    right: var(--input-icon-padding);
+  }
+
+  &:has(.icon-left) input{
+    padding-left: var(--input-placeholder-padding);
+  }
+
+  &:has(.icon-right) input{
+    padding-right: var(--input-placeholder-padding);
+  }
+}

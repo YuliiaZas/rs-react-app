@@ -29,20 +29,20 @@
   content: "\e900";
 }
 
-.icon-checkbox-square:before {
-  content: "\e901";
-}
-
 .icon-checkbox-checked:before {
-  content: "\e902";
+  content: "\e8ff";
 }
 
-.icon-save:before {
-  content: "\e903";
+.icon-search:before {
+  content: "\e90b";
 }
 
 .icon-close:before {
   content: "\e904";
+}
+
+.icon-save:before {
+  content: "\e903";
 }
 
 .icon-darth-vader:before {

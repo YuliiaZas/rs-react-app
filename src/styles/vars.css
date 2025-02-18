@@ -1,6 +1,10 @@
 :root {
   --theme-color-dark: #ff0202;
   --theme-color-light: #72d2fd;
+
+  --input-width-default: 14rem;
+  --input-padding-inline-default: 0.75rem;
+  --border-transparent: 2px solid transparent;
 }
   
 .theme-dark {

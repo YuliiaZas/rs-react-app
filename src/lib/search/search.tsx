@@ -31,15 +31,23 @@ export const Search: FC<SearchProps> = ({
   };
 
   return (
-    <div className="search-wrapper">
-      <input
-        type="text"
-        className="search-input"
-        placeholder={placeholder}
-        value={currentValue}
-        onChange={(e) => setCurrentValue(e.target.value)}
-        onKeyDown={handleInputKeyDown}
-      />
+    <div className="search-wrapper d-flex">
+      <div className="input-with-icons">
+        <input
+          type="text"
+          className="search-input"
+          placeholder={placeholder}
+          value={currentValue}
+          onChange={(e) => setCurrentValue(e.target.value)}
+          onKeyDown={handleInputKeyDown}
+        />
+        <i className="icon-search icon-left"></i>
+        <i
+          className={`icon-close pointer icon-right ${currentValue ? '' : 'invisible'}`}
+          title="Clear"
+          onClick={() => setCurrentValue('')}
+        ></i>
+      </div>
       <button
         type="submit"
         className="search-button"

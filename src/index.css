@@ -1,5 +1,6 @@
 @import url('./styles/vars.css');
 @import url('./styles/icons.css');
+@import url('./styles/input.css');
 
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -50,9 +51,15 @@ a {
   }
 }
 
+input,
 button {
   height: 44px;
   border-radius: 8px;
+  border: var(--border-transparent);
+  outline: none;
+}
+
+button {
   padding-inline: 1.2em;
   font-size: 1em;
   font-weight: 500;
@@ -60,8 +67,6 @@ button {
   background-color: var(--button-bg);
   color: var(--default-color);
   cursor: pointer;
-  border: 2px solid transparent;
-  outline: none;
 
   &:hover,
   &:focus,
@@ -71,16 +76,11 @@ button {
 }
 
 input {
-  height: 44px;
-  width: 220px;
-  padding: 0 10px;
-  border: none;
-  border-radius: 8px;
+  width: var(--input-width-default);
+  padding-inline: var(--input-padding-inline-default);
   font-size: medium;
   color: var(--default-color);
   background-color: var(--input-bg);
-  border: 2px solid transparent;
-  outline: none;
 
   &:focus,
   &:focus-visible {
@@ -89,7 +89,7 @@ input {
 }
 
 .state{
-  border: 2px solid transparent;
+  border: var(--border-transparent);
 
   &:hover,
   &:focus-visible {
@@ -130,4 +130,12 @@ input {
 
 .d-flex {
   display: flex;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.invisible {
+  visibility: hidden;
 }

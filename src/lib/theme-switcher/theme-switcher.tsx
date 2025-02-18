@@ -1,5 +1,5 @@
 import { FormEvent, FunctionComponent } from 'react';
-import { useTheme } from '@hooks';
+import { useTheme } from '@context';
 import { THEME } from '@utils';
 import './theme-switcher.css';
 
@@ -12,7 +12,7 @@ export const ThemeSwitcher: FunctionComponent = () => {
   const [themeValue, setThemeValue] = useTheme();
 
   const handleThemeValueChange = (e: FormEvent<HTMLInputElement>) => {
-    setThemeValue((e.target as HTMLInputElement).value as THEME);
+    setThemeValue(e.currentTarget.value as THEME);
   };
 
   return (
