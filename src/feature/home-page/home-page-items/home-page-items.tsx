@@ -2,7 +2,7 @@ import { FC, FormEvent, MouseEvent, useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '@hooks';
 import { CardSmall, ErrorComponent } from '@lib';
-import { People, text } from '@utils';
+import { PeopleFormatted, text } from '@utils';
 import { useFetchItemsQuery } from '../store/home-page-api.slice';
 import {
   getIsSearchSyncronizedWithLS,
@@ -44,7 +44,10 @@ export const HomePageItems: FC<HomePageItemsProps> = ({ locationSearch }) => {
     e.stopPropagation();
   };
 
-  const handleSelectChange = (item: People, e: FormEvent<HTMLInputElement>) => {
+  const handleSelectChange = (
+    item: PeopleFormatted,
+    e: FormEvent<HTMLInputElement>
+  ) => {
     const { id, checked } = e.currentTarget;
     dispatch(checked ? selectItem({ item, id }) : unselectItem({ id }));
   };
@@ -69,30 +72,33 @@ export const HomePageItems: FC<HomePageItemsProps> = ({ locationSearch }) => {
           <p>{text.homePage.emptyList}</p>
         ) : (
           <ul className="list">
-            {data.itemsFormatted.map(({ id, name, details }, i) => (
-              <li key={id} className="list-item-wrapper">
-                <input
-                  type="checkbox"
-                  className="d-none"
-                  name="selected-items"
-                  id={id}
-                  checked={!!selectedItems[id]}
-                  onChange={(e) => handleSelectChange(data.results[i], e)}
-                />
-                <label htmlFor={id} className="list-item-checkbox pointer">
-                  <i
-                    className={`icon-checkbox${selectedItems[id] ? '-checked' : ''}`}
-                  ></i>
-                </label>
-                <NavLink
-                  to={`${id}${locationSearch}`}
-                  className={'list-item state-border'}
-                  onClick={handleItemClick}
-                >
-                  <CardSmall cardTitle={name} listOfDetails={details} />
-                </NavLink>
-              </li>
-            ))}
+            {data.itemsFormatted.map((item) => {
+              const { id, name, details } = item;
+              return (
+                <li key={id} className="list-item-wrapper">
+                  <input
+                    type="checkbox"
+                    className="d-none"
+                    name="selected-items"
+                    id={id}
+                    checked={!!selectedItems[id]}
+                    onChange={(e) => handleSelectChange(item, e)}
+                  />
+                  <label htmlFor={id} className="list-item-checkbox pointer">
+                    <i
+                      className={`icon-checkbox${selectedItems[id] ? '-checked' : ''}`}
+                    ></i>
+                  </label>
+                  <NavLink
+                    to={`${id}${locationSearch}`}
+                    className={'list-item state-border'}
+                    onClick={handleItemClick}
+                  >
+                    <CardSmall cardTitle={name} listOfDetails={details} />
+                  </NavLink>
+                </li>
+              );
+            })}
           </ul>
         )}
       </div>

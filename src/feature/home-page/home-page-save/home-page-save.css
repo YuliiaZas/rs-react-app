@@ -1,0 +1,21 @@
+.save-wrapper {
+  position: fixed;
+  top: 3.5rem;
+  left: 0.5rem;
+  padding: 0.5rem;
+  background-color: var(--secondary-bg);
+  width: min-content;
+}
+
+.save-title {
+  text-align: center
+}
+
+.save-buttons {
+  display: flex;
+  flex-direction: column;
+  width: min-content;
+  align-items: stretch;
+  margin-inline: auto;
+  gap: 0.5rem;
+}

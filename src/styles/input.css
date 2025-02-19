@@ -1,3 +1,9 @@
+input {
+  height: var(--min-tap-size);
+  width: var(--input-width-default);
+  padding-inline: var(--input-padding-inline-default);
+}
+
 .input-with-icons {
   --input-icon-padding: 0.5rem;
   --input-placeholder-padding: 1.75rem;

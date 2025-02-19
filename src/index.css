@@ -1,6 +1,7 @@
 @import url('./styles/vars.css');
 @import url('./styles/icons.css');
 @import url('./styles/input.css');
+@import url('./styles/button.css');
 
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -53,7 +54,6 @@ a {
 
 input,
 button {
-  height: var(--min-tap-size);
   border-radius: var(--border-radius);
   border: var(--border-transparent);
   outline: none;
@@ -67,14 +67,6 @@ button {
   color: var(--default-color);
   cursor: pointer;
 
-  &.button-icon {
-    width: var(--min-tap-size);
-  }
-
-  &:not(.button-icon) {
-    padding-inline: 1.2em;
-  }
-
   &:hover,
   &:focus,
   &:focus-visible {
@@ -83,8 +75,6 @@ button {
 }
 
 input {
-  width: var(--input-width-default);
-  padding-inline: var(--input-padding-inline-default);
   font-size: medium;
   color: var(--default-color);
   background-color: var(--input-bg);

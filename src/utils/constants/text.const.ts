@@ -9,6 +9,12 @@ export const text = {
     emptyList: "Sorry, we couldn't find anything. Please check your request.",
     emptyDetails: "It seems we don't know this person",
   },
+  save: {
+    selectedItems: 'selected item(s).',
+    unselect: 'Unselect All',
+    download: 'Download',
+    fileName: '_people_of_Star_Wars.csv',
+  },
   search: {
     button: 'Search',
     placeholder: 'Input Value',

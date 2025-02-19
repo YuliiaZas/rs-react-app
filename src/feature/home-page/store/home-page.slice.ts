@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '@store';
-import { CurrentSearchParams, People } from '@utils';
+import { CurrentSearchParams, PeopleFormatted } from '@utils';
 import { apiSlice } from './home-page-api.slice';
 
 interface HomePageState {
@@ -8,7 +8,7 @@ interface HomePageState {
   isSearchSyncronizedWithLS: boolean;
   isItemsLoading: boolean;
   pagesNumber: number;
-  selectedItems: Record<string, People>;
+  selectedItems: Record<string, PeopleFormatted>;
 }
 
 const initialState: HomePageState = {
@@ -34,7 +34,7 @@ const homePageSlice = createSlice({
     },
     selectItem(
       state,
-      { payload }: PayloadAction<{ id: string; item: People }>
+      { payload }: PayloadAction<{ id: string; item: PeopleFormatted }>
     ) {
       state.selectedItems[payload.id] = payload.item;
     },
@@ -42,7 +42,7 @@ const homePageSlice = createSlice({
       // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete state.selectedItems[payload.id];
     },
-    resetSelection(state) {
+    unselectAll(state) {
       state.selectedItems = {};
     },
   },
@@ -77,7 +77,7 @@ export const {
   setPagesNumber,
   selectItem,
   unselectItem,
-  resetSelection,
+  unselectAll,
 } = homePageSlice.actions;
 
 export const homePageReducer = homePageSlice.reducer;
@@ -91,7 +91,5 @@ export const getPagesNumber = (state: RootState) => state.homePage.pagesNumber;
 
 export const getSelectedItems = (state: RootState) =>
   state.homePage.selectedItems;
-export const getSelectedItemsArray = (state: RootState) =>
-  Object.values(state.homePage.selectedItems);
 export const getSelectedItemsNumber = (state: RootState) =>
   Object.keys(state.homePage.selectedItems).length;
