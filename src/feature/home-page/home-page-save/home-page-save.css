@@ -1,5 +1,5 @@
 .save-wrapper {
-  position: fixed;
+  position: sticky;
   bottom: 3rem;
   left: 0.5rem;
   padding: 1rem 0.5rem;

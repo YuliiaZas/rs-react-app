@@ -7,46 +7,46 @@
   --border-transparent: 2px solid transparent;
   --border-radius: 0.5rem;
   --min-tap-size: 44px;
-}
   
-.theme-dark {
-  --theme-color: var(--theme-color-dark);
-  --default-color: rgba(255, 255, 255, 0.87);
-  --default-bg: #242424;
-  --secondary-bg: #4b1111;
-  --text-shadow: var(--theme-color);
-  --link-color: #646cff;
-  --link-color-hover: #535bf2;
-  --input-bg: #1a1a1a;
-  --input-bc-hover: #c03131;
-  --button-bg: var(--input-bg);
-  --button-bc-hover: var(--input-bc-hover);
-  --state-bc: var(--default-color);
-  --state-hover-outline: #9c747b;
-  --state-hover-bc: #78595e;
-  --state-pending-bc: #ab3939;
-  --state-active-bc: var(--theme-color);
-  --spinner-bg: #5d5151db;
-  --spinner-c: #ffffff;
-}
-
-.theme-light {
-  --theme-color: var(--theme-color-light);
-  --default-color: #242424;
-  --default-bg: rgba(255, 255, 255, 0.87);
-  --secondary-bg: #9ec3d2;
-  --text-shadow: var(--theme-color);
-  --link-color: #646cff;
-  --link-color-hover: #747bff;
-  --input-bg: #e5f5ff;
-  --input-bc-hover: #64adff;
-  --button-bg: var(--input-bg);
-  --button-bc-hover: var(--input-bc-hover);
-  --state-bc: #858c90;
-  --state-hover-bc: #9ec3d2;
-  --state-hover-outline: #b6d1d7;
-  --state-pending-bc: #97bed9;
-  --state-active-bc: var(--theme-color);
-  --spinner-bg: #7c8990d9;
-  --spinner-c: #ffffff;
+  &:has(.theme-dark) {
+    --theme-color: var(--theme-color-dark);
+    --default-color: rgba(255, 255, 255, 0.87);
+    --default-bg: #242424;
+    --secondary-bg: #4b1111;
+    --text-shadow: var(--theme-color);
+    --link-color: #646cff;
+    --link-color-hover: #535bf2;
+    --input-bg: #1a1a1a;
+    --input-bc-hover: #c03131;
+    --button-bg: var(--input-bg);
+    --button-bc-hover: var(--input-bc-hover);
+    --state-bc: var(--default-color);
+    --state-hover-outline: #9c747b;
+    --state-hover-bc: #78595e;
+    --state-pending-bc: #ab3939;
+    --state-active-bc: var(--theme-color);
+    --spinner-bg: #5d5151db;
+    --spinner-c: #ffffff;
+  }
+  
+  &:has(.theme-light) {
+    --theme-color: var(--theme-color-light);
+    --default-color: #242424;
+    --default-bg: rgba(255, 255, 255, 0.87);
+    --secondary-bg: #9ec3d2;
+    --text-shadow: var(--theme-color);
+    --link-color: #646cff;
+    --link-color-hover: #747bff;
+    --input-bg: #e5f5ff;
+    --input-bc-hover: #64adff;
+    --button-bg: var(--input-bg);
+    --button-bc-hover: var(--input-bc-hover);
+    --state-bc: #858c90;
+    --state-hover-bc: #9ec3d2;
+    --state-hover-outline: #b6d1d7;
+    --state-pending-bc: #97bed9;
+    --state-active-bc: var(--theme-color);
+    --spinner-bg: #7c8990d9;
+    --spinner-c: #ffffff;
+  }
 }
