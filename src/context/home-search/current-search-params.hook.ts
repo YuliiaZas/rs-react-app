@@ -1,7 +1,8 @@
 import { useCallback, useEffect } from 'react';
 import { useSearchParams } from 'react-router';
+import { setSearchIsSyncronized, unselectAll } from '@home-page';
+import { useAppDispatch, useLocalStorage, useRunOnce } from '@hooks';
 import { CurrentSearchParams } from '@utils';
-import { useLocalStorage, useRunOnce } from '@hooks';
 
 function getFilteredParams(params: CurrentSearchParams): CurrentSearchParams {
   return {
@@ -23,6 +24,8 @@ export function useCurrentSearchParams(): [
   CurrentSearchParams,
   React.Dispatch<CurrentSearchParams>,
 ] {
+  const dispatch = useAppDispatch();
+
   const [query, setQuery] = useSearchParams();
 
   const [homePageSearchLS, setHomePageSearchLS] =
@@ -36,21 +39,20 @@ export function useCurrentSearchParams(): [
       if (query.size === 0) {
         setQuery(homePageSearchLS);
       }
+      dispatch(setSearchIsSyncronized());
     },
   });
 
   useEffect(() => {
     const filteredParams = getFilteredParamsFromQuery(query);
-    console.log(
-      'effect - ',
-      JSON.stringify(filteredParams) !== JSON.stringify(homePageSearchLS),
-      JSON.stringify(filteredParams),
-      JSON.stringify(homePageSearchLS)
-    );
     if (JSON.stringify(filteredParams) !== JSON.stringify(homePageSearchLS)) {
       setHomePageSearchLS(filteredParams);
     }
   }, [query, homePageSearchLS, setHomePageSearchLS]);
+
+  useEffect(() => {
+    dispatch(unselectAll());
+  }, [dispatch, homePageSearchLS.search]);
 
   const setCurrentSearchParams = useCallback(
     (params: CurrentSearchParams) => setQuery(getFilteredParams(params)),

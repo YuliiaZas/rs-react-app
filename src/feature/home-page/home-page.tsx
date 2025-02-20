@@ -1,33 +1,23 @@
 import { FC, useEffect, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useHomeSearch } from '@context';
-import { useAppDispatch, useAppSelector } from '@hooks';
+import { useAppSelector } from '@hooks';
 import { Pagination, Spinner } from '@lib';
 import { PATH_VALUE, text } from '@utils';
 import { HomePageItems } from './home-page-items/home-page-items';
 import { HomePageDetailsProps } from './home-page-details/home-page-details';
 import HomePageSave from './home-page-save/home-page-save';
 import HomePageSearch from './home-page-search/home-page-search';
-import {
-  getIsItemsLoading,
-  getPagesNumber,
-  setSearch,
-} from './store/home-page.slice';
+import { getIsItemsLoading, getPagesNumber } from './store/home-page.slice';
 import './home-page.css';
 
 export const HomePage: FC = () => {
-  const dispatch = useAppDispatch();
-
   const [showError, setShowError] = useState(false);
 
   const [searchParams, setSearchParams] = useHomeSearch();
 
   const navigate = useNavigate();
   const location = useLocation();
-
-  useEffect(() => {
-    dispatch(setSearch(searchParams));
-  }, [dispatch, searchParams]);
 
   const pagesNumber = useAppSelector((state) => getPagesNumber(state));
   const isItemsLoading = useAppSelector((state) => getIsItemsLoading(state));
@@ -41,14 +31,11 @@ export const HomePage: FC = () => {
     setSearchParams({ ...searchParams, page });
 
     if (location.pathname !== PATH_VALUE.HOME) {
-      navigate({
-        pathname: PATH_VALUE.HOME,
-        search: new URLSearchParams({ ...searchParams, page }).toString(),
-      });
+      closeOutletAndRedirectToPage(page);
     }
   };
 
-  const handleGlobalPageClick = () => {
+  const handleGlobalHomePageClick = () => {
     if (location.pathname !== PATH_VALUE.HOME) {
       closeOutlet();
     }
@@ -56,6 +43,13 @@ export const HomePage: FC = () => {
 
   const closeOutlet = () => {
     navigate(`${PATH_VALUE.HOME}${location.search}`);
+  };
+
+  const closeOutletAndRedirectToPage = (page: string) => {
+    navigate({
+      pathname: PATH_VALUE.HOME,
+      search: new URLSearchParams({ ...searchParams, page }).toString(),
+    });
   };
 
   const showPageError = () => {
@@ -69,7 +63,7 @@ export const HomePage: FC = () => {
   return (
     <>
       <div className="home-wrapper">
-        <main className="home-main" onClick={handleGlobalPageClick}>
+        <main className="home-main" onClick={handleGlobalHomePageClick}>
           <section className="home-seach">
             <HomePageSearch />
           </section>

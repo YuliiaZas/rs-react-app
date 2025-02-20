@@ -1,14 +1,15 @@
 import { FC, FormEvent, MouseEvent, useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import { useHomeSearch } from '@context';
 import { useAppDispatch, useAppSelector } from '@hooks';
 import { CardSmall, ErrorComponent } from '@lib';
 import { PeopleFormatted, text } from '@utils';
 import { useFetchItemsQuery } from '../store/home-page-api.slice';
 import {
-  getIsSearchSyncronizedWithLS,
-  getSearch,
+  getIsSearchSyncronized,
   getSelectedItems,
   selectItem,
+  setPagesNumber,
   unselectItem,
 } from '../store/home-page.slice';
 import './home-page-items.css';
@@ -21,9 +22,9 @@ export const HomePageItems: FC<HomePageItemsProps> = ({ locationSearch }) => {
   const dispatch = useAppDispatch();
 
   const [title, setTitle] = useState('');
+  const [searchParams] = useHomeSearch();
 
-  const skip = !useAppSelector((state) => getIsSearchSyncronizedWithLS(state));
-  const searchParams = useAppSelector((state) => getSearch(state));
+  const skip = !useAppSelector((state) => getIsSearchSyncronized(state));
 
   const { data, isLoading, isFetching, isError } = useFetchItemsQuery(
     searchParams,
@@ -39,6 +40,21 @@ export const HomePageItems: FC<HomePageItemsProps> = ({ locationSearch }) => {
         : text.homePage.resultTitleFull
     );
   }, [searchParams.search]);
+
+  useEffect(() => {
+    if (data?.count) {
+      const pagesNumber = data.next
+        ? Math.ceil(data.count / data.results.length)
+        : Number(searchParams.page) || 1;
+      dispatch(setPagesNumber(pagesNumber));
+    } else {
+      dispatch(setPagesNumber(null));
+    }
+  }, [searchParams.page, data, dispatch]);
+
+  useEffect(() => {
+    dispatch(setPagesNumber(null));
+  }, [isError, dispatch]);
 
   const handleItemClick = (e: MouseEvent<HTMLAnchorElement>) => {
     e.stopPropagation();

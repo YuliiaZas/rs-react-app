@@ -1,21 +1,19 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '@store';
-import { CurrentSearchParams, PeopleFormatted } from '@utils';
+import { PeopleFormatted } from '@utils';
 import { apiSlice } from './home-page-api.slice';
 
 interface HomePageState {
-  search: CurrentSearchParams;
-  isSearchSyncronizedWithLS: boolean;
+  isSearchSyncronized: boolean;
   isItemsLoading: boolean;
-  pagesNumber: number;
+  pagesNumber: number | null;
   selectedItems: Record<string, PeopleFormatted>;
 }
 
 const initialState: HomePageState = {
-  search: {},
-  isSearchSyncronizedWithLS: false,
+  isSearchSyncronized: false,
   isItemsLoading: true,
-  pagesNumber: 1,
+  pagesNumber: null,
   selectedItems: {},
 };
 
@@ -23,13 +21,10 @@ const homePageSlice = createSlice({
   name: 'homePage',
   initialState,
   reducers: {
-    setSearch(state, { payload }: PayloadAction<CurrentSearchParams>) {
-      state.search = payload;
-      if (!state.isSearchSyncronizedWithLS) {
-        state.isSearchSyncronizedWithLS = true;
-      }
+    setSearchIsSyncronized(state) {
+      state.isSearchSyncronized = true;
     },
-    setPagesNumber(state, { payload }: PayloadAction<number>) {
+    setPagesNumber(state, { payload }: PayloadAction<number | null>) {
       state.pagesNumber = payload;
     },
     selectItem(
@@ -55,16 +50,9 @@ const homePageSlice = createSlice({
         }
       )
       .addMatcher(
-        (action) => apiSlice.endpoints.fetchItems.matchFulfilled(action),
-        (state, { payload }) => {
-          state.pagesNumber = payload.next
-            ? Math.ceil(payload.count / payload.results.length)
-            : Number(state.search.page) || 1;
-          state.isItemsLoading = false;
-        }
-      )
-      .addMatcher(
-        (action) => apiSlice.endpoints.fetchItems.matchRejected(action),
+        (action) =>
+          apiSlice.endpoints.fetchItems.matchFulfilled(action) ||
+          apiSlice.endpoints.fetchItems.matchRejected(action),
         (state) => {
           state.isItemsLoading = false;
         }
@@ -73,7 +61,7 @@ const homePageSlice = createSlice({
 });
 
 export const {
-  setSearch,
+  setSearchIsSyncronized,
   setPagesNumber,
   selectItem,
   unselectItem,
@@ -82,9 +70,8 @@ export const {
 
 export const homePageReducer = homePageSlice.reducer;
 
-export const getSearch = (state: RootState) => state.homePage.search;
-export const getIsSearchSyncronizedWithLS = (state: RootState) =>
-  state.homePage.isSearchSyncronizedWithLS;
+export const getIsSearchSyncronized = (state: RootState) =>
+  state.homePage.isSearchSyncronized;
 export const getIsItemsLoading = (state: RootState) =>
   state.homePage.isItemsLoading;
 export const getPagesNumber = (state: RootState) => state.homePage.pagesNumber;
