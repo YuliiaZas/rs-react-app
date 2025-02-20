@@ -4,7 +4,7 @@ import {
   Navigate,
   RouterProvider,
 } from 'react-router-dom';
-import { HomeSearchProvider, ThemeProvider } from '@context';
+import { HomeSearchParamsProvider, ThemeProvider } from '@context';
 import { HomePage, HomePageDetails } from '@home-page';
 import { ErrorComponent, ThemeSwitcher } from '@lib';
 import { store } from '@store';
@@ -19,9 +19,9 @@ const router = createBrowserRouter([
   {
     path: PATH_VALUE.HOME,
     element: (
-      <HomeSearchProvider>
+      <HomeSearchParamsProvider>
         <HomePage />
-      </HomeSearchProvider>
+      </HomeSearchParamsProvider>
     ),
     errorElement: <ErrorComponent showButton={true} />,
     children: [
