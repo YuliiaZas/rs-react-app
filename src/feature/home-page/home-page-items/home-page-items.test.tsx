@@ -1,5 +1,5 @@
-import { MemoryRouter, Route, Routes, useParams } from 'react-router-dom';
 import { Provider } from 'react-redux';
+import { MemoryRouter, Route, Routes, useParams } from 'react-router-dom';
 import { act, render } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 import {
@@ -12,8 +12,8 @@ import {
 import { store } from '@store';
 import { CurrentSearchParams, PATH_VALUE, text } from '@utils';
 import { useFetchItemsQuery } from '../store/home-page-api.slice';
-import { HomePageItems } from './home-page-items';
 import { selectItem, unselectItem } from '../store/home-page.slice';
+import { HomePageItems } from './home-page-items';
 
 const locationSearch = `?search=${mockSearchValue}`;
 const mockDetailsComponentText = 'Details Page for';
@@ -27,8 +27,8 @@ const MockDetailsComponent = () => {
   );
 };
 
-vi.mock('react-router-dom', async () => {
-  const actual = await import('react-router-dom');
+vi.mock('react-router-dom', async (importOriginal) => {
+  const actual = (await importOriginal()) as object;
   return {
     ...actual,
     useLocation: () => ({ search: locationSearch }),

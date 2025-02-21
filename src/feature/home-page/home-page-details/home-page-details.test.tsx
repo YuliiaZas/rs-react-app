@@ -1,23 +1,20 @@
-import { fireEvent, render } from '@testing-library/react';
-import {
-  MemoryRouter,
-  Route,
-  Routes,
-  useOutletContext,
-} from 'react-router-dom';
-import { describe, expect, it, Mock, vi } from 'vitest';
-import { text } from '@utils';
-import { HomePageDetails } from './home-page-details';
-import { mockItems, mockItemsFormatted } from '@mock';
-import { useFetchItemQuery } from '../store/home-page-api.slice';
 import { Provider } from 'react-redux';
+import { MemoryRouter } from 'react-router-dom';
+import { fireEvent, render } from '@testing-library/react';
+import { describe, expect, it, Mock, vi } from 'vitest';
+import { mockItems, mockItemsFormatted } from '@mock';
 import { store } from '@store';
+import { text } from '@utils';
+import { useFetchItemQuery } from '../store/home-page-api.slice';
+import { HomePageDetails } from './home-page-details';
+
+const mockCloseFn = vi.fn();
 
 vi.mock('react-router-dom', async (importOriginal) => {
-  const actual = (await importOriginal()) as Record<string, unknown>;
+  const actual = (await importOriginal()) as object;
   return {
     ...actual,
-    useOutletContext: vi.fn(),
+    useOutletContext: () => ({ closeFn: mockCloseFn }),
   };
 });
 
@@ -42,8 +39,6 @@ const mockFetchResponce = {
 
 describe('HomePageDetails', () => {
   const fetchSpy = useFetchItemQuery as Mock;
-  const mockCloseFn = vi.fn();
-  (useOutletContext as Mock).mockReturnValue({ closeFn: mockCloseFn });
 
   it('should render spinner while data loading', () => {
     fetchSpy.mockReturnValue({
@@ -54,9 +49,7 @@ describe('HomePageDetails', () => {
     const { getByRole } = render(
       <Provider store={store}>
         <MemoryRouter>
-          <Routes>
-            <Route path="/" element={<HomePageDetails />} />
-          </Routes>
+          <HomePageDetails />
         </MemoryRouter>
       </Provider>
     );
@@ -70,9 +63,7 @@ describe('HomePageDetails', () => {
     const { getByText } = render(
       <Provider store={store}>
         <MemoryRouter>
-          <Routes>
-            <Route path="/" element={<HomePageDetails />} />
-          </Routes>
+          <HomePageDetails />
         </MemoryRouter>
       </Provider>
     );
@@ -107,9 +98,7 @@ describe('HomePageDetails', () => {
     const { getByText } = render(
       <Provider store={store}>
         <MemoryRouter>
-          <Routes>
-            <Route path="/" element={<HomePageDetails />} />
-          </Routes>
+          <HomePageDetails />
         </MemoryRouter>
       </Provider>
     );
@@ -126,9 +115,7 @@ describe('HomePageDetails', () => {
     const { getByText } = render(
       <Provider store={store}>
         <MemoryRouter>
-          <Routes>
-            <Route path="/" element={<HomePageDetails />} />
-          </Routes>
+          <HomePageDetails />
         </MemoryRouter>
       </Provider>
     );
@@ -142,9 +129,7 @@ describe('HomePageDetails', () => {
     const { getByLabelText } = render(
       <Provider store={store}>
         <MemoryRouter>
-          <Routes>
-            <Route path="/" element={<HomePageDetails />} />
-          </Routes>
+          <HomePageDetails />
         </MemoryRouter>
       </Provider>
     );

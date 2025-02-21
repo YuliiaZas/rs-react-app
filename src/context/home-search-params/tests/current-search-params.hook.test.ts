@@ -1,10 +1,10 @@
-import { MemoryRouter, useSearchParams } from 'react-router';
+import { MemoryRouter, useSearchParams } from 'react-router-dom';
 import { act, renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 import { useCurrentSearchParams } from '../current-search-params.hook';
 
-vi.mock('react-router', async () => {
-  const actual = await import('react-router');
+vi.mock('react-router-dom', async () => {
+  const actual = await import('react-router-dom');
   return {
     ...actual,
     useSearchParams: vi.fn(),
