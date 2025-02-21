@@ -5,9 +5,7 @@
 
 .list-item-wrapper {
   display: flex;
-  /* gap: 0.5rem; */
   align-items: center;
-  /* align-items: stretch; */
   margin-block: 0.5rem;
 }
 

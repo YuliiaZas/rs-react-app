@@ -21,13 +21,21 @@ describe('Pagination', () => {
     expect(buttons).toHaveLength(1);
   });
 
+  it('should not render any page button in case of passed pagesNumber equal null', () => {
+    const { queryByRole } = render(
+      <Pagination pagesNumber={null} onClick={onClickMock} />
+    );
+    const button = queryByRole('button');
+    expect(button).not.toBeInTheDocument();
+  });
+
   it('should call onClick with the correct page number', () => {
     const { getByText } = render(
       <Pagination pagesNumber={5} onClick={onClickMock} />
     );
     const button = getByText('3');
     fireEvent.click(button);
-    expect(onClickMock).toHaveBeenCalledWith('3');
+    expect(onClickMock).toHaveBeenCalledWith('3', expect.anything());
   });
 
   it('should apply the active class to the current page', () => {
