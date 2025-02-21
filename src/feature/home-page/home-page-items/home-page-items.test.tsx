@@ -4,16 +4,23 @@ import { act, render } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 import {
   mockFetchItemsResult,
+  mockFetchItemsResultLastPage,
   mockItems,
   mockItemsFormatted,
   mockItemsIds,
+  mockPageNumber,
   mockSearchValue,
 } from '@mock';
 import { store } from '@store';
 import { CurrentSearchParams, PATH_VALUE, text } from '@utils';
 import { useFetchItemsQuery } from '../store/home-page-api.slice';
-import { selectItem, unselectItem } from '../store/home-page.slice';
+import {
+  selectItem,
+  setPagesNumber,
+  unselectItem,
+} from '../store/home-page.slice';
 import { HomePageItems } from './home-page-items';
+import { useHomeSearch } from '@context';
 
 const locationSearch = `?search=${mockSearchValue}`;
 const mockDetailsComponentText = 'Details Page for';
@@ -56,7 +63,7 @@ vi.mock('@context', async (importOriginal) => {
   const actual = (await importOriginal()) as object;
   return {
     ...actual,
-    useHomeSearch: () => [{ search: mockSearchValue } as CurrentSearchParams],
+    useHomeSearch: vi.fn(),
   };
 });
 
@@ -70,9 +77,13 @@ const mockFetchResponce = {
 
 describe('HomePageItems', () => {
   const fetchSpy = useFetchItemsQuery as Mock;
+  const paramsSpy = useHomeSearch as Mock;
 
   beforeEach(() => {
     vi.spyOn(store, 'dispatch');
+    paramsSpy.mockReturnValue([
+      { search: mockSearchValue } as CurrentSearchParams,
+    ]);
   });
 
   afterEach(() => {
@@ -80,6 +91,7 @@ describe('HomePageItems', () => {
   });
 
   it('should render title', async () => {
+    paramsSpy.mockReturnValue([{ search: mockSearchValue }]);
     fetchSpy.mockReturnValue(mockFetchResponce);
     const { getByText } = render(
       <Provider store={store}>
@@ -91,6 +103,19 @@ describe('HomePageItems', () => {
     expect(
       getByText(`${text.homePage.resultTitleSearch} "${mockSearchValue}"`)
     ).toBeInTheDocument();
+  });
+
+  it('should render title for full list of items', async () => {
+    paramsSpy.mockReturnValue([{ search: '' } as CurrentSearchParams]);
+    fetchSpy.mockReturnValue(mockFetchResponce);
+    const { getByText } = render(
+      <Provider store={store}>
+        <MemoryRouter>
+          <HomePageItems locationSearch={locationSearch} />
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(getByText(text.homePage.resultTitleFull)).toBeInTheDocument();
   });
 
   it('should not render title while loading', async () => {
@@ -125,6 +150,7 @@ describe('HomePageItems', () => {
     expect(
       getByText(text.homePage.loadingErrorMessageInfo)
     ).toBeInTheDocument();
+    expect(store.dispatch).toHaveBeenCalledWith(setPagesNumber(mockPageNumber));
   });
 
   it('should render empty result message when no items', () => {
@@ -143,9 +169,10 @@ describe('HomePageItems', () => {
       </Provider>
     );
     expect(getByText(text.homePage.emptyList)).toBeInTheDocument();
+    expect(store.dispatch).toHaveBeenCalledWith(setPagesNumber(null));
   });
 
-  it('should render items', async () => {
+  it('should render items with correct page buttons number', async () => {
     fetchSpy.mockReturnValue(mockFetchResponce);
     const { getByText } = render(
       <Provider store={store}>
@@ -156,6 +183,29 @@ describe('HomePageItems', () => {
     );
     expect(getByText(mockItems[0].name)).toBeInTheDocument();
     expect(getByText(mockItems[1].name)).toBeInTheDocument();
+    expect(store.dispatch).toHaveBeenCalledWith(setPagesNumber(mockPageNumber));
+  });
+
+  it('should render correct number of pagination buttons when it is the last page', async () => {
+    fetchSpy.mockReturnValue({
+      ...mockFetchResponce,
+      data: mockFetchItemsResultLastPage,
+    });
+    paramsSpy.mockReturnValue([
+      {
+        search: mockSearchValue,
+        page: mockPageNumber.toString(),
+      },
+    ]);
+    render(
+      <Provider store={store}>
+        <MemoryRouter>
+          <HomePageItems locationSearch={locationSearch} />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(store.dispatch).toHaveBeenCalledWith(setPagesNumber(mockPageNumber));
   });
 
   it('should handle item selection', async () => {
@@ -175,14 +225,17 @@ describe('HomePageItems', () => {
       `label[for="${mockItemsIds[0]}"]`
     );
 
-    checkboxLabel?.click();
+    act(() => {
+      checkboxLabel?.click();
+    });
     expect(checkbox).toBeChecked();
 
     expect(store.dispatch).toHaveBeenCalledWith(
       selectItem({ item: mockItemsFormatted[0], id: mockItemsIds[0] })
     );
-
-    checkboxLabel?.click();
+    act(() => {
+      checkboxLabel?.click();
+    });
     expect(checkbox).not.toBeChecked();
     expect(store.dispatch).toHaveBeenCalledWith(
       unselectItem({ id: mockItemsIds[0] })

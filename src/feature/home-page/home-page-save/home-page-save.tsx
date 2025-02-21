@@ -8,7 +8,7 @@ import {
 } from '../store/home-page.slice';
 import './home-page-save.css';
 
-const HomePageSave: FunctionComponent = () => {
+export const HomePageSave: FunctionComponent = () => {
   const [link, setLink] = useState('');
   const [fileName, setFileName] = useState('');
 
@@ -97,5 +97,3 @@ const HomePageSave: FunctionComponent = () => {
     </div>
   );
 };
-
-export default HomePageSave;

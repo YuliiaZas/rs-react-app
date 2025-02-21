@@ -6,8 +6,8 @@ import { Pagination, Spinner } from '@lib';
 import { PATH_VALUE, text } from '@utils';
 import { HomePageItems } from './home-page-items/home-page-items';
 import { HomePageDetailsProps } from './home-page-details/home-page-details';
-import HomePageSave from './home-page-save/home-page-save';
-import HomePageSearch from './home-page-search/home-page-search';
+import { HomePageSave } from './home-page-save/home-page-save';
+import { HomePageSearch } from './home-page-search/home-page-search';
 import { getIsItemsLoading, getPagesNumber } from './store/home-page.slice';
 import './home-page.css';
 

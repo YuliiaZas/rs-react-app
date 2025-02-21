@@ -3,7 +3,7 @@ import { useHomeSearch } from '@context';
 import { Search } from '@lib';
 import { text } from '@utils';
 
-const HomePageSearch: FunctionComponent = () => {
+export const HomePageSearch: FunctionComponent = () => {
   const [searchParams, setSearchParams] = useHomeSearch();
 
   const updateSearchValue = (currentSearchValue: string) => {
@@ -22,5 +22,3 @@ const HomePageSearch: FunctionComponent = () => {
     />
   );
 };
-
-export default HomePageSearch;

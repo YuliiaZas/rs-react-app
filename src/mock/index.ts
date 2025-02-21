@@ -62,10 +62,23 @@ export const mockFetchItemsResult: SearchResultFormatted<
   PeopleFormatted
 > = {
   count: 5,
-  next: 'url/1',
-  previous: 'url/3',
+  previous: 'url/1',
+  next: 'url/3',
   results: [...mockItems],
   itemsFormatted: [...mockItemsFormatted],
+};
+
+export const mockPageNumber = 3;
+
+export const mockFetchItemsResultLastPage: SearchResultFormatted<
+  People,
+  PeopleFormatted
+> = {
+  count: 5,
+  previous: 'url/2',
+  next: '',
+  results: [mockItems[0]],
+  itemsFormatted: [mockItemsFormatted[0]],
 };
 
 export const mockErrorComponentText = 'Mocked Error Component';
