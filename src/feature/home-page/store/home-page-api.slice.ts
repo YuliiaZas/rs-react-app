@@ -6,18 +6,16 @@ import {
   PeopleFormatted,
   PeopleUnknown,
   SearchResult,
+  SearchResultFormatted,
 } from '@utils';
 
 export const apiSlice = createApi({
   reducerPath: '/api/people',
   baseQuery: fetchBaseQuery({ baseUrl: '/api/people' }),
   endpoints: (builder) => ({
-    fetchItems: builder.query<
-      SearchResult<People> & { itemsFormatted: PeopleFormatted[] },
-      CurrentSearchParams
-    >({
+    fetchItems: builder.query<SearchResultFormatted, CurrentSearchParams>({
       query: (paramsValue) => `?${new URLSearchParams(paramsValue)}`,
-      transformResponse: (searchResult: SearchResult<People>) => {
+      transformResponse: (searchResult: SearchResult) => {
         return {
           ...searchResult,
           itemsFormatted: searchResult.results.map((item: People) =>
