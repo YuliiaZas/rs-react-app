@@ -93,6 +93,7 @@ export const HomePageSave: FunctionComponent = () => {
         download={fileName}
         ref={downloadRef}
         aria-hidden="true"
+        role="link"
       ></a>
     </div>
   );
