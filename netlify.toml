@@ -1,5 +1,7 @@
-[headers.values]
-  HEADER_PLACEHOLDER = "api"
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Custom-Header = "HEADER_PLACEHOLDER"
 
 [[redirects]]
   from = "/api/*"
