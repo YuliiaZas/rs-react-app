@@ -9,4 +9,4 @@
   force = true
 
 [build]
-  command = "sed -i \"s|NETLIFY_PLACEHOLDER_API_URL|${API_URL}|g\" netlify.toml && npm run build"
+  command = "sed -i \"s|NETLIFY_PLACEHOLDER_API_URL|${API_URL}|g\" netlify.toml && echo 'Placeholder replacement completed. New value: '${API_URL} && npm run build"
