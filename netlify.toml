@@ -1,9 +1,10 @@
 [[redirects]]
-  from = "/api/people"
-  to = "https://swapi.dev/api/people"
+  from = "/api/*"
+  to = "${API_URL}/:splat"
   force = true
 
 [[redirects]]
-  from = "/api/people/:id"
-  to = "https://swapi.dev/api/people/:id"
+  from = "/*"
+  to = "/index.html"
+  status = 200
   force = true
