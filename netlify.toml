@@ -1,11 +1,7 @@
-[[redirects]]
-  from = "/api/people"
-  to = "https://swapi.dev/api/people"
-  status = 200
-  force = true
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Custom-Header = "NETLIFY_PLACEHOLDER_API_URL"
 
-[[redirects]]
-  from = "/api/people/:id"
-  to = "https://swapi.dev/api/people/:id"
-  status = 200
-  force = true
+[build]
+  command = "sed -i \"s|NETLIFY_PLACEHOLDER_API_URL|${API_URL}|g\" netlify.toml && echo 'Placeholder replacement completed. New value: '${API_URL} && npm run build"
