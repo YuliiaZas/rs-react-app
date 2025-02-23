@@ -1,4 +1,4 @@
 [[redirects]]
   from = "/api/*"
-  to = "${API_URL}/:splat"
+  to = "$API_URL/:splat"
   force = true
