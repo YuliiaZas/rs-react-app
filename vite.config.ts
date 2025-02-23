@@ -15,10 +15,6 @@ export default defineConfig({
       '@store': path.resolve(__dirname, 'src/store'),
       '@utils': path.resolve(__dirname, 'src/utils'),
       '@home-page': path.resolve(__dirname, 'src/feature/home-page'),
-      '@error-boundary': path.resolve(
-        __dirname,
-        'src/feature/error-boundary/error-boundary.tsx'
-      ),
     },
   },
   server: {

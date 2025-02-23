@@ -10,7 +10,7 @@ import {
 } from '@utils';
 
 export const apiSlice = createApi({
-  reducerPath: '/api/people',
+  reducerPath: '/api/homePage',
   baseQuery: fetchBaseQuery({ baseUrl: '/api/people' }),
   endpoints: (builder) => ({
     fetchItems: builder.query<SearchResultFormatted, CurrentSearchParams>({
