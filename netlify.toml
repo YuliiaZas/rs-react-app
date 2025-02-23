@@ -1,4 +1,10 @@
+[headers.values]
+  HEADER_PLACEHOLDER = "api"
+
 [[redirects]]
   from = "/api/*"
-  to = "$API_URL/:splat"
+  to = "HEADER_PLACEHOLDER/:splat"
   force = true
+
+[build]
+command = "sed -i \"s|HEADER_PLACEHOLDER|${API_URL}|g\" netlify.toml && yarn build"
