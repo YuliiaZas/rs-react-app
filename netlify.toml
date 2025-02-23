@@ -4,14 +4,8 @@
     X-Custom-Header = "NETLIFY_PLACEHOLDER_API_URL"
 
 [[redirects]]
-  from = "/api/people"
-  to = "NETLIFY_PLACEHOLDER_API_URL/people"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/api/people/:id"
-  to = "NETLIFY_PLACEHOLDER_API_URL/people/:id"
+  from = "/api/*"
+  to = "NETLIFY_PLACEHOLDER_API_URL/:splat"
   status = 200
   force = true
 
