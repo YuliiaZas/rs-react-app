@@ -1,12 +1,12 @@
 [[headers]]
   for = "/*"
   [headers.values]
-    X-Custom-Header = "HEADER_PLACEHOLDER"
+    X-Custom-Header = "NETLIFY_PLACEHOLDER_API_URL"
 
 [[redirects]]
   from = "/api/*"
-  to = "HEADER_PLACEHOLDER/:splat"
+  to = "NETLIFY_PLACEHOLDER_API_URL/:splat"
   force = true
 
 [build]
-command = "sed -i \"s|HEADER_PLACEHOLDER|${API_URL}|g\" netlify.toml && yarn build"
+command = "sed -i \"s|NETLIFY_PLACEHOLDER_API_URL|$API_URL|g\" netlify.toml && yarn build"
