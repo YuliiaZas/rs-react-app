@@ -9,4 +9,5 @@
   force = true
 
 [build]
-command = "sed -i \"s|NETLIFY_PLACEHOLDER_API_URL|$API_URL|g\" netlify.toml && yarn build"
+  command = "sed -i \"s|NETLIFY_PLACEHOLDER_API_URL|$API_URL|g\" netlify.toml && npm run build"
+  
