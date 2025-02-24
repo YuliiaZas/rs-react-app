@@ -6,7 +6,7 @@
   --input-padding-inline-default: 0.75rem;
   --border-transparent: 2px solid transparent;
   --border-radius: 0.5rem;
-  --min-tap-size: 44px;
+  --min-tap-size: 2.75rem;
   
   &:has(.theme-dark) {
     --theme-color: var(--theme-color-dark);

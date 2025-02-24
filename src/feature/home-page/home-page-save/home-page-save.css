@@ -1,7 +1,7 @@
 .save-wrapper {
-  position: sticky;
+  position: fixed;
   bottom: 3rem;
-  left: 0.5rem;
+  margin-left: 0.5rem;
   padding: 1rem 0.5rem;
   width: min-content;
   background-color: var(--secondary-bg);

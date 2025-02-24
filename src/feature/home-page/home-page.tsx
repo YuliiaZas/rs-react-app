@@ -64,7 +64,7 @@ export const HomePage: FC = () => {
     <>
       <div className="home-wrapper">
         <main className="home-main" onClick={handleGlobalHomePageClick}>
-          <section className="home-seach">
+          <section className="home-search">
             <HomePageSearch />
           </section>
           <section className="home-content">

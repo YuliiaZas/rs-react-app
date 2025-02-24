@@ -15,11 +15,15 @@
   flex-direction: column;
 }
 
-.home-seach {
+.home-search {
   display: flex;
   justify-content: center;
   align-items: end;
   flex: 0 0 8rem;
+
+  @media (max-width: 767px) {
+    flex-basis: 6.5rem;
+  }
 
   .search-wrapper {
     margin-bottom: 1rem;

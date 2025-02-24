@@ -17,6 +17,11 @@ input {
 
   input {
     width: var(--input-width);
+    max-width: 100%;
+
+    &:placeholder-shown {
+      text-overflow: ellipsis;
+    }
   }
 
   .icon-right,
