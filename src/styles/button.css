@@ -1,0 +1,35 @@
+button {
+  height: var(--min-tap-size);
+
+  &.button-icon {
+    width: var(--min-tap-size);
+  }
+
+  @media (min-width: 768px) {
+    white-space: nowrap;
+
+    &:not(.button-icon) {
+      padding-inline: 1.2em;
+    }
+  }
+}
+
+.button-with-icon {
+  text-align: start;
+
+  i {
+    display: inline-block;
+    width: 1.25em;
+    text-align: center;
+    margin-right: 0.25rem;
+  }
+
+  @media (max-width: 767px) {
+    width: var(--min-tap-size);
+    text-align: center;
+
+    i + * {
+      display: none;
+    }
+  }
+}

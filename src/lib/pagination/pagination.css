@@ -2,13 +2,6 @@
   text-align: center;
 }
 
-button.pagination-button {
+.pagination-button {
   margin: 0.25rem;
-  &:hover {
-    outline: 2px solid bisque;
-  }
-
-  &.active {
-    outline: 2px solid aqua;
-  }
 }

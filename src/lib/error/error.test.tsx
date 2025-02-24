@@ -6,10 +6,13 @@ import { ErrorComponent } from './error';
 
 const mockNavigate = vi.fn();
 
-vi.mock('react-router', () => ({
-  ...vi.importActual('react-router'),
-  useNavigate: () => mockNavigate,
-}));
+vi.mock('react-router-dom', async (importOriginal) => {
+  const actual = (await importOriginal()) as object;
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
+});
 
 describe('ErrorComponent', () => {
   it('should render default error message', () => {

@@ -1,13 +1,14 @@
-import { FC } from 'react';
+import React, { FC } from 'react';
 import './pagination.css';
 
 interface PaginationProps {
-  pagesNumber: number;
+  pagesNumber: number | null;
   currentPage?: string;
-  onClick: (page: string) => void;
+  onClick: (page: string, e: React.MouseEvent) => void;
 }
 
-const getPagesArray = (pagesNumber: number): string[] => {
+const getPagesArray = (pagesNumber: number | null): string[] => {
+  if (pagesNumber === null) return [];
   return Array.from({ length: pagesNumber || 1 }, (_, i) => (i + 1).toString());
 };
 
@@ -27,8 +28,8 @@ export const Pagination: FC<PaginationProps> = ({
       {pagesArray.map((page) => (
         <button
           key={page}
-          onClick={() => onClick(page)}
-          className={`pagination-button ${currentPage === page ? 'active' : ''}`}
+          onClick={(e) => onClick(page, e)}
+          className={`pagination-button button-icon state ${currentPage === page ? 'active' : ''}`}
         >
           {page}
         </button>

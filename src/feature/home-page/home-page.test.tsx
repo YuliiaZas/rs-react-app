@@ -1,23 +1,10 @@
-import { act, fireEvent, render, waitFor } from '@testing-library/react';
+import { act, fireEvent, render } from '@testing-library/react';
 import { HomePage } from './home-page';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { People, SearchResult, text } from '@utils';
-import { CurrentSearchParams } from '@hooks';
-import { peopleService } from '@services';
-import { mockErrorComponentText, mockItems } from '@mock';
-
-const fetchResult: SearchResult<People> = {
-  results: mockItems,
-  next: '2',
-  previous: '',
-  count: 5,
-};
-
-const fetchResultLastPage: SearchResult<People> = {
-  ...fetchResult,
-  next: '',
-  count: 2,
-};
+import { CurrentSearchParams } from '@utils';
+import { mockSearchValue } from '@mock';
+import { Provider } from 'react-redux';
+import { RootState, store } from '@store';
 
 const mockRouterDataInitial = {
   path: '/',
@@ -27,14 +14,14 @@ const mockRouterDataInitial = {
 
 let mockRouterData = { ...mockRouterDataInitial };
 
+const mockCurrentPageParam = '1';
+let mockParams: CurrentSearchParams = {
+  search: mockSearchValue,
+  page: mockCurrentPageParam,
+};
+
 const mockHomePageItemsComponentText = 'Mocked Home Page Items';
 const mockHomePageDetailsComponentText = 'Mocked Home Page Details';
-
-const searchValue = 'Luke';
-
-vi.mock('@lib/error/error', () => ({
-  ErrorComponent: vi.fn(() => <div>{mockErrorComponentText}</div>),
-}));
 
 vi.mock('./home-page-items/home-page-items', () => ({
   HomePageItems: ({ title }: { title: string }) => (
@@ -44,19 +31,27 @@ vi.mock('./home-page-items/home-page-items', () => ({
   ),
 }));
 
-vi.mock('@services/home-page.service.ts', () => ({
-  peopleService: {
-    getItems: () => Promise.resolve(fetchResult),
-  },
-}));
+vi.mock('@context', async (importOriginal) => {
+  const actual = (await importOriginal()) as object;
+  return {
+    ...actual,
+    useHomeSearch: () => [
+      { search: mockSearchValue } as CurrentSearchParams,
+      (value: CurrentSearchParams) => {
+        mockParams = value;
+      },
+    ],
+  };
+});
 
-vi.mock('@hooks/current-search-params.hook.ts', () => ({
-  useCurrentSearchParams: () => [
-    mockRouterData.searchParams,
-    (x: CurrentSearchParams) =>
-      (mockRouterData = { ...mockRouterData, searchParams: x }),
-  ],
-}));
+vi.mock('@store', async (importOriginal) => {
+  const actual = (await importOriginal()) as object;
+  return {
+    ...actual,
+    dispatch: vi.fn(),
+    getState: vi.fn(),
+  };
+});
 
 vi.mock('react-router-dom', async () => {
   const actual = await import('react-router-dom');
@@ -68,110 +63,52 @@ vi.mock('react-router-dom', async () => {
   };
 });
 
-describe('HomePage', async () => {
+describe('HomePage', () => {
   beforeEach(() => {
     mockRouterData = { ...mockRouterDataInitial };
   });
 
-  it('should render default title for HomePageItems when search value is empty', async () => {
-    const { getByText } = await act(async () => render(<HomePage />));
-
-    expect(
-      getByText(
-        `${text.homePage.resultTitleFull}. ${mockHomePageItemsComponentText}`
-      )
-    ).toBeInTheDocument();
-  });
-
-  it('should render Outlet', async () => {
-    const { getByText } = await act(async () => render(<HomePage />));
+  it('should render Outlet', () => {
+    const { getByText } = render(
+      <Provider store={store}>
+        <HomePage />
+      </Provider>
+    );
 
     expect(getByText(mockHomePageDetailsComponentText)).toBeInTheDocument();
   });
 
-  it('should update search value', async () => {
-    const { getByPlaceholderText, getByText, rerender } = await act(async () =>
-      render(<HomePage />)
+  it('should render spinner while fetching data', () => {
+    const { getByRole } = render(
+      <Provider store={store}>
+        <HomePage />
+      </Provider>
     );
-    const searchInput = getByPlaceholderText(
-      text.homePage.searchPlaceholder
-    ) as HTMLInputElement;
-    act(() => {
-      fireEvent.change(searchInput, { target: { value: searchValue } });
-    });
 
-    expect(searchInput.value).toBe(searchValue);
-
-    act(() => {
-      fireEvent.click(getByText(text.search.button));
-    });
-
-    expect(mockRouterData.searchParams).toStrictEqual({ search: searchValue });
-    rerender(<HomePage />);
-
-    await waitFor(() => {
-      expect(
-        getByText(
-          `${text.homePage.resultTitleSearch} "${searchValue}". ${mockHomePageItemsComponentText}`
-        )
-      ).toBeInTheDocument();
-    });
-  });
-
-  it('should fetch data on search button click if search value have not been changed', async () => {
-    vi.spyOn(peopleService, 'getItems');
-    const { getByText } = await act(async () => render(<HomePage />));
-
-    act(() => {
-      fireEvent.click(getByText(text.search.button));
-    });
-
-    expect(peopleService.getItems).toHaveBeenCalled();
-  });
-
-  it('should render correct number of pagination buttons', async () => {
-    const result = await act(async () => render(<HomePage />));
-    const buttons =
-      result.container.getElementsByClassName('pagination-button');
-
-    expect(buttons.length).toBe(3);
+    expect(getByRole('status')).toBeInTheDocument();
   });
 
   it('should update page param on page button click', async () => {
+    vi.spyOn(store, 'getState').mockReturnValue({
+      homePage: {
+        isItemsLoading: false,
+        isSearchSyncronized: false,
+        pagesNumber: 3,
+        selectedItems: {},
+      },
+    } as RootState);
     const pageButtonText = '2';
-    const result = await act(async () => render(<HomePage />));
-
+    const result = await act(async () =>
+      render(
+        <Provider store={store}>
+          <HomePage />
+        </Provider>
+      )
+    );
+    expect(mockParams.page).toStrictEqual(mockCurrentPageParam);
     act(() => {
       fireEvent.click(result.getByText(pageButtonText));
     });
-
-    expect(mockRouterData.searchParams).toStrictEqual({ page: pageButtonText });
-  });
-
-  it('should render correct number of pagination buttons when it the last page', async () => {
-    vi.spyOn(peopleService, 'getItems').mockReturnValue(
-      Promise.resolve(fetchResultLastPage)
-    );
-
-    const result = await act(async () => render(<HomePage />));
-    const buttons =
-      result.container.getElementsByClassName('pagination-button');
-
-    expect(buttons.length).toBe(1);
-  });
-
-  it('should render error component on fetch error', async () => {
-    vi.spyOn(peopleService, 'getItems').mockReturnValue(Promise.reject());
-    const { getByText } = await act(async () => render(<HomePage />));
-
-    expect(getByText(mockErrorComponentText)).toBeInTheDocument();
-  });
-
-  it('should render spinner while fetching data', async () => {
-    const { getByRole } = render(<HomePage />);
-
-    await waitFor(() => {
-      expect(getByRole('status')).toBeInTheDocument();
-    });
+    expect(mockParams.page).toStrictEqual(pageButtonText);
   });
 });

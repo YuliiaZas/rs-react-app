@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { text } from '@utils';
 import './error.css';
 
@@ -29,16 +29,18 @@ export const ErrorComponent: FC<ErrorComponentProps> = ({
   };
 
   return (
-    <div className="error-wrapper">
-      <p className="error-message">{errorMessage}</p>
-      {errorMessageInfo && (
-        <p className="error-message-info">{errorMessageInfo}</p>
-      )}
-      {showButton && (
-        <button className="error-button" onClick={handleClick}>
-          {buttonMessage}
-        </button>
-      )}
+    <div className="error-container">
+      <div className="error-wrapper">
+        <p className="error-message">{errorMessage}</p>
+        {errorMessageInfo && (
+          <p className="error-message-info">{errorMessageInfo}</p>
+        )}
+        {showButton && (
+          <button className="error-button" onClick={handleClick}>
+            {buttonMessage}
+          </button>
+        )}
+      </div>
     </div>
   );
 };

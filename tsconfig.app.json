@@ -1,21 +1,20 @@
 {
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
-    "target": "ES2020",
+    "target": "ES2021",
     "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "lib": ["ES2021", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
     "baseUrl": "./src",
     "paths": {
+      "@context": ["context/index.ts"],
       "@hooks": ["hooks/index.ts"],
       "@lib": ["lib/index.ts"],
-      "@loaders": ["loaders/index.ts"],
       "@mock": ["mock/index.ts"],
-      "@services": ["services/index.ts"],
+      "@store": ["store/index.ts"],
       "@utils": ["utils/index.ts"],
       "@home-page": ["feature/home-page/index.ts"],
-      "@error-boundary": ["feature/error-boundary/error-boundary.tsx"]
     },
 
     /* Bundler mode */

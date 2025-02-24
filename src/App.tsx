@@ -1,13 +1,15 @@
+import { Provider } from 'react-redux';
 import {
   createBrowserRouter,
   Navigate,
   RouterProvider,
 } from 'react-router-dom';
+import { HomeSearchParamsProvider, ThemeProvider } from '@context';
 import { HomePage, HomePageDetails } from '@home-page';
-import { ErrorComponent } from '@lib';
-import { detailsLoader } from '@loaders';
+import { ErrorComponent, ThemeSwitcher } from '@lib';
+import { store } from '@store';
 import { PATH_VALUE, text } from '@utils';
-import './App.css';
+import './app.css';
 
 const router = createBrowserRouter([
   {
@@ -16,12 +18,15 @@ const router = createBrowserRouter([
   },
   {
     path: PATH_VALUE.HOME,
-    element: <HomePage />,
+    element: (
+      <HomeSearchParamsProvider>
+        <HomePage />
+      </HomeSearchParamsProvider>
+    ),
     errorElement: <ErrorComponent showButton={true} />,
     children: [
       {
         path: `${PATH_VALUE.HOME}/:searchId`,
-        loader: detailsLoader,
         element: <HomePageDetails />,
       },
     ],
@@ -39,5 +44,24 @@ const router = createBrowserRouter([
 ]);
 
 export const App = () => {
-  return <RouterProvider router={router} />;
+  return (
+    <Provider store={store}>
+      <ThemeProvider>
+        <div className="app-wrapper">
+          <header className="app-header">
+            <ThemeSwitcher></ThemeSwitcher>
+          </header>
+          <div className="app-content">
+            <RouterProvider router={router} />
+          </div>
+          <footer className="app-footer">
+            Icons by&nbsp;
+            <a target="_blank" href="https://icons8.com" rel="noreferrer">
+              Icons8
+            </a>
+          </footer>
+        </div>
+      </ThemeProvider>
+    </Provider>
+  );
 };

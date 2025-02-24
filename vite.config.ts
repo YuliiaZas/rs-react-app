@@ -1,28 +1,26 @@
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import path from 'path';
+import dotenv from 'dotenv';
+dotenv.config();
 
 export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
+      '@context': path.resolve(__dirname, 'src/context'),
       '@hooks': path.resolve(__dirname, 'src/hooks'),
       '@lib': path.resolve(__dirname, 'src/lib'),
-      '@loaders': path.resolve(__dirname, 'src/loaders'),
       '@mock': path.resolve(__dirname, 'src/mock'),
-      '@services': path.resolve(__dirname, 'src/services'),
+      '@store': path.resolve(__dirname, 'src/store'),
       '@utils': path.resolve(__dirname, 'src/utils'),
       '@home-page': path.resolve(__dirname, 'src/feature/home-page'),
-      '@error-boundary': path.resolve(
-        __dirname,
-        'src/feature/error-boundary/error-boundary.tsx'
-      ),
     },
   },
   server: {
     proxy: {
       '/api': {
-        target: 'https://swapi.dev/api/',
+        target: process.env.VITE_API_URL,
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
