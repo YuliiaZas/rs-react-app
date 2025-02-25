@@ -14,7 +14,7 @@
       "@mock": ["mock/index.ts"],
       "@store": ["store/index.ts"],
       "@utils": ["utils/index.ts"],
-      "@home-page": ["feature/home-page/index.ts"],
+      "@home-page": ["feature/home-page/index.ts"]
     },
 
     /* Bundler mode */

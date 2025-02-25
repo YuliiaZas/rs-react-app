@@ -1,7 +1,8 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('../assets/fonts/icomoon.eot?4cm0se');
-  src:  url('../assets/fonts/icomoon.eot?4cm0se#iefix') format('embedded-opentype'),
+  src: url('../assets/fonts/icomoon.eot?4cm0se');
+  src:
+    url('../assets/fonts/icomoon.eot?4cm0se#iefix') format('embedded-opentype'),
     url('../assets/fonts/icomoon.ttf?4cm0se') format('truetype'),
     url('../assets/fonts/icomoon.woff?4cm0se') format('woff'),
     url('../assets/fonts/icomoon.svg?4cm0se#icomoon') format('svg');
@@ -10,7 +11,8 @@
   font-display: block;
 }
 
-[class^="icon-"], [class*=" icon-"] {
+[class^='icon-'],
+[class*=' icon-'] {
   /* use !important to prevent issues with browser extensions that change fonts */
   font-family: 'icomoon' !important;
   speak: never;
@@ -26,29 +28,29 @@
 }
 
 .icon-checkbox:before {
-  content: "\e900";
+  content: '\e900';
 }
 
 .icon-checkbox-checked:before {
-  content: "\e8ff";
+  content: '\e8ff';
 }
 
 .icon-search:before {
-  content: "\e90b";
+  content: '\e90b';
 }
 
 .icon-close:before {
-  content: "\e904";
+  content: '\e904';
 }
 
 .icon-save:before {
-  content: "\e903";
+  content: '\e903';
 }
 
 .icon-darth-vader:before {
-  content: "\e905";
+  content: '\e905';
 }
 
 .icon-baby-yoda:before {
-  content: "\e906";
+  content: '\e906';
 }

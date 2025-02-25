@@ -87,7 +87,7 @@ input {
   }
 }
 
-.state{
+.state {
   border: var(--border-transparent);
 
   &:hover,
@@ -104,13 +104,13 @@ input {
   }
 }
 
-.state-border{
+.state-border {
   border: 2px solid var(--state-bc);
   outline: none;
 
   &:hover,
   &:focus-visible {
-    border-color:var(--state-hover-bc);
+    border-color: var(--state-hover-bc);
     color: inherit;
   }
 

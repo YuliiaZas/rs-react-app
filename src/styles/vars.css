@@ -7,7 +7,7 @@
   --border-transparent: 2px solid transparent;
   --border-radius: 0.5rem;
   --min-tap-size: 2.75rem;
-  
+
   &:has(.theme-dark) {
     --theme-color: var(--theme-color-dark);
     --default-color: rgba(255, 255, 255, 0.87);
@@ -28,7 +28,7 @@
     --spinner-bg: #5d5151db;
     --spinner-c: #ffffff;
   }
-  
+
   &:has(.theme-light) {
     --theme-color: var(--theme-color-light);
     --default-color: #242424;
