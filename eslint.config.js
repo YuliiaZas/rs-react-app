@@ -7,15 +7,14 @@ import tseslint from 'typescript-eslint';
 import eslintPluginPrettier from 'eslint-plugin-prettier/recommended';
 import reactCompiler from 'eslint-plugin-react-compiler';
 
-export default tseslint.config(
-  { ignores: ['dist', 'coverage'] },
+export default [
+  js.configs.recommended,
+  ...tseslint.configs.strict,
+  eslintPluginPrettier,
+
   {
-    extends: [
-      js.configs.recommended,
-      ...tseslint.configs.strict,
-      eslintPluginPrettier,
-    ],
     files: ['**/*.{ts,tsx}'],
+    ignores: ['dist/**/*', 'coverage/**/*'],
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
@@ -42,11 +41,19 @@ export default tseslint.config(
           ignoreDeclarationSort: true,
         },
       ],
+      '@typescript-eslint/no-dynamic-delete': 'error',
     },
     settings: {
       react: {
         version: 'detect',
       },
     },
-  }
-);
+  },
+
+  {
+    files: ['src/feature/home-page/store/*.slice.ts'],
+    rules: {
+      '@typescript-eslint/no-dynamic-delete': 'off',
+    },
+  },
+];

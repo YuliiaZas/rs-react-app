@@ -34,7 +34,6 @@ const homePageSlice = createSlice({
       state.selectedItems[payload.id] = payload.item;
     },
     unselectItem(state, { payload }: PayloadAction<{ id: string }>) {
-      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete state.selectedItems[payload.id];
     },
     unselectAll(state) {
