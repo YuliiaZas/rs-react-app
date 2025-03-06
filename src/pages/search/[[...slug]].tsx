@@ -151,7 +151,7 @@ const HomePage: FC<HomePageProps> = (props) => {
           )}
         </aside>
       </div>
-      {isItemsLoading && <Spinner />}
+      {isItemsLoading && <Spinner global={true} />}
     </ScrollLayout>
   );
 };
