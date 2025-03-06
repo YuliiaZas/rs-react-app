@@ -13,7 +13,7 @@ export const Search: FC<SearchProps> = ({
   placeholder = text.search.placeholder,
   updateSearchValue,
 }) => {
-  const [currentValue, setCurrentValue] = useState<string>(initialSearchValue);
+  const [currentValue, setCurrentValue] = useState<string>('');
 
   useEffect(() => {
     setCurrentValue(initialSearchValue);
