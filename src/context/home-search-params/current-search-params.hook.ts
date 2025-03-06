@@ -1,24 +1,8 @@
-import { useCallback, useEffect } from 'react';
-import { useSearchParams } from 'react-router';
-import { setSearchIsSyncronized, unselectAll } from '@home-page';
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 import { useAppDispatch, useLocalStorage, useRunOnce } from '@hooks';
-import { CurrentSearchParams } from '@utils';
-
-function getFilteredParams(params: CurrentSearchParams): CurrentSearchParams {
-  return {
-    ...(params.search && { search: params.search }),
-    ...(params.page && { page: params.page }),
-  };
-}
-
-function getFilteredParamsFromQuery(
-  query: URLSearchParams
-): CurrentSearchParams {
-  return {
-    ...(query.get('search') && { search: query.get('search') as string }),
-    ...(query.get('page') && { page: query.get('page') as string }),
-  };
-}
+import { CurrentSearchParams, getFilteredParams } from '@utils';
+import { setIsItemsLoading, unselectAll } from '@store';
 
 export function useCurrentSearchParams(): [
   CurrentSearchParams,
@@ -26,7 +10,7 @@ export function useCurrentSearchParams(): [
 ] {
   const dispatch = useAppDispatch();
 
-  const [query, setQuery] = useSearchParams();
+  const router = useRouter();
 
   const [homePageSearchLS, setHomePageSearchLS] =
     useLocalStorage<CurrentSearchParams>({
@@ -36,28 +20,34 @@ export function useCurrentSearchParams(): [
 
   useRunOnce({
     fn: () => {
-      if (query.size === 0) {
-        setQuery(homePageSearchLS);
+      if (Object.entries(router.query).length === 0) {
+        router.replace({
+          query: getFilteredParams(homePageSearchLS),
+        });
+        dispatch(setIsItemsLoading(true));
       }
-      dispatch(setSearchIsSyncronized());
     },
   });
 
   useEffect(() => {
-    const filteredParams = getFilteredParamsFromQuery(query);
+    const filteredParams = getFilteredParams(router.query);
     if (JSON.stringify(filteredParams) !== JSON.stringify(homePageSearchLS)) {
       setHomePageSearchLS(filteredParams);
     }
-  }, [query, homePageSearchLS, setHomePageSearchLS]);
+  }, [router.query, homePageSearchLS, setHomePageSearchLS]);
 
   useEffect(() => {
     dispatch(unselectAll());
   }, [dispatch, homePageSearchLS.search]);
 
-  const setCurrentSearchParams = useCallback(
-    (params: CurrentSearchParams) => setQuery(getFilteredParams(params)),
-    [setQuery]
-  );
+  const setCurrentSearchParams: React.Dispatch<CurrentSearchParams> = (
+    params: CurrentSearchParams
+  ) => {
+    router.push({
+      pathname: router.pathname,
+      query: getFilteredParams(params),
+    });
+  };
 
   return [homePageSearchLS, setCurrentSearchParams];
 }

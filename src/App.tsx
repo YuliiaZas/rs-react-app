@@ -1,49 +1,42 @@
 import { Provider } from 'react-redux';
-import {
-  createBrowserRouter,
-  Navigate,
-  RouterProvider,
-} from 'react-router-dom';
-import { HomeSearchParamsProvider, ThemeProvider } from '@context';
-import { HomePage, HomePageDetails } from '@home-page';
-import { ErrorComponent, ThemeSwitcher } from '@lib';
+import { ThemeProvider } from '@context';
+import { ThemeSwitcher } from '@lib';
 import { store } from '@store';
-import { PATH_VALUE, text } from '@utils';
 import './app.css';
 
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <Navigate to={PATH_VALUE.HOME} />,
-  },
-  {
-    path: PATH_VALUE.HOME,
-    element: (
-      <HomeSearchParamsProvider>
-        <HomePage />
-      </HomeSearchParamsProvider>
-    ),
-    errorElement: <ErrorComponent showButton={true} />,
-    children: [
-      {
-        path: `${PATH_VALUE.HOME}/:searchId`,
-        element: <HomePageDetails />,
-      },
-    ],
-  },
-  {
-    path: '*',
-    element: (
-      <ErrorComponent
-        errorMessage={text.notFoundPage.errorMessage}
-        errorMessageInfo={text.notFoundPage.errorMessageInfo}
-        showButton={true}
-      />
-    ),
-  },
-]);
+// const router = createBrowserRouter([
+//   {
+//     path: '/',
+//     element: <Navigate to={PATH_VALUE.HOME} />,
+//   },
+//   {
+//     path: PATH_VALUE.HOME,
+//     element: (
+//       <HomeSearchParamsProvider>
+//         <HomePage />
+//       </HomeSearchParamsProvider>
+//     ),
+//     errorElement: <ErrorComponent showButton={true} />,
+//     children: [
+//       {
+//         path: `${PATH_VALUE.HOME}/:searchId`,
+//         element: <HomePageDetails />,
+//       },
+//     ],
+//   },
+//   {
+//     path: '*',
+//     element: (
+//       <ErrorComponent
+//         errorMessage={text.notFoundPage.errorMessage}
+//         errorMessageInfo={text.notFoundPage.errorMessageInfo}
+//         showButton={true}
+//       />
+//     ),
+//   },
+// ]);
 
-export const App = () => {
+const App = () => {
   return (
     <Provider store={store}>
       <ThemeProvider>
@@ -52,7 +45,7 @@ export const App = () => {
             <ThemeSwitcher></ThemeSwitcher>
           </header>
           <div className="app-content">
-            <RouterProvider router={router} />
+            {/* <RouterProvider router={router} /> */}
           </div>
           <footer className="app-footer">
             Icons by&nbsp;
@@ -65,3 +58,4 @@ export const App = () => {
     </Provider>
   );
 };
+export default App;

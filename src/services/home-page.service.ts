@@ -1,21 +1,60 @@
-import { CurrentSearchParams } from '@hooks';
-import { People, peopleUnknown, PeopleUnknown, SearchResult } from '@utils';
+import {
+  CurrentSearchParams,
+  FetchResponce,
+  getPeopleFormatted,
+  isStringifiedNumberValid,
+  People,
+  PeopleFormatted,
+  PeopleUnknown,
+  SearchResult,
+  SearchResultFormatted,
+} from '@utils';
 
 class PeopleService {
-  baseUrl = '/api/people';
+  // baseUrl = '/api/people';
+  baseUrl = `${process.env.NEXT_PUBLIC_API_URL}/people`;
 
   async getItems(
     paramsValue: CurrentSearchParams
-  ): Promise<SearchResult<People>> {
+  ): Promise<FetchResponce<SearchResultFormatted>> {
     const params = new URLSearchParams(paramsValue);
-    const response = await fetch(`${this.baseUrl}?${params}`);
-    return await response.json();
+    try {
+      const url = `${this.baseUrl}?${params}`;
+      console.log(params, url);
+      const response = await fetch(`${this.baseUrl}?${params}`);
+      const searchResult: SearchResult = await response.json();
+      return {
+        data: {
+          ...searchResult,
+          itemsFormatted: searchResult.results.map((item: People) =>
+            getPeopleFormatted(item, false)
+          ),
+        },
+      };
+    } catch (error) {
+      console.log('Error occurs while fetching items: ', error);
+      return { error: error as Error };
+    }
   }
 
-  async getItem(value?: string): Promise<People | PeopleUnknown> {
-    if (!value) return peopleUnknown;
-    const response = await fetch(`${this.baseUrl}/${value}`);
-    return await response.json();
+  async getItem(
+    id?: string | string[]
+  ): Promise<FetchResponce<PeopleFormatted | null>> {
+    if (!isStringifiedNumberValid(id))
+      return { error: new Error('Id is not valid') };
+
+    try {
+      const response = await fetch(`${this.baseUrl}/${id}`);
+      const loadedItem: People | PeopleUnknown = await response.json();
+      return {
+        data: !(loadedItem && 'url' in loadedItem)
+          ? null
+          : getPeopleFormatted(loadedItem, true),
+      };
+    } catch (error) {
+      console.log('Error occurs while fetching item: ', error);
+      return { error: error as Error };
+    }
   }
 }
 

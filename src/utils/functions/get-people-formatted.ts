@@ -6,7 +6,7 @@ export function getPeopleFormatted(
   item: People,
   isFullList = false
 ): PeopleFormatted {
-  const id = getIdFromUrl(item.url);
+  const id = getIdFromUrl(item.url) || item.url;
   const name = item.name;
 
   const details = [
