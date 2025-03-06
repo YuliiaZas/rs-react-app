@@ -1,25 +1,19 @@
-import { MemoryRouter } from 'react-router-dom';
 import { fireEvent, render } from '@testing-library/react';
+import createMockRouter from 'next-router-mock';
+import { RouterContext } from 'next/dist/shared/lib/router-context.shared-runtime';
 import { describe, expect, it, vi } from 'vitest';
 import { text } from '@utils';
 import { ErrorComponent } from './error';
 
-const mockNavigate = vi.fn();
-
-vi.mock('react-router-dom', async (importOriginal) => {
-  const actual = (await importOriginal()) as object;
-  return {
-    ...actual,
-    useNavigate: () => mockNavigate,
-  };
-});
+const mockRouter = createMockRouter;
+mockRouter.push = vi.fn();
 
 describe('ErrorComponent', () => {
   it('should render default error message', () => {
     const { getByText } = render(
-      <MemoryRouter>
+      <RouterContext.Provider value={mockRouter}>
         <ErrorComponent />
-      </MemoryRouter>
+      </RouterContext.Provider>
     );
     expect(getByText(text.errorComponent.errorMessage)).toBeInTheDocument();
   });
@@ -27,9 +21,9 @@ describe('ErrorComponent', () => {
   it('should render custom error message', () => {
     const errorMessage = 'Custom error message';
     const { getByText } = render(
-      <MemoryRouter>
+      <RouterContext.Provider value={mockRouter}>
         <ErrorComponent errorMessage={errorMessage} />
-      </MemoryRouter>
+      </RouterContext.Provider>
     );
     expect(getByText(errorMessage)).toBeInTheDocument();
   });
@@ -37,18 +31,18 @@ describe('ErrorComponent', () => {
   it('should render error message info if provided', () => {
     const errorMessageInfo = 'Additional error info';
     const { getByText } = render(
-      <MemoryRouter>
+      <RouterContext.Provider value={mockRouter}>
         <ErrorComponent errorMessageInfo={errorMessageInfo} />
-      </MemoryRouter>
+      </RouterContext.Provider>
     );
     expect(getByText(errorMessageInfo)).toBeInTheDocument();
   });
 
   it('should render button if showButton is true', () => {
     const { getByText } = render(
-      <MemoryRouter>
+      <RouterContext.Provider value={mockRouter}>
         <ErrorComponent showButton />
-      </MemoryRouter>
+      </RouterContext.Provider>
     );
     expect(getByText(text.errorComponent.button)).toBeInTheDocument();
   });
@@ -56,9 +50,9 @@ describe('ErrorComponent', () => {
   it('should call buttonClick function if provided', () => {
     const buttonClick = vi.fn();
     const { getByText } = render(
-      <MemoryRouter>
+      <RouterContext.Provider value={mockRouter}>
         <ErrorComponent showButton buttonClick={buttonClick} />
-      </MemoryRouter>
+      </RouterContext.Provider>
     );
     fireEvent.click(getByText(text.errorComponent.button));
     expect(buttonClick).toHaveBeenCalled();
@@ -66,11 +60,11 @@ describe('ErrorComponent', () => {
 
   it('should navigate to home page if buttonClick is not provided', () => {
     const { getByText } = render(
-      <MemoryRouter>
+      <RouterContext.Provider value={mockRouter}>
         <ErrorComponent showButton />
-      </MemoryRouter>
+      </RouterContext.Provider>
     );
     fireEvent.click(getByText(text.errorComponent.button));
-    expect(mockNavigate).toHaveBeenCalledWith('/');
+    expect(mockRouter.push).toHaveBeenCalledWith('/');
   });
 });

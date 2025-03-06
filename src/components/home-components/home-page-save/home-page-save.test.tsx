@@ -3,12 +3,7 @@ import { fireEvent, render } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { mockItemsFormatted, mockItemsIds } from '@mock';
 import { text } from '@utils';
-import { store } from '@store';
-import {
-  selectItem,
-  unselectAll,
-  unselectItem,
-} from '../store/home-page.slice';
+import { selectItem, store, unselectAll, unselectItem } from '@store';
 import { HomePageSave } from './home-page-save';
 
 vi.mock('@store', async (importOriginal) => {
