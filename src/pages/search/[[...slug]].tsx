@@ -62,7 +62,7 @@ const HomePage: FC<HomePageProps> = (props) => {
   const isItemsLoading = useAppSelector((state) => getIsItemsLoading(state));
 
   const [isItemLoading, setItemLoading] = useState(false);
-  const [isDetailsVisible, setIsDetailsVisible] = useState(false);
+  const [isDetailsVisible, setIsDetailsVisible] = useState(!!props.item);
 
   const [showError, setShowError] = useState(false);
 
