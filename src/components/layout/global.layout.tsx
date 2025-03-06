@@ -1,10 +1,10 @@
 import { Provider } from 'react-redux';
-import { FunctionComponent, ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { HomeSearchParamsProvider, ThemeProvider } from '@context';
 import { ThemeSwitcher } from '@lib';
 import { store } from '@store';
 
-const Layout: FunctionComponent<{ children: ReactNode }> = ({ children }) => {
+export default function GlobalLayout({ children }: { children: ReactNode }) {
   return (
     <Provider store={store}>
       <HomeSearchParamsProvider>
@@ -25,6 +25,4 @@ const Layout: FunctionComponent<{ children: ReactNode }> = ({ children }) => {
       </HomeSearchParamsProvider>
     </Provider>
   );
-};
-
-export default Layout;
+}

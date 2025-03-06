@@ -12,7 +12,6 @@
     "skipLibCheck": true,
     "baseUrl": "src/",
     "paths": {
-      // "@component": ["components/"],
       "@pages": ["pages/"],
       "@layout": ["components/layout/index.ts"],
       "@lib": ["components/lib/index.ts"],
@@ -35,9 +34,6 @@
       "@utils": [
         "utils/index.ts"
       ],
-      // "@home-page": [
-      //   "feature/home-page/index.ts"
-      // ]
     },
     /* Bundler mode */
     "moduleResolution": "bundler",

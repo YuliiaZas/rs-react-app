@@ -1,51 +1,75 @@
-import { FC, FormEvent, MouseEvent } from 'react';
+import { FC, FormEvent, MouseEvent, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useHomeSearch } from '@context';
 import { useAppDispatch, useAppSelector } from '@hooks';
-import { CardSmall, ErrorComponent } from '@lib';
-import { getSelectedItems, selectItem, unselectItem } from '@store';
-import { PeopleFormatted, text } from '@utils';
+import { CardSmall, ErrorComponent, Pagination } from '@lib';
+import {
+  getIsItemsLoading,
+  getSelectedItems,
+  selectItem,
+  setIsItemsLoading,
+  unselectItem,
+} from '@store';
+import {
+  FetchResponce,
+  getFilteredParams,
+  PeopleFormatted,
+  SearchResultFormatted,
+  text,
+} from '@utils';
 import styles from './home-page-items.module.css';
 
 interface HomePageItemsProps {
-  items: PeopleFormatted[];
-  title: string;
-  isLoading: boolean;
-  isError: boolean;
+  itemsData: FetchResponce<SearchResultFormatted>;
 }
 
-export const HomePageItems: FC<HomePageItemsProps> = ({
-  items,
-  title,
-  isLoading,
-  isError,
-}) => {
+export const HomePageItems: FC<HomePageItemsProps> = ({ itemsData }) => {
+  const [searchParams, setSearchParams] = useHomeSearch();
+
   const router = useRouter();
   const basePath = router.pathname.split('/').slice(0, -1).join('/');
   const queryParamsWithoutSlug = new URLSearchParams(
-    Object.entries(router.query).reduce(
-      (acc, [key, value]) => {
-        if (key !== 'slug') {
-          acc[key] = value as string;
-        }
-        return acc;
-      },
-      {} as Record<string, string>
-    )
+    getFilteredParams(router.query)
   ).toString();
 
   const dispatch = useAppDispatch();
 
+  const [itemsFormatted, setItemsFormatted] = useState<PeopleFormatted[]>([]);
+  const [isError, setIsError] = useState(false);
+  const [title, setTitle] = useState('');
+  const [pagesNumber, setPagesNumber] = useState<number | null>(null);
+  const isLoading = useAppSelector((state) => getIsItemsLoading(state));
+
   const selectedItems = useAppSelector((state) => getSelectedItems(state));
+  useEffect(() => {
+    setItemsFormatted(itemsData.data?.itemsFormatted ?? []);
+    setIsError(!!itemsData.error);
+    dispatch(setIsItemsLoading(false));
+  }, [dispatch, itemsData]);
 
-  const getLinkHref = (id: string): string => {
-    const href = `${basePath}/${id}?${queryParamsWithoutSlug}`;
-    return href;
-  };
+  useEffect(() => {
+    setTitle(
+      searchParams.search
+        ? `${text.homePage.resultTitleSearch} "${searchParams.search}"`
+        : text.homePage.resultTitleFull
+    );
+  }, [searchParams.search]);
 
-  const isActive = (id: string) => {
-    return router.asPath === `${basePath}/${id}${queryParamsWithoutSlug}`;
-  };
+  useEffect(() => {
+    if (itemsData.data?.count) {
+      const pagesNumber = itemsData.data.next
+        ? Math.ceil(itemsData.data.count / itemsData.data.results.length)
+        : Number(searchParams.page) || 1;
+      setPagesNumber(pagesNumber);
+    } else {
+      setPagesNumber(null);
+    }
+  }, [searchParams.page, itemsData.data]);
+
+  useEffect(() => {
+    if (itemsData.error) setPagesNumber(null);
+  }, [itemsData.error]);
 
   const handleItemClick = (e: MouseEvent<HTMLAnchorElement>) => {
     e.stopPropagation();
@@ -59,6 +83,21 @@ export const HomePageItems: FC<HomePageItemsProps> = ({
     dispatch(checked ? selectItem({ item, id }) : unselectItem({ id }));
   };
 
+  const handlePageNumberClick = (page: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSearchParams({ ...searchParams, page });
+    dispatch(setIsItemsLoading(true));
+  };
+
+  const getLinkHref = (id: string): string => {
+    const href = `${basePath}/${id}?${queryParamsWithoutSlug}`;
+    return href;
+  };
+
+  const isActive = (id: string) => {
+    return router.asPath === `${basePath}/${id}${queryParamsWithoutSlug}`;
+  };
+
   if (isError) {
     return (
       <ErrorComponent
@@ -67,7 +106,7 @@ export const HomePageItems: FC<HomePageItemsProps> = ({
     );
   }
 
-  if (isLoading && !items.length) {
+  if (isLoading && !itemsFormatted.length) {
     return <div className="home-content-empty"></div>;
   }
 
@@ -75,38 +114,48 @@ export const HomePageItems: FC<HomePageItemsProps> = ({
     <div>
       <h2>{title}</h2>
       <div>
-        {!items.length ? (
+        {!itemsFormatted.length ? (
           <p>{text.homePage.emptyList}</p>
         ) : (
-          <ul className={styles.list}>
-            {items.map((item) => {
-              const { id, name, details } = item;
-              return (
-                <li key={id} className={styles['list-item-wrapper']}>
-                  <input
-                    type="checkbox"
-                    className="d-none"
-                    name="selected-items"
-                    id={id}
-                    checked={!!selectedItems[id]}
-                    onChange={(e) => handleSelectChange(item, e)}
-                  />
-                  <label htmlFor={id} className={styles['list-item-checkbox']}>
-                    <i
-                      className={`icon-checkbox${selectedItems[id] ? '-checked' : ''}`}
-                    ></i>
-                  </label>
-                  <Link
-                    href={getLinkHref(id)}
-                    className={`${styles['list-item']} state-border ${isActive(id) ? styles.active : ''}`}
-                    onClick={handleItemClick}
-                  >
-                    <CardSmall cardTitle={name} listOfDetails={details} />
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
+          <>
+            <ul className={styles.list}>
+              {itemsFormatted.map((item) => {
+                const { id, name, details } = item;
+                return (
+                  <li key={id} className={styles['list-item-wrapper']}>
+                    <input
+                      type="checkbox"
+                      className="d-none"
+                      name="selected-items"
+                      id={id}
+                      checked={!!selectedItems[id]}
+                      onChange={(e) => handleSelectChange(item, e)}
+                    />
+                    <label
+                      htmlFor={id}
+                      className={styles['list-item-checkbox']}
+                    >
+                      <i
+                        className={`icon-checkbox${selectedItems[id] ? '-checked' : ''}`}
+                      ></i>
+                    </label>
+                    <Link
+                      href={getLinkHref(id)}
+                      className={`${styles['list-item']} state-border ${isActive(id) ? styles.active : ''}`}
+                      onClick={handleItemClick}
+                    >
+                      <CardSmall cardTitle={name} listOfDetails={details} />
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+            <Pagination
+              pagesNumber={pagesNumber}
+              currentPage={searchParams.page}
+              onClick={handlePageNumberClick}
+            />
+          </>
         )}
       </div>
     </div>

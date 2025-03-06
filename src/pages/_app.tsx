@@ -1,6 +1,6 @@
 import { AppProps } from 'next/app';
 import Head from 'next/head';
-import Layout from '../components/layout';
+import { GlobalLayout } from '@layout';
 import '../styles/globals.css';
 
 export default function MyApp({ Component, pageProps }: AppProps) {
@@ -9,9 +9,9 @@ export default function MyApp({ Component, pageProps }: AppProps) {
       <Head>
         <title>People of Star Wars</title>
       </Head>
-      <Layout>
+      <GlobalLayout>
         <Component {...pageProps} />
-      </Layout>
+      </GlobalLayout>
     </>
   );
 }

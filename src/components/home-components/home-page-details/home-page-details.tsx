@@ -1,23 +1,25 @@
 import { FC } from 'react';
 import { ErrorComponent, Spinner } from '@lib';
-import { PeopleFormatted, text } from '@utils';
+import { FetchResponce, PeopleFormatted, text } from '@utils';
 import styles from './home-page-details.module.css';
 
 export type HomePageDetailsProps = {
-  data: PeopleFormatted | null;
+  itemData?: FetchResponce<PeopleFormatted | null>;
   isLoading: boolean;
-  isError: boolean;
   closeFn: () => void;
 };
 
 export const HomePageDetails: FC<HomePageDetailsProps> = ({
-  data,
+  itemData,
   isLoading = false,
-  isError,
   closeFn,
 }: HomePageDetailsProps) => {
   if (isLoading) {
     return <Spinner />;
+  }
+
+  if (!itemData) {
+    return <div></div>;
   }
 
   return (
@@ -31,19 +33,19 @@ export const HomePageDetails: FC<HomePageDetailsProps> = ({
         <i className="icon-close" />
       </button>
       {(() => {
-        if (isError) {
+        if (itemData.error) {
           return <ErrorComponent />;
         }
-        if (!data) {
+        if (!itemData.data) {
           return (
             <ErrorComponent errorMessageInfo={text.homePage.emptyDetails} />
           );
         }
         return (
           <div className={styles.card}>
-            <h2>{data.name}</h2>
+            <h2>{itemData.data.name}</h2>
             <div className="card-detail">
-              {data.details.map((detail) => {
+              {itemData.data.details.map((detail) => {
                 return (
                   <p className="small-card-detail" key={detail.key}>
                     <span className="small-card-detail-key">
