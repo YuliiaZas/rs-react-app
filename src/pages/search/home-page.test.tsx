@@ -47,7 +47,6 @@ vi.mock('@store', async (importOriginal) => {
   const actual = (await importOriginal()) as object;
   return {
     ...actual,
-    // dispatch: vi.fn(),
     getState: vi.fn(),
   };
 });

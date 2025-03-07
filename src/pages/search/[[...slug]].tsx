@@ -24,7 +24,7 @@ import {
 } from '@utils';
 import styles from './home-page.module.css';
 
-type HomePageProps = {
+export type HomePageProps = {
   items: FetchResponce<SearchResultFormatted>;
   item?: FetchResponce<PeopleFormatted | null>;
 };

@@ -176,14 +176,4 @@ describe('HomePageItems', () => {
       unselectItem({ id: mockItemsIds[0] })
     );
   });
-
-  // it('should navigate to details page', async () => {
-  //   const result = render(
-  //     <Provider store={store}>
-  //       <HomePageItems itemsData={{ data: mockFetchItemsResult }} />
-  //     </Provider>
-  //   );
-  //   act(() => result.getByText(mockItems[0].name).click());
-  //   expect(mockRouter.asPath).toBe('/search/1');
-  // });
 });
