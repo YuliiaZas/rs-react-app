@@ -12,7 +12,6 @@ export default defineConfig({
       '@context': path.resolve(__dirname, 'src/context'),
       '@hooks': path.resolve(__dirname, 'src/hooks'),
       '@lib': path.resolve(__dirname, 'src/components/lib'),
-      '@loaders': path.resolve(__dirname, 'src/loaders'),
       '@mock': path.resolve(__dirname, 'src/mock'),
       '@services': path.resolve(__dirname, 'src/services'),
       '@store': path.resolve(__dirname, 'src/store'),
