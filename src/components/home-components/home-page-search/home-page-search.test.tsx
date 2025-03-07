@@ -23,9 +23,28 @@ vi.mock('@context', async (importOriginal) => {
   };
 });
 
+vi.mock('@lib', () => ({
+  Search: ({
+    initialSearchValue,
+    updateSearchValue,
+    placeholder,
+  }: {
+    initialSearchValue: string;
+    updateSearchValue: (value: string) => void;
+    placeholder: string;
+  }) => (
+    <input
+      type="text"
+      placeholder={placeholder}
+      defaultValue={initialSearchValue}
+      onChange={(e) => updateSearchValue(e.target.value)}
+    />
+  ),
+}));
+
 describe('HomePageSearch', () => {
   it('should not update search params on space add to input value', () => {
-    const { getByPlaceholderText, getByText } = render(
+    const { getByPlaceholderText } = render(
       <Provider store={store}>
         <HomePageSearch />
       </Provider>
@@ -38,14 +57,13 @@ describe('HomePageSearch', () => {
       fireEvent.change(searchInput, {
         target: { value: mockSearchValue + ' ' },
       });
-      fireEvent.click(getByText(text.search.button));
     });
 
     expect(mockParams.search).toBe(mockSearchValue);
   });
 
   it('should update search params on input value changes', () => {
-    const { getByPlaceholderText, getByText } = render(
+    const { getByPlaceholderText } = render(
       <Provider store={store}>
         <HomePageSearch />
       </Provider>
@@ -58,7 +76,6 @@ describe('HomePageSearch', () => {
       fireEvent.change(searchInput, {
         target: { value: '' },
       });
-      fireEvent.click(getByText(text.search.button));
     });
 
     expect(mockParams.search).toBe('');

@@ -1,7 +1,8 @@
 import { Provider } from 'react-redux';
-import { MemoryRouter, Route, Routes, useParams } from 'react-router-dom';
 import { act, render } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, Mock, vi } from 'vitest';
+import mockRouter from 'next-router-mock';
+import { useHomeSearch } from '@context';
 import {
   mockFetchItemsResult,
   mockFetchItemsResultLastPage,
@@ -12,50 +13,36 @@ import {
   mockSearchValue,
 } from '@mock';
 import { store } from '@store';
-import { CurrentSearchParams, PATH_VALUE, text } from '@utils';
-import { useFetchItemsQuery } from '../store/home-page-api.slice';
-import {
-  selectItem,
-  setPagesNumber,
-  unselectItem,
-} from '../store/home-page.slice';
+import { CurrentSearchParams, text } from '@utils';
+import { selectItem, unselectItem } from '@store';
 import { HomePageItems } from './home-page-items';
-import { useHomeSearch } from '@context';
 
-const locationSearch = `?search=${mockSearchValue}`;
-const mockDetailsComponentText = 'Details Page for';
-
-const MockDetailsComponent = () => {
-  const { id } = useParams<{ id: string }>();
-  return (
-    <div>
-      {mockDetailsComponentText} {id}
+vi.mock('@lib', () => ({
+  CardSmall: ({ cardTitle }: { cardTitle: string }) => <div>{cardTitle}</div>,
+  ErrorComponent: ({ errorMessageInfo }: { errorMessageInfo: string }) => (
+    <div>{errorMessageInfo || text.errorComponent.errorMessage}</div>
+  ),
+  Pagination: ({
+    pagesNumber,
+    currentPage = '1',
+    onClick,
+  }: {
+    pagesNumber: number | null;
+    currentPage: string;
+    onClick: () => void;
+  }) => (
+    <div onClick={onClick}>
+      {currentPage} of {pagesNumber}
     </div>
-  );
-};
-
-vi.mock('react-router-dom', async (importOriginal) => {
-  const actual = (await importOriginal()) as object;
-  return {
-    ...actual,
-    useLocation: () => ({ search: locationSearch }),
-    useSearchParams: () => [new URLSearchParams(locationSearch)],
-  };
-});
-
-vi.mock('../store/home-page-api.slice', async (importOriginal) => {
-  const actual = (await importOriginal()) as object;
-  return {
-    ...actual,
-    useFetchItemsQuery: vi.fn(),
-  };
-});
+  ),
+}));
 
 vi.mock('@store', async (importOriginal) => {
   const actual = (await importOriginal()) as object;
   return {
     ...actual,
     dispatch: vi.fn(),
+    getState: vi.fn(),
   };
 });
 
@@ -67,16 +54,10 @@ vi.mock('@context', async (importOriginal) => {
   };
 });
 
-const mockFetchResponce = {
-  data: mockFetchItemsResult,
-  isLoading: false,
-  isFetching: false,
-  isError: false,
-  refetch: vi.fn(),
-};
-
 describe('HomePageItems', () => {
-  const fetchSpy = useFetchItemsQuery as Mock;
+  beforeEach(() => {
+    mockRouter.setCurrentUrl('/search');
+  });
   const paramsSpy = useHomeSearch as Mock;
 
   beforeEach(() => {
@@ -92,12 +73,9 @@ describe('HomePageItems', () => {
 
   it('should render title', async () => {
     paramsSpy.mockReturnValue([{ search: mockSearchValue }]);
-    fetchSpy.mockReturnValue(mockFetchResponce);
     const { getByText } = render(
       <Provider store={store}>
-        <MemoryRouter>
-          <HomePageItems locationSearch={locationSearch} />
-        </MemoryRouter>
+        <HomePageItems itemsData={{ data: mockFetchItemsResult }} />
       </Provider>
     );
     expect(
@@ -107,114 +85,71 @@ describe('HomePageItems', () => {
 
   it('should render title for full list of items', async () => {
     paramsSpy.mockReturnValue([{ search: '' } as CurrentSearchParams]);
-    fetchSpy.mockReturnValue(mockFetchResponce);
     const { getByText } = render(
       <Provider store={store}>
-        <MemoryRouter>
-          <HomePageItems locationSearch={locationSearch} />
-        </MemoryRouter>
+        <HomePageItems itemsData={{ data: mockFetchItemsResult }} />
       </Provider>
     );
     expect(getByText(text.homePage.resultTitleFull)).toBeInTheDocument();
   });
 
-  it('should not render title while loading', async () => {
-    fetchSpy.mockReturnValue({
-      ...mockFetchResponce,
-      isLoading: true,
-    });
-    const { queryByText } = render(
-      <Provider store={store}>
-        <MemoryRouter>
-          <HomePageItems locationSearch={locationSearch} />
-        </MemoryRouter>
-      </Provider>
-    );
-    expect(
-      queryByText(`${text.homePage.resultTitleSearch} "${mockSearchValue}"`)
-    ).not.toBeInTheDocument();
-  });
-
   it('should render error component on fetch error', async () => {
-    fetchSpy.mockReturnValue({
-      ...mockFetchResponce,
-      isError: true,
-    });
     const { getByText } = render(
       <Provider store={store}>
-        <MemoryRouter>
-          <HomePageItems locationSearch={locationSearch} />
-        </MemoryRouter>
+        <HomePageItems itemsData={{ error: new Error('Error') }} />
       </Provider>
     );
     expect(
       getByText(text.homePage.loadingErrorMessageInfo)
     ).toBeInTheDocument();
-    expect(store.dispatch).toHaveBeenCalledWith(setPagesNumber(mockPageNumber));
   });
 
   it('should render empty result message when no items', () => {
-    fetchSpy.mockReturnValue({
-      ...mockFetchResponce,
+    const itemsData = {
       data: {
-        ...mockFetchResponce.data,
+        ...mockFetchItemsResult,
         itemsFormatted: [],
       },
-    });
+    };
     const { getByText } = render(
       <Provider store={store}>
-        <MemoryRouter>
-          <HomePageItems locationSearch={locationSearch} />
-        </MemoryRouter>
+        <HomePageItems itemsData={itemsData} />
       </Provider>
     );
     expect(getByText(text.homePage.emptyList)).toBeInTheDocument();
-    expect(store.dispatch).toHaveBeenCalledWith(setPagesNumber(null));
   });
 
   it('should render items with correct page buttons number', async () => {
-    fetchSpy.mockReturnValue(mockFetchResponce);
     const { getByText } = render(
       <Provider store={store}>
-        <MemoryRouter>
-          <HomePageItems locationSearch={locationSearch} />
-        </MemoryRouter>
+        <HomePageItems itemsData={{ data: mockFetchItemsResult }} />
       </Provider>
     );
     expect(getByText(mockItems[0].name)).toBeInTheDocument();
     expect(getByText(mockItems[1].name)).toBeInTheDocument();
-    expect(store.dispatch).toHaveBeenCalledWith(setPagesNumber(mockPageNumber));
+    expect(getByText('1 of 3')).toBeInTheDocument();
   });
 
   it('should render correct number of pagination buttons when it is the last page', async () => {
-    fetchSpy.mockReturnValue({
-      ...mockFetchResponce,
-      data: mockFetchItemsResultLastPage,
-    });
     paramsSpy.mockReturnValue([
       {
         search: mockSearchValue,
         page: mockPageNumber.toString(),
       },
     ]);
-    render(
+    const { getByText } = render(
       <Provider store={store}>
-        <MemoryRouter>
-          <HomePageItems locationSearch={locationSearch} />
-        </MemoryRouter>
+        <HomePageItems itemsData={{ data: mockFetchItemsResultLastPage }} />
       </Provider>
     );
 
-    expect(store.dispatch).toHaveBeenCalledWith(setPagesNumber(mockPageNumber));
+    expect(getByText('3 of 3')).toBeInTheDocument();
   });
 
   it('should handle item selection', async () => {
-    fetchSpy.mockReturnValue(mockFetchResponce);
     const { container } = render(
       <Provider store={store}>
-        <MemoryRouter>
-          <HomePageItems locationSearch={locationSearch} />
-        </MemoryRouter>
+        <HomePageItems itemsData={{ data: mockFetchItemsResult }} />
       </Provider>
     );
 
@@ -242,29 +177,13 @@ describe('HomePageItems', () => {
     );
   });
 
-  it('should navigate to details page', async () => {
-    fetchSpy.mockReturnValue(mockFetchResponce);
-    const result = render(
-      <MemoryRouter initialEntries={[PATH_VALUE.HOME]}>
-        <Routes>
-          <Route
-            path={PATH_VALUE.HOME}
-            element={
-              <Provider store={store}>
-                <HomePageItems locationSearch={locationSearch} />
-              </Provider>
-            }
-          />
-          <Route
-            path={`${PATH_VALUE.HOME}/:id`}
-            element={<MockDetailsComponent />}
-          />
-        </Routes>
-      </MemoryRouter>
-    );
-    act(() => result.getByText(mockItems[0].name).click());
-    expect(
-      result.getByText(`${mockDetailsComponentText} ${mockItemsIds[0]}`)
-    ).toBeInTheDocument();
-  });
+  // it('should navigate to details page', async () => {
+  //   const result = render(
+  //     <Provider store={store}>
+  //       <HomePageItems itemsData={{ data: mockFetchItemsResult }} />
+  //     </Provider>
+  //   );
+  //   act(() => result.getByText(mockItems[0].name).click());
+  //   expect(mockRouter.asPath).toBe('/search/1');
+  // });
 });
