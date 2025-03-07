@@ -1,18 +1,32 @@
-import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vitest';
 import { mockFetchItemsResult, mockItems, mockItemsFormattedFull } from '@mock';
 import { CurrentSearchParams } from '@utils';
 import { peopleService } from './home-page.service';
 
 describe('PeopleService', () => {
-  const mockUrl = undefined;
   const mockFetch = vi.fn();
+  const urlOriginal = peopleService.baseUrl;
+  const testUrl = 'http://localhost:3000/api';
 
   beforeAll(() => {
     global.fetch = mockFetch;
+    peopleService.baseUrl = testUrl;
   });
 
   afterEach(() => {
     mockFetch.mockClear();
+  });
+
+  afterAll(() => {
+    peopleService.baseUrl = urlOriginal;
   });
 
   it('should fetch items with correct params', async () => {
@@ -23,7 +37,7 @@ describe('PeopleService', () => {
 
     const result = await peopleService.getItems(paramsValue);
 
-    expect(mockFetch).toHaveBeenCalledWith(mockUrl + '/people?search=John');
+    expect(mockFetch).toHaveBeenCalledWith(`${testUrl}?search=John`);
     expect(result).toEqual({ data: mockFetchItemsResult });
   });
 
@@ -35,7 +49,7 @@ describe('PeopleService', () => {
 
     const result = await peopleService.getItem(value);
 
-    expect(mockFetch).toHaveBeenCalledWith(`${mockUrl}/people/${value}`);
+    expect(mockFetch).toHaveBeenCalledWith(`${testUrl}/1`);
     expect(result).toEqual({ data: mockItemsFormattedFull[0] });
   });
 

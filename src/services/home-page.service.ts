@@ -18,8 +18,6 @@ class PeopleService {
   ): Promise<FetchResponce<SearchResultFormatted>> {
     const params = new URLSearchParams(paramsValue);
     try {
-      const url = `${this.baseUrl}?${params}`;
-      console.log(params, url);
       const response = await fetch(`${this.baseUrl}?${params}`);
       const searchResult: SearchResult = await response.json();
       return {
