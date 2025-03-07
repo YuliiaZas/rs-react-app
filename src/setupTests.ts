@@ -19,3 +19,8 @@ vi.mock('next/router', async (importOriginalModule) => {
     useRouter: () => mockRouter,
   };
 });
+
+Object.defineProperty(window, 'scrollTo', {
+  value: vi.fn(),
+  writable: true,
+});

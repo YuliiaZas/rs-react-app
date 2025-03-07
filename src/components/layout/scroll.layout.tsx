@@ -1,7 +1,7 @@
-import { getFilteredParams } from '@utils';
+import { ReactNode, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { ParsedUrlQuery } from 'querystring';
-import { ReactNode, useEffect, useState } from 'react';
+import { getFilteredParams } from '@utils';
 
 export default function ScrollLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
