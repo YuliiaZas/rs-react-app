@@ -6,6 +6,7 @@ import { THEME } from '@utils';
 
 vi.mock('@hooks', () => ({
   useLocalStorage: vi.fn(),
+  useRunOnce: vi.fn(),
 }));
 
 import { useLocalStorage } from '@hooks';

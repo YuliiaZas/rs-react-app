@@ -4,6 +4,15 @@ import { useTheme } from '@context';
 import { THEME } from '@utils';
 import { ThemeSwitcher } from './theme-switcher';
 
+vi.mock('./theme-switcher.module.css', () => ({
+  default: {
+    wrapper: 'theme-switcher-wrapper',
+    label: 'theme-switcher-label',
+    input: 'theme-switcher-input',
+    icon: 'theme-switcher-icon',
+  },
+}));
+
 vi.mock('@context', () => ({
   useTheme: vi.fn(),
 }));

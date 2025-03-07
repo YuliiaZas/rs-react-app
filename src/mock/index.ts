@@ -37,9 +37,6 @@ export const mockItemsFormatted: PeopleFormatted[] = [
       { key: 'Year of birth', value: '19BBY' },
       { key: 'Height', value: '172' },
       { key: 'Mass', value: '77' },
-      { key: 'Eye color', value: 'blue' },
-      { key: 'Hair color', value: 'blond' },
-      { key: 'Skin color', value: 'fair' },
     ],
   },
   {
@@ -50,6 +47,23 @@ export const mockItemsFormatted: PeopleFormatted[] = [
       { key: 'Year of birth', value: '112BBY' },
       { key: 'Height', value: '167' },
       { key: 'Mass', value: '75' },
+    ],
+  },
+];
+export const mockItemsFormattedFull: PeopleFormatted[] = [
+  {
+    ...mockItemsFormatted[0],
+    details: [
+      ...mockItemsFormatted[0].details,
+      { key: 'Eye color', value: 'blue' },
+      { key: 'Hair color', value: 'blond' },
+      { key: 'Skin color', value: 'fair' },
+    ],
+  },
+  {
+    ...mockItemsFormatted[1],
+    details: [
+      ...mockItemsFormatted[1].details,
       { key: 'Eye color', value: 'yellow' },
       { key: 'Hair color', value: 'n/a' },
       { key: 'Skin color', value: 'gold' },

@@ -16,8 +16,8 @@ export const ThemeSwitcher: FunctionComponent = () => {
   };
 
   return (
-    <div className={`${style['theme-switcher']} d-flex`}>
-      <span className={style['theme-switcher-title']}>Choose:</span>
+    <div className={`${style.wrapper} d-flex`}>
+      <span className={'theme-switcher-title'}>Choose:</span>
       {Object.values(THEME).map((value) => (
         <div key={value}>
           <input
@@ -25,18 +25,16 @@ export const ThemeSwitcher: FunctionComponent = () => {
             name="theme"
             id={value}
             value={value}
-            className={`${style['theme-switcher-input']} d-none`}
+            className={`${style.input} d-none`}
             checked={themeValue === value}
             onChange={handleThemeValueChange}
           />
           <label
             htmlFor={value}
-            className={`${style['theme-switcher-label']} theme-color-${value}`}
+            className={`${style.label} theme-color-${value}`}
           >
-            <span
-              className={`${style['theme-switcher-icon']} ${themeIcon[value]}`}
-            ></span>
-            <span className={style['theme-switcher-value']}>{value} side</span>
+            <span className={`${style.icon} ${themeIcon[value]}`}></span>
+            <span className={'theme-switcher-value'}>{value} side</span>
           </label>
         </div>
       ))}

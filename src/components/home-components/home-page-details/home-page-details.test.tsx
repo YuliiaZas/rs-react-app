@@ -1,71 +1,47 @@
-import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router-dom';
 import { fireEvent, render } from '@testing-library/react';
-import { describe, expect, it, Mock, vi } from 'vitest';
-import { mockItems, mockItemsFormatted } from '@mock';
-import { store } from '@store';
+import { describe, expect, it, vi } from 'vitest';
+import { mockItems, mockItemsFormattedFull } from '@mock';
 import { text } from '@utils';
-import { useFetchItemQuery } from '../store/home-page-api.slice';
 import { HomePageDetails } from './home-page-details';
+
+vi.mock('./home-page-details.module.css', () => ({
+  default: {
+    card: 'card',
+  },
+}));
+
+vi.mock('@lib', () => ({
+  ErrorComponent: ({ errorMessageInfo }: { errorMessageInfo: string }) => (
+    <div>{errorMessageInfo || text.errorComponent.errorMessage}</div>
+  ),
+  Spinner: () => <div role="status">Loading...</div>,
+}));
 
 const mockCloseFn = vi.fn();
 
-vi.mock('react-router-dom', async (importOriginal) => {
-  const actual = (await importOriginal()) as object;
-  return {
-    ...actual,
-    useOutletContext: () => ({ closeFn: mockCloseFn }),
-  };
-});
-
-vi.mock('../store/home-page-api.slice', async (importOriginal) => {
-  const actual = (await importOriginal()) as object;
-  return {
-    ...actual,
-    useFetchItemQuery: vi.fn(),
-  };
-});
-
-const mockItem = mockItemsFormatted[0];
+const mockItem = mockItemsFormattedFull[0];
 const mockItemRaw = mockItems[0];
 
-const mockFetchResponce = {
-  data: mockItem,
-  isLoading: false,
-  isFetching: false,
-  isError: false,
-  refetch: vi.fn(),
-};
-
 describe('HomePageDetails', () => {
-  const fetchSpy = useFetchItemQuery as Mock;
-
   it('should render spinner while data loading', () => {
-    fetchSpy.mockReturnValue({
-      ...mockFetchResponce,
-      isLoading: true,
-    });
-
     const { getByRole } = render(
-      <Provider store={store}>
-        <MemoryRouter>
-          <HomePageDetails />
-        </MemoryRouter>
-      </Provider>
+      <HomePageDetails
+        closeFn={mockCloseFn}
+        itemData={{ data: mockItem }}
+        isLoading={true}
+      />
     );
 
     expect(getByRole('status')).toBeInTheDocument();
   });
 
   it('should render formatted details when item is valid', () => {
-    fetchSpy.mockReturnValue(mockFetchResponce);
-
     const { getByText } = render(
-      <Provider store={store}>
-        <MemoryRouter>
-          <HomePageDetails />
-        </MemoryRouter>
-      </Provider>
+      <HomePageDetails
+        closeFn={mockCloseFn}
+        itemData={{ data: mockItem }}
+        isLoading={false}
+      />
     );
 
     expect(getByText(mockItem.name)).toBeInTheDocument();
@@ -90,48 +66,36 @@ describe('HomePageDetails', () => {
   });
 
   it('should render error component when item has type PeopleUnknown', () => {
-    fetchSpy.mockReturnValue({
-      ...mockFetchResponce,
-      data: null,
-    });
-
     const { getByText } = render(
-      <Provider store={store}>
-        <MemoryRouter>
-          <HomePageDetails />
-        </MemoryRouter>
-      </Provider>
+      <HomePageDetails
+        closeFn={mockCloseFn}
+        itemData={{ data: null }}
+        isLoading={false}
+      />
     );
 
     expect(getByText(text.homePage.emptyDetails)).toBeInTheDocument();
   });
 
   it('should render error component when data loading fails', () => {
-    fetchSpy.mockReturnValue({
-      ...mockFetchResponce,
-      isError: true,
-    });
-
     const { getByText } = render(
-      <Provider store={store}>
-        <MemoryRouter>
-          <HomePageDetails />
-        </MemoryRouter>
-      </Provider>
+      <HomePageDetails
+        closeFn={mockCloseFn}
+        itemData={{ error: new Error('error') }}
+        isLoading={false}
+      />
     );
 
     expect(getByText(text.errorComponent.errorMessage)).toBeInTheDocument();
   });
 
   it('should call closeFn when close button is clicked', () => {
-    fetchSpy.mockReturnValue(mockFetchResponce);
-
     const { getByLabelText } = render(
-      <Provider store={store}>
-        <MemoryRouter>
-          <HomePageDetails />
-        </MemoryRouter>
-      </Provider>
+      <HomePageDetails
+        closeFn={mockCloseFn}
+        itemData={{ data: mockItem }}
+        isLoading={false}
+      />
     );
 
     fireEvent.click(getByLabelText('Close'));

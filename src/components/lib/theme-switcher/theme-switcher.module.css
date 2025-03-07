@@ -1,4 +1,4 @@
-.theme-switcher {
+.wrapper {
   gap: 0.5rem;
   font-size: larger;
 
@@ -7,7 +7,7 @@
   }
 }
 
-.theme-switcher-label {
+.label {
   position: relative;
   display: flex;
   align-items: center;
@@ -43,10 +43,10 @@
   }
 }
 
-.theme-switcher-icon {
+.icon {
   font-size: x-large;
 }
 
-.theme-switcher-input:checked + .theme-switcher-label {
+.input:checked + .label {
   border-bottom: 2px solid var(--theme-color);
 }

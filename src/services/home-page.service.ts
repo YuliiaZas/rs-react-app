@@ -11,7 +11,6 @@ import {
 } from '@utils';
 
 class PeopleService {
-  // baseUrl = '/api/people';
   baseUrl = `${process.env.NEXT_PUBLIC_API_URL}/people`;
 
   async getItems(
