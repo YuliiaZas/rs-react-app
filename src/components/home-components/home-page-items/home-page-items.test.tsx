@@ -17,6 +17,13 @@ import { CurrentSearchParams, text } from '@utils';
 import { selectItem, unselectItem } from '@store';
 import { HomePageItems } from './home-page-items';
 
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: mockRouter.push,
+  }),
+  usePathname: () => '',
+}));
+
 vi.mock('@lib', () => ({
   CardSmall: ({ cardTitle }: { cardTitle: string }) => <div>{cardTitle}</div>,
   ErrorComponent: ({ errorMessageInfo }: { errorMessageInfo: string }) => (

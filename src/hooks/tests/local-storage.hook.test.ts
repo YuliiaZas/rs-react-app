@@ -50,7 +50,7 @@ describe('useLocalStorage', () => {
 
     expect(result.current[0]).toBe(defaultValue);
     expect(spy).toHaveBeenCalledWith(
-      'Error while getValueFromLocalStorage()',
+      'Error while getting value from localStorage',
       expect.any(Error)
     );
     expect(window.localStorage.getItem(key)).toBe(

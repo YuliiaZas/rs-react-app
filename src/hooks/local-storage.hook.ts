@@ -18,7 +18,7 @@ export function useLocalStorage<T>({
       const value = window.localStorage.getItem(key);
       return value ? JSON.parse(value) : defaultValue;
     } catch (e) {
-      console.error('Error while getting value from localStorage', e);
+      console.log('Error while getting value from localStorage', e);
       return defaultValue;
     }
   });
@@ -27,7 +27,7 @@ export function useLocalStorage<T>({
     try {
       window.localStorage.setItem(key, JSON.stringify(value));
     } catch (error) {
-      console.error('useLocalStorage.setItem', error);
+      console.log('Error while setting value to localStorage', error);
     }
   }, [key, value]);
 

@@ -26,7 +26,7 @@ export const HomePageDetails: FC<HomePageDetailsProps> = ({
   }, [dispatch, itemData]);
 
   const closeFn = () => {
-    router.push(PATH_VALUE.HOME + '?' + searchParams);
+    router.push(`${PATH_VALUE.HOME}${searchParams ? `?${searchParams}` : ''}`);
   };
 
   if (isLoading) {

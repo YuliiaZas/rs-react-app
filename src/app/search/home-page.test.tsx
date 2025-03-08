@@ -1,10 +1,11 @@
 import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import { GetServerSidePropsContext } from 'next';
 import { describe, expect, it, vi } from 'vitest';
-import { mockFetchItemsResult, mockItemsFormattedFull } from '@mock';
+import createMockRouter from 'next-router-mock';
+import { HomePageDetails, HomePageItems } from '@home-components';
+import { mockFetchItemsResult } from '@mock';
 import { store } from '@store';
-import HomePage, { getServerSideProps, HomePageProps } from './[[...slug]]';
+import HomePage from './layout';
 
 vi.mock('./home-page.module.css', () => ({
   default: {
@@ -32,13 +33,6 @@ vi.mock('@home-components', () => ({
   HomePageSearch: () => <div>{mockHomePageSearchComponentText}</div>,
 }));
 
-vi.mock('@services', () => ({
-  peopleService: {
-    getItems: () => Promise.resolve({ data: mockFetchItemsResult }),
-    getItem: () => Promise.resolve({ data: mockItemsFormattedFull[0] }),
-  },
-}));
-
 vi.mock('@lib', () => ({
   Spinner: () => <div role="status">Loading...</div>,
 }));
@@ -51,34 +45,28 @@ vi.mock('@store', async (importOriginal) => {
   };
 });
 
+const mockRouter = createMockRouter;
+mockRouter.push = vi.fn();
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: mockRouter.push,
+  }),
+  usePathname: () => '',
+  useSearchParams: () => '',
+}));
+
 describe('HomePage', () => {
-  it('should render details', async () => {
-    const context = { query: { slug: ['1'] } };
-    const { props } = (await getServerSideProps(
-      context as unknown as GetServerSidePropsContext
-    )) as { props: HomePageProps };
+  it('should render items list and details', async () => {
     const { getByText } = render(
       <Provider store={store}>
-        <HomePage {...props} />
+        <HomePage
+          items={<HomePageItems itemsData={{ data: mockFetchItemsResult }} />}
+          item={<HomePageDetails />}
+        />
       </Provider>
     );
 
+    expect(getByText(mockHomePageItemsComponentText)).toBeInTheDocument();
     expect(getByText(mockHomePageDetailsComponentText)).toBeInTheDocument();
-  });
-
-  it('should not render details', async () => {
-    const context = { query: { page: '1' } };
-    const { props } = (await getServerSideProps(
-      context as unknown as GetServerSidePropsContext
-    )) as { props: HomePageProps };
-    const { queryByText } = render(
-      <Provider store={store}>
-        <HomePage {...props} />
-      </Provider>
-    );
-
-    expect(
-      queryByText(mockHomePageDetailsComponentText)
-    ).not.toBeInTheDocument();
   });
 });

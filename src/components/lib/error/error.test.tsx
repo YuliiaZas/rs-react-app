@@ -1,14 +1,31 @@
 import { fireEvent, render } from '@testing-library/react';
 import createMockRouter from 'next-router-mock';
 import { RouterContext } from 'next/dist/shared/lib/router-context.shared-runtime';
-import { describe, expect, it, vi } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { text } from '@utils';
 import { ErrorComponent } from './error';
 
 const mockRouter = createMockRouter;
 mockRouter.push = vi.fn();
 
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: mockRouter.push,
+  }),
+  usePathname: () => '',
+}));
+
 describe('ErrorComponent', () => {
+  const originalLocation = window.location;
+  beforeAll(() => {
+    window.location = {} as Location;
+    window.location = { ...originalLocation, reload: vi.fn() };
+  });
+
+  afterAll(() => {
+    window.location = originalLocation;
+  });
+
   it('should render default error message', () => {
     const { getByText } = render(
       <RouterContext.Provider value={mockRouter}>
