@@ -1,3 +1,5 @@
+'use client';
+
 import { FunctionComponent, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@hooks';
 import { KeyValuePair, PeopleFormatted, text } from '@utils';

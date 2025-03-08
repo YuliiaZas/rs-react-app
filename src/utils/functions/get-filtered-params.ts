@@ -1,5 +1,6 @@
 import { ParsedUrlQuery } from 'querystring';
 import { CurrentSearchParams, isStringifiedNumberValid } from '@utils';
+import { ReadonlyURLSearchParams } from 'next/navigation';
 
 export function getFilteredParams(
   query: ParsedUrlQuery | CurrentSearchParams | URLSearchParams
@@ -19,3 +20,9 @@ export function getFilteredParams(
       isStringifiedNumberValid(query.page) && { page: query.page }),
   };
 }
+
+export const getStringifiedFilteredSearchParams = (
+  params: ReadonlyURLSearchParams | CurrentSearchParams
+): string => {
+  return new URLSearchParams(getFilteredParams(params)).toString();
+};

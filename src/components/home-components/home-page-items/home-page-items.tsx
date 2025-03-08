@@ -1,6 +1,8 @@
+'use client';
+
 import { FC, FormEvent, MouseEvent, useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { usePathname, useRouter } from 'next/navigation';
 import { useHomeSearch } from '@context';
 import { useAppDispatch, useAppSelector } from '@hooks';
 import { CardSmall, ErrorComponent, Pagination } from '@lib';
@@ -8,12 +10,15 @@ import {
   getIsItemsLoading,
   getSelectedItems,
   selectItem,
+  setIsItemLoading,
   setIsItemsLoading,
   unselectItem,
 } from '@store';
 import {
   FetchResponce,
-  getFilteredParams,
+  getIdFromUrl,
+  getStringifiedFilteredSearchParams,
+  PATH_VALUE,
   PeopleFormatted,
   SearchResultFormatted,
   text,
@@ -28,10 +33,8 @@ export const HomePageItems: FC<HomePageItemsProps> = ({ itemsData }) => {
   const [searchParams, setSearchParams] = useHomeSearch();
 
   const router = useRouter();
-  const basePath = router.pathname.split('/').slice(0, -1).join('/');
-  const queryParamsWithoutSlug = new URLSearchParams(
-    getFilteredParams(router.query)
-  ).toString();
+  const pathname = usePathname() ?? '';
+  const queryParams = getStringifiedFilteredSearchParams(searchParams);
 
   const dispatch = useAppDispatch();
 
@@ -73,6 +76,7 @@ export const HomePageItems: FC<HomePageItemsProps> = ({ itemsData }) => {
 
   const handleItemClick = (e: MouseEvent<HTMLAnchorElement>) => {
     e.stopPropagation();
+    dispatch(setIsItemLoading(true));
   };
 
   const handleSelectChange = (
@@ -85,17 +89,26 @@ export const HomePageItems: FC<HomePageItemsProps> = ({ itemsData }) => {
 
   const handlePageNumberClick = (page: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    setSearchParams({ ...searchParams, page });
+    const newSearchParams = { ...searchParams, page };
+    if (getIdFromUrl(pathname ?? '')) {
+      router.push(
+        PATH_VALUE.HOME +
+          '?' +
+          getStringifiedFilteredSearchParams(newSearchParams)
+      );
+    } else {
+      setSearchParams(newSearchParams);
+    }
     dispatch(setIsItemsLoading(true));
   };
 
   const getLinkHref = (id: string): string => {
-    const href = `${basePath}/${id}?${queryParamsWithoutSlug}`;
+    const href = `${PATH_VALUE.HOME}/${id}?${queryParams}`;
     return href;
   };
 
   const isActive = (id: string) => {
-    return router.asPath === `${basePath}/${id}${queryParamsWithoutSlug}`;
+    return pathname === `${PATH_VALUE.HOME}/${id}`;
   };
 
   if (isError) {
@@ -141,7 +154,7 @@ export const HomePageItems: FC<HomePageItemsProps> = ({ itemsData }) => {
                     </label>
                     <Link
                       href={getLinkHref(id)}
-                      className={`${styles['list-item']} state-border ${isActive(id) ? styles.active : ''}`}
+                      className={`${styles['list-item']} state-border ${isActive(id) ? 'active' : ''}`}
                       onClick={handleItemClick}
                     >
                       <CardSmall cardTitle={name} listOfDetails={details} />

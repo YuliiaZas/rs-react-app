@@ -3,11 +3,13 @@ import { RootState } from '@store';
 import { PeopleFormatted } from '@utils';
 
 interface HomePageState {
+  isItemLoading: boolean;
   isItemsLoading: boolean;
   selectedItems: Record<string, PeopleFormatted>;
 }
 
 const initialState: HomePageState = {
+  isItemLoading: false,
   isItemsLoading: true,
   selectedItems: {},
 };
@@ -16,6 +18,9 @@ const homePageSlice = createSlice({
   name: 'homePage',
   initialState,
   reducers: {
+    setIsItemLoading(state, { payload }: PayloadAction<boolean>) {
+      state.isItemLoading = payload;
+    },
     setIsItemsLoading(state, { payload }: PayloadAction<boolean>) {
       state.isItemsLoading = payload;
     },
@@ -34,11 +39,19 @@ const homePageSlice = createSlice({
   },
 });
 
-export const { setIsItemsLoading, selectItem, unselectItem, unselectAll } =
-  homePageSlice.actions;
+export const {
+  setIsItemLoading,
+  setIsItemsLoading,
+  selectItem,
+  unselectItem,
+  unselectAll,
+} = homePageSlice.actions;
 
 export const homePageReducer = homePageSlice.reducer;
 
+export const getIsItemLoading = (state: RootState) => {
+  return state.homePage.isItemLoading;
+};
 export const getIsItemsLoading = (state: RootState) => {
   return state.homePage.isItemsLoading;
 };

@@ -12,10 +12,18 @@
     "skipLibCheck": true,
     "baseUrl": "src/",
     "paths": {
-      "@pages": ["pages/"],
-      "@layout": ["components/layout/index.ts"],
-      "@lib": ["components/lib/index.ts"],
-      "@home-components": ["components/home-components/index.ts"],
+      "@layout": [
+        "components/layout/index.ts"
+      ],
+      "@error-boundary": [
+        "components/error-boundary/index.ts"
+      ],
+      "@lib": [
+        "components/lib/index.ts"
+      ],
+      "@home-components": [
+        "components/home-components/index.ts"
+      ],
       "@context": [
         "context/index.ts"
       ],
@@ -33,7 +41,7 @@
       ],
       "@utils": [
         "utils/index.ts"
-      ],
+      ]
     },
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -60,9 +68,10 @@
     "resolveJsonModule": true
   },
   "include": [
-    "src",
     "./dist/types/**/*.ts",
-    "./next-env.d.ts"
+    "./next-env.d.ts",
+    "src",
+    ".next/types/**/*.ts"
   ],
   "exclude": [
     "./node_modules"

@@ -1,3 +1,5 @@
+'use client';
+
 import { FC, KeyboardEvent, useEffect, useState } from 'react';
 import { text } from '@utils';
 import style from './search.module.css';

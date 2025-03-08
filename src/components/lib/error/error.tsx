@@ -1,6 +1,8 @@
+'use client';
+
 import { FC } from 'react';
-import { useRouter } from 'next/router';
-import { text } from '@utils';
+import { usePathname, useRouter } from 'next/navigation';
+import { PATH_VALUE, text } from '@utils';
 import styles from './error.module.css';
 
 interface ErrorComponentProps {
@@ -19,12 +21,20 @@ export const ErrorComponent: FC<ErrorComponentProps> = ({
   buttonClick,
 }) => {
   const router = useRouter();
+  const pathname = usePathname() ?? '';
+
+  const handleClickDefault = () => {
+    router.push('/');
+    if (pathname === '' || pathname === PATH_VALUE.HOME) {
+      window.location.reload();
+    }
+  };
 
   const handleClick = () => {
     if (buttonClick) {
       buttonClick();
     } else {
-      router.push('/');
+      handleClickDefault();
     }
   };
 

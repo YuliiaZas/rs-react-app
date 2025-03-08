@@ -1,3 +1,5 @@
+'use client';
+
 import { PropsWithChildren, useEffect, useState } from 'react';
 import { useLocalStorage, useRunOnce } from '@hooks';
 import { THEME } from '@utils';
@@ -22,7 +24,9 @@ export const ThemeProvider = ({ children }: PropsWithChildren) => {
 
   return (
     <ThemeContext.Provider value={[themeValue, setThemeValue]}>
-      <div className={`theme-${themeValue}`}>{children}</div>
+      <div className={`theme-${themeValue}`} style={{ width: '100%' }}>
+        {children}
+      </div>
     </ThemeContext.Provider>
   );
 };

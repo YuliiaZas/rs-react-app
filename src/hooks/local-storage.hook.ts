@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useState } from 'react';
 
 export type UseLocalStorageArgs<T> = {
@@ -9,30 +11,25 @@ export function useLocalStorage<T>({
   key,
   defaultValue,
 }: UseLocalStorageArgs<T>): [T, React.Dispatch<T>] {
-  const [value, setValue] = useState<T>(() => getValueFromLocalStorage());
+  const [value, setValue] = useState<T>(() => {
+    if (typeof window === 'undefined') return defaultValue;
+
+    try {
+      const value = window.localStorage.getItem(key);
+      return value ? JSON.parse(value) : defaultValue;
+    } catch (e) {
+      console.error('Error while getting value from localStorage', e);
+      return defaultValue;
+    }
+  });
 
   useEffect(() => {
     try {
-      window?.localStorage.setItem(key, JSON.stringify(value));
-    } catch (_e) {
-      console.error('useLocalStorage.setItem', _e);
+      window.localStorage.setItem(key, JSON.stringify(value));
+    } catch (error) {
+      console.error('useLocalStorage.setItem', error);
     }
   }, [key, value]);
-
-  function getValueFromLocalStorage() {
-    try {
-      if (typeof window === 'undefined') return defaultValue;
-      const value = window.localStorage.getItem(key);
-      if (!value) {
-        window.localStorage.setItem(key, JSON.stringify(defaultValue));
-      }
-      return value ? JSON.parse(value) : defaultValue;
-    } catch (e) {
-      console.log('Error while getValueFromLocalStorage()', e);
-      if (typeof window !== 'undefined') window.localStorage.removeItem(key);
-      return defaultValue;
-    }
-  }
 
   return [value, setValue];
 }
