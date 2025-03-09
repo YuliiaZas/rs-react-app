@@ -10,7 +10,6 @@ import {
   getIsItemsLoading,
   getSelectedItems,
   selectItem,
-  setIsItemLoading,
   setIsItemsLoading,
   unselectItem,
 } from '@store';
@@ -76,7 +75,6 @@ export const HomePageItems: FC<HomePageItemsProps> = ({ itemsData }) => {
 
   const handleItemClick = (e: MouseEvent<HTMLAnchorElement>) => {
     e.stopPropagation();
-    dispatch(setIsItemLoading(true));
   };
 
   const handleSelectChange = (

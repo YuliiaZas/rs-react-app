@@ -1,8 +1,6 @@
 import { HomePageDetails } from '@home-components';
-import { Spinner } from '@lib';
 import { peopleService } from '@services';
 import { getStringifiedFilteredSearchParams } from '@utils';
-import { Suspense } from 'react';
 
 export default async function ItemPage({
   params,
@@ -18,13 +16,9 @@ export default async function ItemPage({
   const itemData = await peopleService.getItem(id);
 
   return (
-    <>
-      <Suspense fallback={<Spinner />}>
-        <HomePageDetails
-          itemData={itemData}
-          searchParams={searchParamsStringified}
-        ></HomePageDetails>
-      </Suspense>
-    </>
+    <HomePageDetails
+      itemData={itemData}
+      searchParams={searchParamsStringified}
+    ></HomePageDetails>
   );
 }

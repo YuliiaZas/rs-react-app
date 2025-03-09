@@ -1,6 +1,4 @@
-import { Suspense } from 'react';
 import { HomePageItems } from '@home-components';
-import { Spinner } from '@lib';
 import { peopleService } from '@services';
 import { getFilteredParams } from '@utils';
 
@@ -13,9 +11,5 @@ export default async function ItemsPageCommon({
     getFilteredParams(searchParams)
   );
 
-  return (
-    <Suspense fallback={<Spinner />}>
-      <HomePageItems itemsData={itemsData} />
-    </Suspense>
-  );
+  return <HomePageItems itemsData={itemsData} />;
 }

@@ -1,12 +1,10 @@
 'use client';
 
-import { FC, useEffect } from 'react';
-import { ErrorComponent, Spinner } from '@lib';
+import { FC } from 'react';
+import { useRouter } from 'next/navigation';
+import { ErrorComponent } from '@lib';
 import { FetchResponce, PATH_VALUE, PeopleFormatted, text } from '@utils';
 import styles from './home-page-details.module.css';
-import { useRouter } from 'next/navigation';
-import { useAppDispatch, useAppSelector } from '@hooks';
-import { getIsItemLoading, setIsItemLoading } from '@store';
 
 export type HomePageDetailsProps = {
   itemData?: FetchResponce<PeopleFormatted | null>;
@@ -18,20 +16,10 @@ export const HomePageDetails: FC<HomePageDetailsProps> = ({
   searchParams = '',
 }: HomePageDetailsProps) => {
   const router = useRouter();
-  const dispatch = useAppDispatch();
-  const isLoading = useAppSelector((state) => getIsItemLoading(state));
-
-  useEffect(() => {
-    dispatch(setIsItemLoading(false));
-  }, [dispatch, itemData]);
 
   const closeFn = () => {
     router.push(`${PATH_VALUE.HOME}${searchParams ? `?${searchParams}` : ''}`);
   };
-
-  if (isLoading) {
-    return <Spinner />;
-  }
 
   if (!itemData) {
     return <div></div>;
