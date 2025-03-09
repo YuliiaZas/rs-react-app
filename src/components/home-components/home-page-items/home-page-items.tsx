@@ -90,12 +90,14 @@ export const HomePageItems: FC<HomePageItemsProps> = ({ itemsData }) => {
   };
 
   const getLinkHref = (id: string): string => {
-    const href = `${basePath}/${id}?${queryParamsWithoutSlug}`;
-    return href;
+    return (
+      `${basePath}/${id}` +
+      (queryParamsWithoutSlug ? `?${queryParamsWithoutSlug}` : '')
+    );
   };
 
   const isActive = (id: string) => {
-    return router.asPath === `${basePath}/${id}${queryParamsWithoutSlug}`;
+    return router.asPath === getLinkHref(id);
   };
 
   if (isError) {
@@ -141,7 +143,7 @@ export const HomePageItems: FC<HomePageItemsProps> = ({ itemsData }) => {
                     </label>
                     <Link
                       href={getLinkHref(id)}
-                      className={`${styles['list-item']} state-border ${isActive(id) ? styles.active : ''}`}
+                      className={`${styles['list-item']} state-border ${isActive(id) ? 'active' : ''}`}
                       onClick={handleItemClick}
                     >
                       <CardSmall cardTitle={name} listOfDetails={details} />
