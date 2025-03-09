@@ -1,5 +1,5 @@
 import { PropsWithChildren, useEffect, useState } from 'react';
-import { useLocalStorage } from '@hooks';
+import { useLocalStorage, useRunOnce } from '@hooks';
 import { THEME } from '@utils';
 import { ThemeContext } from './theme.context';
 
@@ -9,7 +9,14 @@ export const ThemeProvider = ({ children }: PropsWithChildren) => {
     defaultValue: THEME.DARK,
   });
 
-  const [themeValue, setThemeValue] = useState(userTheme);
+  const [themeValue, setThemeValue] = useState(THEME.DARK);
+
+  useRunOnce(
+    {
+      fn: () => setThemeValue(userTheme),
+    },
+    [userTheme]
+  );
 
   useEffect(() => setUserTheme(themeValue), [setUserTheme, themeValue]);
 

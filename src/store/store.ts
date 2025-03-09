@@ -1,13 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { apiSlice, homePageReducer } from '@home-page';
+import { homePageReducer } from './home-page.slice';
 
 export const store = configureStore({
   reducer: {
     homePage: homePageReducer,
-    [apiSlice.reducerPath]: apiSlice.reducer,
-  },
-  middleware: (getDefaultMiddleware) => {
-    return getDefaultMiddleware().concat(apiSlice.middleware);
   },
 });
 
