@@ -101,8 +101,7 @@ export const HomePageItems: FC<HomePageItemsProps> = ({ itemsData }) => {
   };
 
   const getLinkHref = (id: string): string => {
-    const href = `${PATH_VALUE.HOME}/${id}?${queryParams}`;
-    return href;
+    return `${PATH_VALUE.HOME}/${id}` + (queryParams ? `?${queryParams}` : '');
   };
 
   const isActive = (id: string) => {

@@ -74,13 +74,13 @@ export const HomePageSave: FunctionComponent = () => {
       </p>
       <div className={styles['save-buttons']}>
         <button
-          className={styles['button-with-icon']}
+          className="button-with-icon"
           onClick={() => dispatch(unselectAll())}
         >
           <i className="icon-checkbox"></i>
           <span>{text.save.unselect}</span>
         </button>
-        <button className={styles['button-with-icon']} onClick={handleSaving}>
+        <button className="button-with-icon" onClick={handleSaving}>
           <i className="icon-save"></i>
           <span>{text.save.download}</span>
         </button>
