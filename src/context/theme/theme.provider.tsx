@@ -22,7 +22,7 @@ export const ThemeProvider = ({ children }: PropsWithChildren) => {
 
   return (
     <ThemeContext.Provider value={[themeValue, setThemeValue]}>
-      <div className={`theme-${themeValue}`}>{children}</div>
+      <div className={`theme-${themeValue} theme-wrapper`}>{children}</div>
     </ThemeContext.Provider>
   );
 };

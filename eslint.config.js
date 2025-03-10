@@ -12,7 +12,7 @@ import prettierConfig from 'eslint-config-prettier';
 
 export default [
   {
-    ignores: ['node_modules/**', 'dist/**', 'coverage/**', 'public/**', '.next/**'],
+    ignores: ['node_modules/**', 'dist/**', 'coverage/**', 'public/**', '.react-router/**'],
   },
   js.configs.recommended,
   {
@@ -46,7 +46,7 @@ export default [
         'warn',
         {
           allowConstantExport: true,
-          allowExportNames: ['getServerSideProps', 'getStaticProps', 'getInitialProps']
+          allowExportNames: ['loader', 'clientLoader', 'HydrateFallback']
         },
       ],
       'react-compiler/react-compiler': 'error',

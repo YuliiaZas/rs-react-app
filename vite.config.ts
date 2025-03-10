@@ -1,10 +1,10 @@
 import { defineConfig } from 'vitest/config';
-import react from '@vitejs/plugin-react';
+import { reactRouter } from '@react-router/dev/vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import path from 'path';
 
 export default defineConfig({
-  plugins: [tsconfigPaths(), react()],
+  plugins: [tsconfigPaths(), reactRouter()],
   resolve: {
     alias: {
       '@pages': path.resolve(__dirname, 'src/pages'),
@@ -36,6 +36,16 @@ export default defineConfig({
         '**/*.spec.tsx',
         'src/__tests__/setup.ts',
       ],
+    },
+  },
+  css: {
+    modules: {
+      scopeBehaviour: 'local',
+    },
+    preprocessorOptions: {
+      scss: {
+        charset: false,
+      },
     },
   },
 });

@@ -19,3 +19,12 @@ export function getFilteredParams(
       isStringifiedNumberValid(query.page) && { page: query.page }),
   };
 }
+
+export const getStringifiedFilteredSearchParams = (
+  params: URLSearchParams | CurrentSearchParams
+): string => {
+  const searchParams = new URLSearchParams(
+    getFilteredParams(params)
+  ).toString();
+  return `${searchParams ? `?${searchParams}` : ''}`;
+};

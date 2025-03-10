@@ -1,6 +1,5 @@
 import { FC, FormEvent, MouseEvent, useEffect, useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { NavLink, useNavigate } from 'react-router';
 import { useHomeSearch } from '@context';
 import { useAppDispatch, useAppSelector } from '@hooks';
 import { CardSmall, ErrorComponent, Pagination } from '@lib';
@@ -13,12 +12,15 @@ import {
 } from '@store';
 import {
   FetchResponce,
-  getFilteredParams,
+  getIdFromUrl,
+  getStringifiedFilteredSearchParams,
+  PATH_VALUE,
   PeopleFormatted,
   SearchResultFormatted,
   text,
 } from '@utils';
 import styles from './home-page-items.module.css';
+import { useLocation } from 'react-router';
 
 interface HomePageItemsProps {
   itemsData: FetchResponce<SearchResultFormatted>;
@@ -27,13 +29,11 @@ interface HomePageItemsProps {
 export const HomePageItems: FC<HomePageItemsProps> = ({ itemsData }) => {
   const [searchParams, setSearchParams] = useHomeSearch();
 
-  const router = useRouter();
-  const basePath = router.pathname.split('/').slice(0, -1).join('/');
-  const queryParamsWithoutSlug = new URLSearchParams(
-    getFilteredParams(router.query)
-  ).toString();
+  const queryParams = getStringifiedFilteredSearchParams(searchParams);
 
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [itemsFormatted, setItemsFormatted] = useState<PeopleFormatted[]>([]);
   const [isError, setIsError] = useState(false);
@@ -85,19 +85,15 @@ export const HomePageItems: FC<HomePageItemsProps> = ({ itemsData }) => {
 
   const handlePageNumberClick = (page: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    setSearchParams({ ...searchParams, page });
+    const newSearchParams = { ...searchParams, page };
+    if (getIdFromUrl(location.pathname)) {
+      navigate(
+        PATH_VALUE.HOME + getStringifiedFilteredSearchParams(newSearchParams)
+      );
+    } else {
+      setSearchParams(newSearchParams);
+    }
     dispatch(setIsItemsLoading(true));
-  };
-
-  const getLinkHref = (id: string): string => {
-    return (
-      `${basePath}/${id}` +
-      (queryParamsWithoutSlug ? `?${queryParamsWithoutSlug}` : '')
-    );
-  };
-
-  const isActive = (id: string) => {
-    return router.asPath === getLinkHref(id);
   };
 
   if (isError) {
@@ -141,13 +137,14 @@ export const HomePageItems: FC<HomePageItemsProps> = ({ itemsData }) => {
                         className={`icon-checkbox${selectedItems[id] ? '-checked' : ''}`}
                       ></i>
                     </label>
-                    <Link
-                      href={getLinkHref(id)}
-                      className={`${styles['list-item']} state-border ${isActive(id) ? 'active' : ''}`}
+                    <NavLink
+                      preventScrollReset
+                      to={`${PATH_VALUE.HOME}/${id}${queryParams}`}
+                      className={`${styles['list-item']} state-border`}
                       onClick={handleItemClick}
                     >
                       <CardSmall cardTitle={name} listOfDetails={details} />
-                    </Link>
+                    </NavLink>
                   </li>
                 );
               })}

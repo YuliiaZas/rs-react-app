@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { useRouter } from 'next/router';
+import { useNavigate } from 'react-router';
 import { text } from '@utils';
 import styles from './error.module.css';
 
@@ -18,13 +18,13 @@ export const ErrorComponent: FC<ErrorComponentProps> = ({
   buttonMessage = text.errorComponent.button,
   buttonClick,
 }) => {
-  const router = useRouter();
+  const navigate = useNavigate();
 
   const handleClick = () => {
     if (buttonClick) {
       buttonClick();
     } else {
-      router.push('/');
+      navigate('/');
     }
   };
 

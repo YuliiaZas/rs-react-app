@@ -8,7 +8,7 @@
       "DOM",
       "DOM.Iterable"
     ],
-    "module": "ESNext",
+    "module": "ES2022",
     "skipLibCheck": true,
     "baseUrl": "src/",
     "paths": {
@@ -41,7 +41,7 @@
     "isolatedModules": true,
     "moduleDetection": "force",
     "noEmit": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
@@ -52,17 +52,14 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "rootDirs": [".", "./.react-router/types"],
   },
   "include": [
     "src",
-    "./dist/types/**/*.ts",
-    "./next-env.d.ts"
+    "**/.server/**/*",
+    "**/.client/**/*",
+    ".react-router/types/**/*"
   ],
   "exclude": [
     "./node_modules"

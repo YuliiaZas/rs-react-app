@@ -4,9 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "next",
-    "build": "next build",
-    "start": "next start",
+    "dev": "react-router dev",
+    "build": "tsc -b && vite build",
     "lint": "eslint .",
     "format:fix": "prettier --write .",
     "prepare": "husky && chmod ug+x .husky/*",
@@ -14,10 +13,10 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "@react-router/node": "^7.3.0",
     "@reduxjs/toolkit": "^2.5.1",
     "dotenv": "^16.4.7",
-    "next": "^15.2.0",
-    "next-router-mock": "^0.9.13",
+    "isbot": "^5",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-redux": "^9.2.0",
@@ -31,6 +30,7 @@
     "@babel/preset-typescript": "^7.15.0",
     "@eslint/js": "^9.17.0",
     "@next/eslint-plugin-next": "^15.2.1",
+    "@react-router/dev": "^7.3.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",

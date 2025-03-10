@@ -1,19 +1,26 @@
 import { FC } from 'react';
+import { useNavigate } from 'react-router';
 import { ErrorComponent, Spinner } from '@lib';
-import { FetchResponce, PeopleFormatted, text } from '@utils';
+import { FetchResponce, PATH_VALUE, PeopleFormatted, text } from '@utils';
 import styles from './home-page-details.module.css';
 
 export type HomePageDetailsProps = {
   itemData?: FetchResponce<PeopleFormatted | null>;
-  isLoading: boolean;
-  closeFn: () => void;
+  searchParams?: string;
+  isLoading?: boolean;
 };
 
 export const HomePageDetails: FC<HomePageDetailsProps> = ({
   itemData,
-  isLoading = false,
-  closeFn,
+  searchParams,
+  isLoading,
 }: HomePageDetailsProps) => {
+  const navigate = useNavigate();
+
+  const closeFn = () => {
+    navigate(`${PATH_VALUE.HOME}${searchParams}`);
+  };
+
   if (isLoading) {
     return <Spinner />;
   }

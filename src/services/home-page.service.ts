@@ -11,7 +11,7 @@ import {
 } from '@utils';
 
 class PeopleService {
-  baseUrl = `${process.env.NEXT_PUBLIC_API_URL}/people`;
+  baseUrl = `${process.env.VITE_API_URL}/people`;
 
   async getItems(
     paramsValue: CurrentSearchParams
@@ -23,7 +23,7 @@ class PeopleService {
       return {
         data: {
           ...searchResult,
-          itemsFormatted: searchResult.results.map((item: People) =>
+          itemsFormatted: (searchResult.results || []).map((item: People) =>
             getPeopleFormatted(item, false)
           ),
         },
