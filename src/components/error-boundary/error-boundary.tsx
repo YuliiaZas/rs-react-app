@@ -1,26 +1,12 @@
-import { Component, ErrorInfo, PropsWithChildren } from 'react';
+import { isRouteErrorResponse, useNavigate } from 'react-router';
 import { ErrorComponent } from '@lib';
 import { text } from '@utils';
+import { Route } from './+types/root';
 
-interface ErrorBoundaryState {
-  error: null | Error;
-}
+export const ErrorBoundaryPage = ({ error }: Route.ErrorBoundaryProps) => {
+  const navigate = useNavigate();
 
-export class ErrorBoundary extends Component<
-  PropsWithChildren,
-  ErrorBoundaryState
-> {
-  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
-    return { error };
-  }
-
-  state: ErrorBoundaryState = { error: null };
-
-  componentDidCatch = (error: Error, errorInfo: ErrorInfo) => {
-    this.logError(error.message, errorInfo.componentStack ?? '-');
-  };
-
-  logError = (errorMessage: string, errorInfoStack: string) => {
+  const logError = (errorMessage: string, errorInfoStack: string) => {
     console.log(`
       \n ===========
       \n ErrorBoundary component catch the next error:
@@ -32,28 +18,26 @@ export class ErrorBoundary extends Component<
       \n ===========`);
   };
 
-  handleButtonClick = () => {
-    this.resetErrorBoundary();
-    this.redirectToHomePage();
+  const handleButtonClick = () => {
+    redirectToHomePage();
   };
 
-  resetErrorBoundary = () => {
-    this.setState({ error: null });
-  };
-
-  redirectToHomePage = () => {
+  const redirectToHomePage = () => {
     console.log(text.errorBoundary.redirectMessage);
+    navigate('/');
   };
 
-  render() {
-    if (this.state.error) {
-      return (
-        <ErrorComponent
-          showButton={true}
-          buttonClick={this.handleButtonClick}
-        />
-      );
-    }
-    return this.props.children;
+  if (isRouteErrorResponse(error)) {
+    return (
+      <ErrorComponent
+        errorMessage={error.statusText}
+        errorMessageInfo={error.data}
+        showButton={true}
+        buttonClick={handleButtonClick}
+      />
+    );
+  } else if (error instanceof Error) {
+    logError(error.message, error.stack ?? '');
   }
-}
+  return <ErrorComponent showButton={true} buttonClick={handleButtonClick} />;
+};

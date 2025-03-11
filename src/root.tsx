@@ -1,5 +1,7 @@
-import { GlobalLayout } from '@layout';
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
+import { GlobalLayout } from '@layout';
+import { Route } from './+types/root';
+import { ErrorBoundaryPage } from 'components/error-boundary/error-boundary';
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -28,4 +30,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function Root() {
   return <Outlet />;
+}
+
+export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
+  return <ErrorBoundaryPage error={error} />;
 }
