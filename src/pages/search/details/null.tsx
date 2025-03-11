@@ -1,6 +1,6 @@
 import { HomePageDetails } from '@home-components';
 import { PATH_VALUE } from '@utils';
-import { useNavigation } from 'react-router';
+import { useNavigation } from 'react-router-dom';
 
 export default function HomePageDrawer() {
   const navigation = useNavigation();

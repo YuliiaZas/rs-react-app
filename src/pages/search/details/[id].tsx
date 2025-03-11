@@ -1,4 +1,4 @@
-import { useNavigation } from 'react-router';
+import { useNavigation } from 'react-router-dom';
 import { HomePageDetails } from '@home-components';
 import { peopleService } from '@services';
 import { getStringifiedFilteredSearchParams, PATH_VALUE } from '@utils';
