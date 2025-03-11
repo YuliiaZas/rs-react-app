@@ -9,6 +9,12 @@ vi.mock('@hooks', () => ({
   useRunOnce: vi.fn(),
 }));
 
+vi.mock('./theme.module.css', () => ({
+  default: {
+    wrapper: 'theme-wrapper',
+  },
+}));
+
 import { useLocalStorage } from '@hooks';
 
 describe('ThemeProvider', () => {

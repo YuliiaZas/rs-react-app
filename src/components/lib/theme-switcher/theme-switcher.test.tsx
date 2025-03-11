@@ -10,6 +10,7 @@ vi.mock('./theme-switcher.module.css', () => ({
     label: 'theme-switcher-label',
     input: 'theme-switcher-input',
     icon: 'theme-switcher-icon',
+    button: 'theme-switcher-button',
   },
 }));
 

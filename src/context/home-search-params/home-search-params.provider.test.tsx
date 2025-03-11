@@ -9,6 +9,12 @@ vi.mock('./current-search-params.hook', () => ({
   useCurrentSearchParams: vi.fn(),
 }));
 
+vi.mock('./home-search-params.module.css', () => ({
+  default: {
+    wrapper: 'home-search-params-wrapper',
+  },
+}));
+
 describe('HomeSearchParamsProvider', () => {
   const mockSearchParams = { search: mockSearchValue };
   const mockSetSearchParams = vi.fn();

@@ -1,7 +1,7 @@
 import { Provider } from 'react-redux';
 import { act, render } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, Mock, vi } from 'vitest';
-import mockRouter from 'next-router-mock';
+import { MemoryRouter } from 'react-router';
 import { useHomeSearch } from '@context';
 import {
   mockFetchItemsResult,
@@ -55,9 +55,6 @@ vi.mock('@context', async (importOriginal) => {
 });
 
 describe('HomePageItems', () => {
-  beforeEach(() => {
-    mockRouter.setCurrentUrl('/search');
-  });
   const paramsSpy = useHomeSearch as Mock;
 
   beforeEach(() => {
@@ -74,9 +71,11 @@ describe('HomePageItems', () => {
   it('should render title', async () => {
     paramsSpy.mockReturnValue([{ search: mockSearchValue }]);
     const { getByText } = render(
-      <Provider store={store}>
-        <HomePageItems itemsData={{ data: mockFetchItemsResult }} />
-      </Provider>
+      <MemoryRouter>
+        <Provider store={store}>
+          <HomePageItems itemsData={{ data: mockFetchItemsResult }} />
+        </Provider>
+      </MemoryRouter>
     );
     expect(
       getByText(`${text.homePage.resultTitleSearch} "${mockSearchValue}"`)
@@ -86,18 +85,22 @@ describe('HomePageItems', () => {
   it('should render title for full list of items', async () => {
     paramsSpy.mockReturnValue([{ search: '' } as CurrentSearchParams]);
     const { getByText } = render(
-      <Provider store={store}>
-        <HomePageItems itemsData={{ data: mockFetchItemsResult }} />
-      </Provider>
+      <MemoryRouter>
+        <Provider store={store}>
+          <HomePageItems itemsData={{ data: mockFetchItemsResult }} />
+        </Provider>
+      </MemoryRouter>
     );
     expect(getByText(text.homePage.resultTitleFull)).toBeInTheDocument();
   });
 
   it('should render error component on fetch error', async () => {
     const { getByText } = render(
-      <Provider store={store}>
-        <HomePageItems itemsData={{ error: new Error('Error') }} />
-      </Provider>
+      <MemoryRouter>
+        <Provider store={store}>
+          <HomePageItems itemsData={{ error: new Error('Error') }} />
+        </Provider>
+      </MemoryRouter>
     );
     expect(
       getByText(text.homePage.loadingErrorMessageInfo)
@@ -112,18 +115,22 @@ describe('HomePageItems', () => {
       },
     };
     const { getByText } = render(
-      <Provider store={store}>
-        <HomePageItems itemsData={itemsData} />
-      </Provider>
+      <MemoryRouter>
+        <Provider store={store}>
+          <HomePageItems itemsData={itemsData} />
+        </Provider>
+      </MemoryRouter>
     );
     expect(getByText(text.homePage.emptyList)).toBeInTheDocument();
   });
 
   it('should render items with correct page buttons number', async () => {
     const { getByText } = render(
-      <Provider store={store}>
-        <HomePageItems itemsData={{ data: mockFetchItemsResult }} />
-      </Provider>
+      <MemoryRouter>
+        <Provider store={store}>
+          <HomePageItems itemsData={{ data: mockFetchItemsResult }} />
+        </Provider>
+      </MemoryRouter>
     );
     expect(getByText(mockItems[0].name)).toBeInTheDocument();
     expect(getByText(mockItems[1].name)).toBeInTheDocument();
@@ -138,9 +145,11 @@ describe('HomePageItems', () => {
       },
     ]);
     const { getByText } = render(
-      <Provider store={store}>
-        <HomePageItems itemsData={{ data: mockFetchItemsResultLastPage }} />
-      </Provider>
+      <MemoryRouter>
+        <Provider store={store}>
+          <HomePageItems itemsData={{ data: mockFetchItemsResultLastPage }} />
+        </Provider>
+      </MemoryRouter>
     );
 
     expect(getByText('3 of 3')).toBeInTheDocument();
@@ -148,9 +157,11 @@ describe('HomePageItems', () => {
 
   it('should handle item selection', async () => {
     const { container } = render(
-      <Provider store={store}>
-        <HomePageItems itemsData={{ data: mockFetchItemsResult }} />
-      </Provider>
+      <MemoryRouter>
+        <Provider store={store}>
+          <HomePageItems itemsData={{ data: mockFetchItemsResult }} />
+        </Provider>
+      </MemoryRouter>
     );
 
     const checkbox = container.querySelector(

@@ -1,7 +1,14 @@
 import { render } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { KeyValuePair } from '@utils';
 import { CardSmall } from './card-small';
+
+vi.mock('./card-small.module.css', () => ({
+  default: {
+    wrapper: 'card-small-wrapper',
+    detail: 'card-small-detail',
+  },
+}));
 
 describe('CardSmall', () => {
   const cardTitle = 'Test Card';

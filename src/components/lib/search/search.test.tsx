@@ -3,6 +3,14 @@ import { describe, expect, it, vi } from 'vitest';
 import { text } from '@utils';
 import { Search } from './search';
 
+vi.mock('./search.module.css', () => ({
+  default: {
+    wrapper: 'search-wrapper',
+    input: 'search-input',
+    button: 'search-button',
+  },
+}));
+
 describe('Search', () => {
   const initialSearchValue = 'initial value';
   const placeholder = 'Search here';

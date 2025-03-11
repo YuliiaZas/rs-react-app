@@ -4,7 +4,7 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 import path from 'path';
 
 export default defineConfig({
-  plugins: [tsconfigPaths(), reactRouter()],
+  plugins: [!process.env.VITEST && reactRouter(), tsconfigPaths()],
   resolve: {
     alias: {
       '@pages': path.resolve(__dirname, 'src/pages'),
